@@ -125,17 +125,41 @@ const GapFillPage: React.FC = () => {
     setIsAnswerChecked(true);
     const correct = selectedWord === currentQuestion.correctWord;
     setIsCorrect(correct);
+    setFeedbackType(correct ? 'correct' : 'wrong');
+    setShowFeedback(true);
     
     if (correct) {
+      // Play sound effect first
       playAudio('correct');
+      
+      // Then play character voice with a slight delay
+      setTimeout(() => {
+        playCharacterPhrase('correct', { 
+          character: 'teacher', 
+          emotion: 'happy' 
+        });
+      }, 500);
+      
       setScore(score + 1);
     } else {
+      // Play sound effect first
       playAudio('wrong');
+      
+      // Then play character voice with a slight delay
+      setTimeout(() => {
+        playCharacterPhrase('wrong', { 
+          character: 'teacher', 
+          emotion: 'encouraging' 
+        });
+      }, 500);
+      
       setLives(lives - 1);
     }
     
-    // Wait before moving to next question
+    // Wait before moving to next question (longer to allow for character voice)
     timerRef.current = window.setTimeout(() => {
+      setShowFeedback(false);
+      
       if (currentQuestionIndex === questions.length - 1 || lives <= 1 && !correct) {
         // End of quiz or out of lives
         saveProgress();
@@ -279,6 +303,31 @@ const GapFillPage: React.FC = () => {
         </div>
       </div>
       
+      {/* Character Feedback */}
+      {showFeedback && (
+        <div className={`fixed bottom-24 right-4 p-3 rounded-2xl shadow-lg animate-bounce-small ${
+          feedbackType === 'correct' ? 'bg-success/90' : 'bg-primary/90'
+        }`}>
+          <div className="flex items-center">
+            <div className="w-12 h-12 rounded-full bg-white mr-3 overflow-hidden">
+              <img 
+                src="https://api.dicebear.com/7.x/personas/svg?seed=teacher&face=smile&backgroundColor=d1d4f9" 
+                alt="Teacher"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-white max-w-[150px]">
+              <p className="font-bold">Teacher</p>
+              <p className="text-sm">
+                {feedbackType === 'correct' 
+                  ? "Great sentence!" 
+                  : "Try a different word."}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation Buttons */}
       <div className="fixed bottom-0 left-0 right-0 p-4 max-w-xl mx-auto">
         <Button
