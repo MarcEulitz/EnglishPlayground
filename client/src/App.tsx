@@ -52,8 +52,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <div className="max-w-xl mx-auto pb-20 min-h-screen">
-          <div className="p-6 flex flex-col items-center justify-center min-h-screen">
+        <div className="max-w-xl mx-auto pb-20 min-h-screen" style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1470&auto=format&fit=crop')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat"
+        }}>
+          <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-white/80 backdrop-blur-sm">
             <div className="w-40 h-40 bg-primary rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-lg">
               <h1 className="text-white text-4xl font-extrabold">Mia's</h1>
             </div>
