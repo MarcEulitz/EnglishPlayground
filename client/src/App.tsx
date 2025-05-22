@@ -50,39 +50,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <div className="max-w-xl mx-auto pb-20 min-h-screen" style={{
-          backgroundImage: "url('https://images.pexels.com/photos/672532/pexels-photo-672532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}>
-          <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-white/70">
-            <div className="w-40 h-40 bg-primary rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-lg">
-              <h1 className="text-white text-4xl font-extrabold">Mia's</h1>
-            </div>
-            <h1 className="text-4xl font-extrabold text-primary mb-2 text-center">Englischwelt</h1>
-            <p className="text-lg mb-10 text-center">Lerne Englisch mit Spaß!</p>
-            
-            <button 
-              className="w-full bg-accent text-white py-4 px-6 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center mb-4"
-              onClick={() => alert("Diese App ist noch in der Entwicklung. Bald kannst du hier Englisch lernen!")}
-            >
-              <i className="ri-add-line mr-2 text-xl"></i>
-              Neuer Spieler
-            </button>
-            
-            <button 
-              className="mt-2 text-primary flex items-center"
-              onClick={() => alert("Der Elternbereich wird bald verfügbar sein.")}
-            >
-              <i className="ri-lock-line mr-1"></i>
-              Elternbereich
-            </button>
-          </div>
-        </div>
-      </TooltipProvider>
+      <UserProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

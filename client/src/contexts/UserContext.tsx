@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import useIndexedDB from '@/hooks/use-indexeddb';
 import { User, LearningStat, Achievement, ParentSettings } from '@shared/schema';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiRequest, queryClient } from '@/lib/queryClient';
+import { apiRequest } from '@/lib/queryClient';
 
 interface UserContextType {
   currentUser: User | null;
@@ -20,7 +19,6 @@ interface UserContextType {
   validatePin: (pin: string) => Promise<boolean>;
   refreshUserData: () => Promise<void>;
   isLoading: boolean;
-  isOnline: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -37,28 +35,13 @@ const defaultParentSettings: ParentSettings = {
   soundEffects: true
 };
 
-export const UserProvider = ({ children }: UserProviderProps) => {
-  const queryClient = useQueryClient();
+export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [learningStats, setLearningStats] = useState<LearningStat[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [parentSettings, setParentSettings] = useState<ParentSettings | null>(null);
-  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
-  
-  // Track online/offline status
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { 
     initDB, 
@@ -92,205 +75,156 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     ]
   });
 
-  // Queries
-  const { 
-    data: apiUsers, 
-    isLoading: isLoadingUsers,
-    error: usersError
-  } = useQuery({
-    queryKey: ['/api/users'],
-    enabled: isOnline
-  });
-
-  const {
-    data: apiParentSettings,
-    isLoading: isLoadingParentSettings,
-    error: parentSettingsError
-  } = useQuery({
-    queryKey: ['/api/parent-settings'],
-    enabled: isOnline
-  });
-
-  // Loading state
-  const isLoading = isLoadingUsers || isLoadingParentSettings;
-
-  // Load stats and achievements only for current user
-  const {
-    data: apiLearningStats,
-    isLoading: isLoadingStats
-  } = useQuery({
-    queryKey: ['/api/users', currentUser?.id, 'learning-stats'],
-    enabled: !!currentUser && isOnline
-  });
-
-  const {
-    data: apiAchievements,
-    isLoading: isLoadingAchievements
-  } = useQuery({
-    queryKey: ['/api/users', currentUser?.id, 'achievements'],
-    enabled: !!currentUser && isOnline
-  });
-
-  // Mutations
-  const createUserMutation = useMutation({
-    mutationFn: (user: Omit<User, 'id' | 'createdAt'>) => 
-      apiRequest('/api/users', 'POST', user),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-    }
-  });
-
-  const createStatMutation = useMutation({
-    mutationFn: (stat: Omit<LearningStat, 'id' | 'date'>) => 
-      apiRequest('/api/learning-stats', 'POST', stat),
-    onSuccess: () => {
-      if (currentUser) {
-        queryClient.invalidateQueries({ 
-          queryKey: ['/api/users', currentUser.id, 'learning-stats'] 
-        });
-      }
-    }
-  });
-
-  const createAchievementMutation = useMutation({
-    mutationFn: (achievement: Omit<Achievement, 'id' | 'dateEarned'>) => 
-      apiRequest('/api/achievements', 'POST', achievement),
-    onSuccess: () => {
-      if (currentUser) {
-        queryClient.invalidateQueries({ 
-          queryKey: ['/api/users', currentUser.id, 'achievements'] 
-        });
-      }
-    }
-  });
-
-  const updateParentSettingsMutation = useMutation({
-    mutationFn: ({ id, settings }: { id: number, settings: Partial<ParentSettings> }) => 
-      apiRequest(`/api/parent-settings/${id}`, 'PUT', settings),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/parent-settings'] });
-    }
-  });
-
-  const validatePinMutation = useMutation({
-    mutationFn: (pin: string) => 
-      apiRequest('/api/validate-pin', 'POST', { pin })
-  });
-
-  // Effect to update local state from API data when online
-  useEffect(() => {
-    if (isOnline) {
-      if (apiUsers && !usersError) {
-        setUsers(apiUsers);
-      }
-      
-      if (apiParentSettings && !parentSettingsError) {
-        setParentSettings(apiParentSettings);
-      }
-      
-      if (apiLearningStats && currentUser) {
-        setLearningStats(apiLearningStats);
-      }
-      
-      if (apiAchievements && currentUser) {
-        setAchievements(apiAchievements);
-      }
-    }
-  }, [
-    isOnline, 
-    apiUsers, 
-    apiParentSettings, 
-    apiLearningStats, 
-    apiAchievements,
-    currentUser,
-    usersError,
-    parentSettingsError
-  ]);
-
-  const initializeDb = useCallback(async () => {
-    // Initialize IndexedDB
-    await initDB();
-    
-    if (isOnline) {
-      // If online, we rely on React Query to fetch the data
-      await refreshUserData();
-    } else {
-      // If offline, we load from IndexedDB
-      const loadedUsers = await getAllItems<User>('users');
-      setUsers(loadedUsers);
-      
-      const loadedStats = await getAllItems<LearningStat>('learningStats');
-      setLearningStats(loadedStats);
-      
-      const loadedAchievements = await getAllItems<Achievement>('achievements');
-      setAchievements(loadedAchievements);
-      
-      // Create or get parent settings
-      const allSettings = await getAllItems<ParentSettings>('parentSettings');
-      if (allSettings.length === 0) {
-        await addItem('parentSettings', defaultParentSettings);
-        setParentSettings(defaultParentSettings);
-      } else {
-        setParentSettings(allSettings[0]);
-      }
-    }
-  }, [initDB, addItem, getAllItems, isOnline, refreshUserData]);
-
-  const refreshUserData = useCallback(async () => {
-    if (isOnline) {
-      // Invalidate and refetch all queries
-      await queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      await queryClient.invalidateQueries({ queryKey: ['/api/parent-settings'] });
-      
-      if (currentUser) {
-        await queryClient.invalidateQueries({ 
-          queryKey: ['/api/users', currentUser.id, 'learning-stats'] 
-        });
-        await queryClient.invalidateQueries({ 
-          queryKey: ['/api/users', currentUser.id, 'achievements'] 
-        });
-      }
-    } else {
-      // Offline mode - load from IndexedDB
-      const loadedUsers = await getAllItems<User>('users');
-      setUsers(loadedUsers);
-      
-      const loadedStats = await getAllItems<LearningStat>('learningStats');
-      setLearningStats(loadedStats);
-      
-      const loadedAchievements = await getAllItems<Achievement>('achievements');
-      setAchievements(loadedAchievements);
-      
-      // If there's a current user, refresh its data
-      if (currentUser) {
-        const refreshedUser = await getItem<User>('users', currentUser.id);
-        if (refreshedUser) {
-          setCurrentUser(refreshedUser);
+  const fetchUsers = async () => {
+    try {
+      const response = await apiRequest<User[]>('/api/users');
+      if (response) {
+        setUsers(response);
+        // Also store in IndexedDB for offline use
+        for (const user of response) {
+          await addItem('users', user);
         }
       }
+    } catch (error) {
+      console.log('Using local IndexedDB data for users');
+      const localUsers = await getAllItems('users');
+      setUsers(localUsers as User[]);
     }
-  }, [
-    getAllItems, 
-    currentUser, 
-    getItem, 
-    isOnline, 
-    queryClient
-  ]);
+  };
+
+  const fetchParentSettings = async () => {
+    try {
+      const response = await apiRequest<ParentSettings>('/api/parent-settings');
+      if (response) {
+        setParentSettings(response);
+        // Store in IndexedDB
+        await addItem('parentSettings', response);
+      }
+    } catch (error) {
+      console.log('Using local IndexedDB data for parent settings');
+      const localSettings = await getAllItems('parentSettings');
+      if (localSettings && localSettings.length > 0) {
+        setParentSettings(localSettings[0] as ParentSettings);
+      } else {
+        // Initialize with defaults
+        setParentSettings(defaultParentSettings);
+        await addItem('parentSettings', defaultParentSettings);
+      }
+    }
+  };
+
+  const fetchUserData = async (userId: number) => {
+    if (!userId) return;
+
+    try {
+      // Fetch learning stats
+      const stats = await apiRequest<LearningStat[]>(`/api/users/${userId}/learning-stats`);
+      if (stats) {
+        setLearningStats(stats);
+        // Store in IndexedDB
+        for (const stat of stats) {
+          await addItem('learningStats', stat);
+        }
+      }
+
+      // Fetch achievements
+      const achievements = await apiRequest<Achievement[]>(`/api/users/${userId}/achievements`);
+      if (achievements) {
+        setAchievements(achievements);
+        // Store in IndexedDB
+        for (const achievement of achievements) {
+          await addItem('achievements', achievement);
+        }
+      }
+    } catch (error) {
+      console.log('Using local IndexedDB data for user stats and achievements');
+      
+      // Load from IndexedDB
+      const localStats = await getAllItems('learningStats');
+      const userStats = (localStats as LearningStat[]).filter(stat => stat.userId === userId);
+      setLearningStats(userStats);
+      
+      const localAchievements = await getAllItems('achievements');
+      const userAchievements = (localAchievements as Achievement[]).filter(a => a.userId === userId);
+      setAchievements(userAchievements);
+    }
+  };
+
+  const refreshUserData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await fetchUsers();
+      await fetchParentSettings();
+      
+      if (currentUser) {
+        await fetchUserData(currentUser.id);
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentUser]);
+
+  const initializeDb = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await initDB();
+      await refreshUserData();
+    } catch (error) {
+      console.error('Error initializing database:', error);
+      
+      // Fall back to local data
+      const localUsers = await getAllItems('users');
+      setUsers(localUsers as User[]);
+      
+      const localSettings = await getAllItems('parentSettings');
+      if (localSettings && localSettings.length > 0) {
+        setParentSettings(localSettings[0] as ParentSettings);
+      } else {
+        // Initialize with defaults
+        setParentSettings(defaultParentSettings);
+        await addItem('parentSettings', defaultParentSettings);
+      }
+      
+      if (currentUser) {
+        const localStats = await getAllItems('learningStats');
+        const userStats = (localStats as LearningStat[]).filter(stat => stat.userId === currentUser.id);
+        setLearningStats(userStats);
+        
+        const localAchievements = await getAllItems('achievements');
+        const userAchievements = (localAchievements as Achievement[]).filter(a => a.userId === currentUser.id);
+        setAchievements(userAchievements);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [initDB, currentUser]);
+
+  // Effect to fetch user data when current user changes
+  useEffect(() => {
+    if (currentUser) {
+      fetchUserData(currentUser.id);
+    } else {
+      setLearningStats([]);
+      setAchievements([]);
+    }
+  }, [currentUser]);
 
   const addUser = useCallback(async (userData: Omit<User, 'id' | 'createdAt'>): Promise<User> => {
-    if (isOnline) {
-      // Use API
-      const newUser = await createUserMutation.mutateAsync(userData);
+    try {
+      // Try API first
+      const newUser = await apiRequest<User>('/api/users', 'POST', userData);
+      if (newUser) {
+        await addItem('users', newUser);
+        await refreshUserData();
+        return newUser;
+      }
+      throw new Error('Failed to create user via API');
+    } catch (error) {
+      console.log('Using IndexedDB for user creation (offline mode)');
       
-      // Also save to IndexedDB for offline access
-      await addItem('users', newUser);
-      
-      // Refresh data
-      await refreshUserData();
-      
-      return newUser;
-    } else {
-      // Offline mode - use IndexedDB
+      // Fall back to local creation
       const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
       const newUser: User = {
         ...userData,
@@ -299,39 +233,43 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       };
       
       await addItem('users', newUser);
-      await refreshUserData();
+      const updatedUsers = [...users, newUser];
+      setUsers(updatedUsers);
+      
       return newUser;
     }
-  }, [
-    createUserMutation, 
-    addItem, 
-    users, 
-    refreshUserData, 
-    isOnline
-  ]);
+  }, [users, addItem, refreshUserData]);
 
   const updateUser = useCallback(async (user: User): Promise<User> => {
-    // We don't have an API endpoint for updating users yet,
-    // so we'll just update in IndexedDB for now
+    // Currently we don't have an API endpoint for updating users
     await updateItem('users', user);
-    await refreshUserData();
+    
+    // Update local state
+    const updatedUsers = users.map(u => u.id === user.id ? user : u);
+    setUsers(updatedUsers);
+    
+    if (currentUser && currentUser.id === user.id) {
+      setCurrentUser(user);
+    }
+    
     return user;
-  }, [updateItem, refreshUserData]);
+  }, [users, updateItem, currentUser]);
 
   const addLearningStat = useCallback(async (statData: Omit<LearningStat, 'id' | 'date'>): Promise<LearningStat> => {
-    if (isOnline) {
-      // Use API
-      const newStat = await createStatMutation.mutateAsync(statData);
+    try {
+      // Try API first
+      const newStat = await apiRequest<LearningStat>('/api/learning-stats', 'POST', statData);
+      if (newStat) {
+        await addItem('learningStats', newStat);
+        const updatedStats = [...learningStats, newStat];
+        setLearningStats(updatedStats);
+        return newStat;
+      }
+      throw new Error('Failed to create learning stat via API');
+    } catch (error) {
+      console.log('Using IndexedDB for stat creation (offline mode)');
       
-      // Also save to IndexedDB for offline access
-      await addItem('learningStats', newStat);
-      
-      // Refresh data
-      await refreshUserData();
-      
-      return newStat;
-    } else {
-      // Offline mode - use IndexedDB
+      // Fall back to local creation
       const newId = learningStats.length > 0 ? Math.max(...learningStats.map(s => s.id)) + 1 : 1;
       const newStat: LearningStat = {
         ...statData,
@@ -340,31 +278,28 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       };
       
       await addItem('learningStats', newStat);
-      await refreshUserData();
+      const updatedStats = [...learningStats, newStat];
+      setLearningStats(updatedStats);
+      
       return newStat;
     }
-  }, [
-    createStatMutation, 
-    addItem, 
-    learningStats, 
-    refreshUserData, 
-    isOnline
-  ]);
+  }, [learningStats, addItem]);
 
   const addAchievement = useCallback(async (achievementData: Omit<Achievement, 'id' | 'dateEarned'>): Promise<Achievement> => {
-    if (isOnline) {
-      // Use API
-      const newAchievement = await createAchievementMutation.mutateAsync(achievementData);
+    try {
+      // Try API first
+      const newAchievement = await apiRequest<Achievement>('/api/achievements', 'POST', achievementData);
+      if (newAchievement) {
+        await addItem('achievements', newAchievement);
+        const updatedAchievements = [...achievements, newAchievement];
+        setAchievements(updatedAchievements);
+        return newAchievement;
+      }
+      throw new Error('Failed to create achievement via API');
+    } catch (error) {
+      console.log('Using IndexedDB for achievement creation (offline mode)');
       
-      // Also save to IndexedDB for offline access
-      await addItem('achievements', newAchievement);
-      
-      // Refresh data
-      await refreshUserData();
-      
-      return newAchievement;
-    } else {
-      // Offline mode - use IndexedDB
+      // Fall back to local creation
       const newId = achievements.length > 0 ? Math.max(...achievements.map(a => a.id)) + 1 : 1;
       const newAchievement: Achievement = {
         ...achievementData,
@@ -373,78 +308,65 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       };
       
       await addItem('achievements', newAchievement);
-      await refreshUserData();
+      const updatedAchievements = [...achievements, newAchievement];
+      setAchievements(updatedAchievements);
+      
       return newAchievement;
     }
-  }, [
-    createAchievementMutation, 
-    addItem, 
-    achievements, 
-    refreshUserData, 
-    isOnline
-  ]);
+  }, [achievements, addItem]);
 
   const updateParentSettings = useCallback(async (settingsData: Partial<ParentSettings>): Promise<ParentSettings> => {
     if (!parentSettings) {
       throw new Error('Parent settings not initialized');
     }
     
-    if (isOnline) {
-      // Use API
-      const updatedSettings = await updateParentSettingsMutation.mutateAsync({
-        id: parentSettings.id,
-        settings: settingsData
-      });
-      
-      // Also update in IndexedDB
-      await updateItem('parentSettings', updatedSettings);
-      setParentSettings(updatedSettings);
-      
-      // Update local storage for sound effects preference
-      if (settingsData.soundEffects !== undefined) {
-        localStorage.setItem('soundEffects', String(settingsData.soundEffects));
+    try {
+      // Try API first
+      const updatedSettings = await apiRequest<ParentSettings>(`/api/parent-settings/${parentSettings.id}`, 'PUT', settingsData);
+      if (updatedSettings) {
+        await updateItem('parentSettings', updatedSettings);
+        setParentSettings(updatedSettings);
+        
+        // Update local storage for sound effects preference
+        if (settingsData.soundEffects !== undefined) {
+          localStorage.setItem('soundEffects', String(settingsData.soundEffects));
+        }
+        
+        return updatedSettings;
       }
+      throw new Error('Failed to update parent settings via API');
+    } catch (error) {
+      console.log('Using IndexedDB for settings update (offline mode)');
       
-      return updatedSettings;
-    } else {
-      // Offline mode - use IndexedDB
-      const updatedSettings: ParentSettings = {
+      // Fall back to local update
+      const newSettings: ParentSettings = {
         ...parentSettings,
         ...settingsData
       };
       
-      await updateItem('parentSettings', updatedSettings);
-      setParentSettings(updatedSettings);
+      await updateItem('parentSettings', newSettings);
+      setParentSettings(newSettings);
       
       // Update local storage for sound effects preference
       if (settingsData.soundEffects !== undefined) {
         localStorage.setItem('soundEffects', String(settingsData.soundEffects));
       }
       
-      return updatedSettings;
+      return newSettings;
     }
-  }, [
-    parentSettings, 
-    updateItem, 
-    updateParentSettingsMutation, 
-    isOnline
-  ]);
+  }, [parentSettings, updateItem]);
 
   const validatePin = useCallback(async (pin: string): Promise<boolean> => {
-    if (isOnline) {
-      try {
-        const response = await validatePinMutation.mutateAsync(pin);
-        return response.valid;
-      } catch (error) {
-        console.error('Failed to validate PIN:', error);
-        // Fallback to local validation
-        return parentSettings?.pin === pin;
-      }
-    } else {
-      // Offline mode - use local validation
+    try {
+      // Try API first
+      const response = await apiRequest<{valid: boolean}>('/api/validate-pin', 'POST', { pin });
+      return response.valid;
+    } catch (error) {
+      console.log('Using local PIN validation (offline mode)');
+      // Fall back to local validation
       return parentSettings?.pin === pin;
     }
-  }, [parentSettings, validatePinMutation, isOnline]);
+  }, [parentSettings]);
 
   const value = {
     currentUser,
@@ -461,17 +383,16 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     updateParentSettings,
     validatePin,
     refreshUserData,
-    isLoading,
-    isOnline
+    isLoading
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
-export const useUserContext = () => {
+export function useUserContext() {
   const context = useContext(UserContext);
   if (context === undefined) {
     throw new Error('useUserContext must be used within a UserProvider');
   }
   return context;
-};
+}
