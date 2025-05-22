@@ -138,7 +138,7 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "chair", translation: "Stuhl", imageUrl: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?fit=crop&w=600&h=400" },
       { word: "sofa", translation: "Sofa", imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?fit=crop&w=600&h=400" },
       { word: "bed", translation: "Bett", imageUrl: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fit=crop&w=600&h=400" },
-      { word: "wardrobe", translation: "Kleiderschrank", imageUrl: "https://images.unsplash.com/photo-1605365070248-299a182a1a6f?fit=crop&w=600&h=400" }
+      { word: "wardrobe", translation: "Kleiderschrank", imageUrl: "https://images.unsplash.com/photo-1556020685-ae41abfc9365?fit=crop&w=600&h=400" }
     ];
   }
   // Thema: Häuser
