@@ -29,6 +29,11 @@ const HomePage: React.FC = () => {
           character: 'mia', 
           emotion: 'excited' 
         });
+        
+        // Hide greeting bubble after 5 seconds
+        setTimeout(() => {
+          setShowGreeting(false);
+        }, 5000);
       }, 500);
       
       return () => clearTimeout(timer);
@@ -64,6 +69,27 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Welcome Character Bubble */}
+      {showGreeting && (
+        <div className="fixed top-24 right-4 p-3 rounded-2xl shadow-lg z-50 bg-primary/90 animate-bounce-small">
+          <div className="flex items-center">
+            <div className="w-12 h-12 rounded-full bg-white mr-3 overflow-hidden">
+              <img 
+                src="https://api.dicebear.com/7.x/personas/svg?seed=mia&face=smile&backgroundColor=b6e3f4" 
+                alt="Mia"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-white max-w-[150px]">
+              <p className="font-bold">Mia</p>
+              <p className="text-sm">
+                Willkommen zurück, {currentUser?.username}!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Header with User Info */}
       <div className="bg-primary text-white p-4 rounded-b-3xl shadow-md">
         <div className="flex items-center justify-between">
