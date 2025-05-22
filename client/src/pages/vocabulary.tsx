@@ -225,13 +225,14 @@ const VocabularyPage: React.FC = () => {
           />
           
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-3xl font-bold text-primary">{currentQuestion.word}</h3>
+            {/* English word is now hidden to make it more challenging */}
             <button 
-              className="audio-button p-2 bg-primary rounded-full text-white"
+              className="audio-button p-3 bg-primary rounded-full text-white flex items-center"
               onClick={handlePlayAudio}
               disabled={isPlaying}
             >
-              <i className="ri-volume-up-line text-xl"></i>
+              <i className="ri-volume-up-line text-xl mr-2"></i>
+              <span className="font-medium">Listen</span>
             </button>
           </div>
           
