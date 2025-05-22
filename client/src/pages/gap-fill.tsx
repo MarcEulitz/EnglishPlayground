@@ -160,17 +160,20 @@ const GapFillPage: React.FC = () => {
     timerRef.current = window.setTimeout(() => {
       setShowFeedback(false);
       
-      if (currentQuestionIndex === questions.length - 1 || lives <= 1 && !correct) {
-        // End of quiz or out of lives
-        saveProgress();
-        navigate(`/success/${params.topic}`);
-      } else {
-        // Next question
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedWord(null);
-        setIsAnswerChecked(false);
-      }
-    }, 1500);
+      // Small delay after hiding feedback before proceeding
+      setTimeout(() => {
+        if (currentQuestionIndex === questions.length - 1 || lives <= 1 && !correct) {
+          // End of quiz or out of lives
+          saveProgress();
+          navigate(`/success/${params.topic}`);
+        } else {
+          // Next question
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+          setSelectedWord(null);
+          setIsAnswerChecked(false);
+        }
+      }, 300);
+    }, 2500);
   };
   
   const saveProgress = async () => {
