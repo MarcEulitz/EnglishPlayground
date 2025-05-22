@@ -162,7 +162,7 @@ const VocabularyPage: React.FC = () => {
         setIsAnswerChecked(false);
       } else {
         // Game over, either due to no more lives or all questions answered
-        saveResults();
+        handleFinishLesson();
       }
     }, 3000);
   };
@@ -359,16 +359,8 @@ const VocabularyPage: React.FC = () => {
         </div>
       )}
 
-      {/* Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 max-w-xl mx-auto">
-        <Button
-          onClick={handleCheckAnswer}
-          disabled={!selectedAnswer || isAnswerChecked}
-          className="w-full bg-accent text-white py-4 px-6 rounded-xl font-bold text-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Überprüfen
-        </Button>
-      </div>
+      {/* Bottom padding to prevent content being hidden by navigation */}
+      <div className="h-16"></div>
     </div>
   );
 };
