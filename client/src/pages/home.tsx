@@ -267,6 +267,37 @@ const HomePage: React.FC = () => {
               </div>
             </button>
           </div>
+          
+          {/* Custom Topic Section */}
+          <div className="mt-4">
+            {isAddingTopic ? (
+              <div className="flex items-center mt-3 gap-2">
+                <Input
+                  placeholder="Eigenes Thema eingeben..."
+                  value={customTopic}
+                  onChange={(e) => setCustomTopic(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleCustomTopicSubmit()}
+                  className="flex-1"
+                  autoFocus
+                />
+                <Button onClick={handleCustomTopicSubmit} variant="secondary">
+                  <i className="ri-check-line mr-1"></i>
+                  Los
+                </Button>
+                <Button onClick={toggleAddTopic} variant="outline">
+                  <i className="ri-close-line"></i>
+                </Button>
+              </div>
+            ) : (
+              <button 
+                onClick={toggleAddTopic}
+                className="flex items-center justify-center w-full mt-3 p-2 bg-white rounded-lg border-2 border-dashed border-gray-300 text-gray-600 hover:border-primary hover:text-primary transition-colors"
+              >
+                <i className="ri-add-line mr-1"></i> 
+                Eigenes Thema hinzufügen
+              </button>
+            )}
+          </div>
         </div>
         
         {/* Achievements */}
