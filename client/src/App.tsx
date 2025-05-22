@@ -53,12 +53,12 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <div className="max-w-xl mx-auto pb-20 min-h-screen" style={{
-          backgroundImage: "url('https://images.pexels.com/photos/726484/pexels-photo-726484.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
+          backgroundImage: "url('https://images.pexels.com/photos/672532/pexels-photo-672532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"
         }}>
-          <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-white/80 backdrop-blur-sm">
+          <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-white/70">
             <div className="w-40 h-40 bg-primary rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-lg">
               <h1 className="text-white text-4xl font-extrabold">Mia's</h1>
             </div>
