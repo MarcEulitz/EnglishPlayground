@@ -53,7 +53,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <div className="max-w-xl mx-auto pb-20 min-h-screen" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1470&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.pexels.com/photos/726484/pexels-photo-726484.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"
