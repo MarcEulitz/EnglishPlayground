@@ -335,17 +335,33 @@ const VocabularyPage: React.FC = () => {
       {/* Vocabulary Content */}
       <div className="p-5 flex flex-col items-center">
         <div className="w-full bg-white rounded-xl shadow-md p-5 mb-6">
-          <img 
-            src={currentQuestion.imageUrl} 
-            alt={currentQuestion.word} 
-            className="w-full h-48 object-contain rounded-lg mb-4"
-            onError={(e) => {
-              // Fallback zu einem garantierten Bild, wenn das Original nicht geladen werden kann
-              const target = e.target as HTMLImageElement;
-              target.onerror = null; // Verhindert Endlosschleife
-              target.src = "https://images.pexels.com/photos/4271933/pexels-photo-4271933.jpeg?auto=compress&cs=tinysrgb&w=600"; 
-            }}
-          />
+          <div className="w-full h-48 flex items-center justify-center rounded-lg mb-4 overflow-hidden bg-gray-100">
+            <img 
+              src={currentQuestion.imageUrl} 
+              alt={currentQuestion.word} 
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                // Fallback zu einem garantierten Bild, wenn das Original nicht geladen werden kann
+                const target = e.target as HTMLImageElement;
+                target.onerror = null; // Verhindert Endlosschleife
+                
+                // Themenbasiertes Bild oder ein generisches Bild
+                if (params.topic.toLowerCase() === "garten") {
+                  target.src = "https://cdn.pixabay.com/photo/2014/07/31/15/04/garden-406125_1280.jpg";
+                } else if (params.topic.toLowerCase() === "motorrad") {
+                  // Für Motorrad verwenden wir die direkten SVG-Bilder aus der Komponente
+                  if (currentQuestion.word === "motorcycle") target.src = motorcycleSvg;
+                  else if (currentQuestion.word === "helmet") target.src = helmetSvg;
+                  else if (currentQuestion.word === "jacket") target.src = jacketSvg;
+                  else if (currentQuestion.word === "gloves") target.src = glovesSvg;
+                  else if (currentQuestion.word === "boots") target.src = bootsSvg;
+                  else target.src = motorcycleSvg; // Fallback
+                } else {
+                  target.src = "https://cdn.pixabay.com/photo/2016/09/10/17/18/book-1659717_1280.jpg";
+                }
+              }}
+            />
+          </div>
           
           <div className="flex justify-between items-center mb-6">
             {/* English word is now hidden to make it more challenging */}

@@ -203,14 +203,53 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "airplane", translation: "Flugzeug", imageUrl: "https://cdn.pixabay.com/photo/2016/09/07/11/37/tropical-1651426_1280.jpg" }
     ];
   }
-  // Andere Themen - generische Vokabeln
-  else {
+  // Thema: Garten
+  else if (topic.toLowerCase() === "garten") {
     genericVocab = [
-      { word: "first", translation: topic + " Wort 1", imageUrl: genericImages[0] },
-      { word: "second", translation: topic + " Wort 2", imageUrl: genericImages[1] },
-      { word: "third", translation: topic + " Wort 3", imageUrl: genericImages[2] },
-      { word: "fourth", translation: topic + " Wort 4", imageUrl: genericImages[3] },
-      { word: "fifth", translation: topic + " Wort 5", imageUrl: genericImages[4] }
+      { word: "garden", translation: "Garten", imageUrl: "https://cdn.pixabay.com/photo/2014/07/31/15/04/garden-406125_1280.jpg" },
+      { word: "flower", translation: "Blume", imageUrl: "https://cdn.pixabay.com/photo/2015/04/19/08/32/rose-729509_1280.jpg" },
+      { word: "tree", translation: "Baum", imageUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" },
+      { word: "grass", translation: "Gras", imageUrl: "https://cdn.pixabay.com/photo/2017/05/11/20/48/green-2305489_1280.jpg" },
+      { word: "bench", translation: "Bank", imageUrl: "https://cdn.pixabay.com/photo/2015/11/07/11/28/park-bench-1031332_1280.jpg" }
+    ];
+  }
+  // Andere Themen - standardisierte Vokabeln mit besseren Namen statt nur Nummern
+  else {
+    // Typische Wörter und Übersetzungen für unbekannte Themen
+    const typicalWords = [
+      { english: "important", german: "wichtig" },
+      { english: "beautiful", german: "schön" },
+      { english: "interesting", german: "interessant" },
+      { english: "useful", german: "nützlich" },
+      { english: "special", german: "besonders" }
+    ];
+    
+    genericVocab = [
+      { 
+        word: typicalWords[0].english, 
+        translation: typicalWords[0].german, 
+        imageUrl: genericImages[0] 
+      },
+      { 
+        word: typicalWords[1].english, 
+        translation: typicalWords[1].german, 
+        imageUrl: genericImages[1] 
+      },
+      { 
+        word: typicalWords[2].english, 
+        translation: typicalWords[2].german, 
+        imageUrl: genericImages[2] 
+      },
+      { 
+        word: typicalWords[3].english, 
+        translation: typicalWords[3].german, 
+        imageUrl: genericImages[3] 
+      },
+      { 
+        word: typicalWords[4].english, 
+        translation: typicalWords[4].german, 
+        imageUrl: genericImages[4] 
+      }
     ];
   }
   
