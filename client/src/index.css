@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 224 100% 97%; /* #F0F4FF */
+  --foreground: 0 0% 20%; /* #333333 */
+  
+  --muted: 220 33% 98%;
+  --muted-foreground: 25 5.3% 44.7%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+  
+  --border: 220 33% 90%;
+  --input: 220 33% 90%;
+  
+  --primary: 222 61% 56%; /* #4A6CD3 */
+  --primary-foreground: 210 100% 98%;
+  
+  --secondary: 30 100% 63%; /* #FF9F43 */
+  --secondary-foreground: 210 40% 98%;
+  
+  --accent: 160 77% 45%; /* #19CB97 */
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 77% 70%; /* #FF6B6B */
+  --destructive-foreground: 210 40% 98%;
+  
+  --success: 120 43% 57%; /* #66BB6A */
+  --success-foreground: 0 0% 100%;
+  
+  --ring: 222 61% 56%;
+  
+  --radius: 0.5rem;
+  
+  --sidebar-background: 222 61% 56%;
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-primary: 0 0% 100%;
+  --sidebar-primary-foreground: 222 61% 56%;
+  --sidebar-accent: 160 77% 45%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 225 30% 70%;
+  --sidebar-ring: 225 30% 70%;
+  
+  --chart-1: 222 61% 56%;
+  --chart-2: 30 100% 63%;
+  --chart-3: 160 77% 45%;
+  --chart-4: 0 77% 70%;
+  --chart-5: 120 43% 57%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 222 61% 56%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 30 100% 63%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 160 77% 45%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --success: 120 43% 57%;
+  --success-foreground: 0 0% 100%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    font-family: 'Nunito', sans-serif;
+    touch-action: manipulation;
+  }
+
+  body {
+    @apply antialiased bg-background text-foreground font-nunito;
+  }
+}
+
+@layer utilities {
+  .font-nunito {
+    font-family: 'Nunito', sans-serif;
+  }
+}
+
+.celebration {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.celebration.active {
+  display: block;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: fall 3s ease-out forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.splash-animation {
+  animation: splash 1.5s ease-out forwards;
+}
+
+@keyframes splash {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.audio-wave {
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.audio-wave .bar {
+  width: 3px;
+  margin: 0 2px;
+  border-radius: 3px;
+  background-color: hsl(var(--primary));
+  animation: sound 0ms -800ms linear infinite alternate;
+}
+
+@keyframes sound {
+  0% {
+    height: 3px;
+  }
+  100% {
+    height: 22px;
+  }
+}
+
+.animate-bounce-short {
+  animation: bounce 0.5s ease-in-out 2;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
