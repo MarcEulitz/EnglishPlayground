@@ -67,8 +67,11 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   };
   
   // Normalisiere den Themenname (Kleinbuchstaben, ohne Umlaute)
-  const normalizedTopic = topic.toLowerCase()
-    .replace('ä', 'a').replace('ö', 'o').replace('ü', 'u').replace('ß', 'ss');
+  // Verwende reguläre Ausdrücke mit globalem Flag, um alle Vorkommen zu ersetzen
+  let normalizedTopic = topic.toLowerCase()
+    .replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss');
+    
+  console.log('Normalisiertes Thema:', normalizedTopic, 'Original:', topic);
   
   // Prüfe, ob wir dieses Thema kennen
   if (translations[normalizedTopic]) {

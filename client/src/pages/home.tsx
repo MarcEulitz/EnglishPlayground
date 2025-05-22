@@ -74,7 +74,10 @@ const HomePage: React.FC = () => {
   const handleCustomTopicSubmit = () => {
     if (customTopic.trim()) {
       playAudio('click');
-      navigate(`/vocabulary/${customTopic.trim()}`);
+      // Das Thema wird unverändert weitergegeben, die Normalisierung findet im Generator statt
+      const topicToUse = customTopic.trim();
+      console.log("Benutzerdefiniertes Thema wird verwendet:", topicToUse);
+      navigate(`/vocabulary/${topicToUse}`);
       setCustomTopic('');
       setIsAddingTopic(false);
     }
