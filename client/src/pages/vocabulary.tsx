@@ -37,9 +37,55 @@ const VocabularyPage: React.FC = () => {
   
   const timerRef = useRef<number | null>(null);
 
+  // Vordefinierte Motorrad-Vokabeln
+  const motorradWords = [
+    {
+      id: 1,
+      word: "motorcycle",
+      translation: "Motorrad",
+      imageUrl: "https://cdn.pixabay.com/photo/2016/04/07/06/53/bmw-1313343_960_720.jpg",
+      options: ["motorcycle", "scooter", "bicycle", "car"]
+    },
+    {
+      id: 2,
+      word: "helmet",
+      translation: "Helm",
+      imageUrl: "https://cdn.pixabay.com/photo/2016/06/27/07/30/helmet-1482034_960_720.jpg",
+      options: ["helmet", "hat", "cap", "gloves"]
+    },
+    {
+      id: 3,
+      word: "jacket",
+      translation: "Jacke",
+      imageUrl: "https://cdn.pixabay.com/photo/2015/09/02/12/25/bmw-918624_960_720.jpg",
+      options: ["jacket", "shirt", "pants", "boots"]
+    },
+    {
+      id: 4,
+      word: "gloves",
+      translation: "Handschuhe",
+      imageUrl: "https://cdn.pixabay.com/photo/2019/09/21/17/58/motorcycle-4494943_960_720.jpg",
+      options: ["gloves", "socks", "helmet", "jacket"]
+    },
+    {
+      id: 5,
+      word: "boots",
+      translation: "Stiefel",
+      imageUrl: "https://cdn.pixabay.com/photo/2014/05/21/14/54/boots-349521_960_720.jpg",
+      options: ["boots", "shoes", "sandals", "gloves"]
+    }
+  ];
+
   // Prepare questions
   useEffect(() => {
     const topic = params.topic || 'animals';
+    
+    // Spezialfall: Für Motorrad-Thema verwenden wir hart-codierte Fragen
+    if (topic.toLowerCase() === "motorrad") {
+      console.log("Verwende fest definierte Motorrad-Fragen");
+      setQuestions(motorradWords);
+      return;
+    }
     
     // Prüfen, ob das Thema in den vordefinierten Daten existiert
     // Ansonsten generieren wir dynamische Daten für das benutzerdefinierte Thema
@@ -279,18 +325,14 @@ const VocabularyPage: React.FC = () => {
       <div className="p-5 flex flex-col items-center">
         <div className="w-full bg-white rounded-xl shadow-md p-5 mb-6">
           <img 
-            src={currentQuestion.imageUrl.replace('unsplash', 'pexels')} 
+            src={currentQuestion.imageUrl} 
             alt={currentQuestion.word} 
             className="w-full h-48 object-contain rounded-lg mb-4"
             onError={(e) => {
               // Fallback zu einem garantierten Bild, wenn das Original nicht geladen werden kann
               const target = e.target as HTMLImageElement;
               target.onerror = null; // Verhindert Endlosschleife
-              // Wir verwenden ein Motorrad-Bild als Fallback für Motorrad-Thema
-              // oder ein generisches Bild für alle anderen Themen
-              target.src = params.topic === "Motorrad" 
-                ? "https://images.pexels.com/photos/163210/motorcycle-racer-racing-race-163210.jpeg?auto=compress&cs=tinysrgb&w=600"
-                : "https://images.pexels.com/photos/4271933/pexels-photo-4271933.jpeg?auto=compress&cs=tinysrgb&w=600"; 
+              target.src = "https://images.pexels.com/photos/4271933/pexels-photo-4271933.jpeg?auto=compress&cs=tinysrgb&w=600"; 
             }}
           />
           
