@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useUserContext } from '@/contexts/UserContext';
 import BottomNavigation from '@/components/BottomNavigation';
 import ProgressBar from '@/components/ProgressBar';
 import CelebrationEffect from '@/components/CelebrationEffect';
+import CharacterFeedback from '@/components/CharacterFeedback';
 import useAudio from '@/hooks/use-audio';
 import { calculateLevel } from '@/lib/utils';
 import { avatars } from '@/components/AvatarSelection';
@@ -11,14 +12,28 @@ import { avatars } from '@/components/AvatarSelection';
 const HomePage: React.FC = () => {
   const [, navigate] = useLocation();
   const { currentUser, achievements, learningStats, parentSettings } = useUserContext();
-  const { playAudio } = useAudio();
+  const { playAudio, playCharacterPhrase } = useAudio();
+  const [showGreeting, setShowGreeting] = useState(false);
   
   // Redirect to welcome page if no user is selected
   useEffect(() => {
     if (!currentUser) {
       navigate('/');
+    } else {
+      // When user logs in, set greeting state to true to trigger welcome message
+      setShowGreeting(true);
+      
+      // Play a welcome greeting when the user arrives
+      const timer = setTimeout(() => {
+        playCharacterPhrase('greeting', { 
+          character: 'mia', 
+          emotion: 'excited' 
+        });
+      }, 500);
+      
+      return () => clearTimeout(timer);
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, playCharacterPhrase]);
 
   if (!currentUser || !parentSettings) {
     return null;

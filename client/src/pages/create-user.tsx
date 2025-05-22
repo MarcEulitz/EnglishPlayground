@@ -47,10 +47,13 @@ const CreateUserPage: React.FC = () => {
       setCurrentUser(newUser);
       setShowCelebration(true);
       
+      // Play success sound and welcome greeting
+      playAudio('success');
+      
       // Navigate after celebration
       setTimeout(() => {
         navigate('/home');
-      }, 1000);
+      }, 1500);
     } catch (error) {
       toast({
         title: "Fehler",
