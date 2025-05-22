@@ -12,6 +12,8 @@ import {
   type ParentSettings,
   type InsertParentSettings
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -34,122 +36,77 @@ export interface IStorage {
   validatePin(pin: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private learningStats: Map<number, LearningStat>;
-  private achievements: Map<number, Achievement>;
-  private parentSettings: Map<number, ParentSettings>;
-  private userIdCounter: number;
-  private statsIdCounter: number;
-  private achievementsIdCounter: number;
-  private parentSettingsIdCounter: number;
-
-  constructor() {
-    this.users = new Map();
-    this.learningStats = new Map();
-    this.achievements = new Map();
-    this.parentSettings = new Map();
-    this.userIdCounter = 1;
-    this.statsIdCounter = 1;
-    this.achievementsIdCounter = 1;
-    this.parentSettingsIdCounter = 1;
-    
-    // Initialize default parent settings
-    const defaultSettings: ParentSettings = {
-      id: this.parentSettingsIdCounter++,
-      pin: "1234",
-      dailyGoal: 20,
-      notifications: true,
-      soundEffects: true
-    };
-    this.parentSettings.set(defaultSettings.id, defaultSettings);
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUsers(): Promise<User[]> {
-    return Array.from(this.users.values());
+    return await db.select().from(users);
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userIdCounter++;
-    const user: User = { 
-      ...insertUser, 
-      id, 
-      createdAt: new Date() 
-    };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   // Learning stats methods
   async getLearningStats(userId: number): Promise<LearningStat[]> {
-    return Array.from(this.learningStats.values()).filter(
-      (stat) => stat.userId === userId
-    );
+    return await db
+      .select()
+      .from(learningStats)
+      .where(eq(learningStats.userId, userId));
   }
 
   async createLearningStat(insertStat: InsertLearningStat): Promise<LearningStat> {
-    const id = this.statsIdCounter++;
-    const stat: LearningStat = { 
-      ...insertStat, 
-      id, 
-      date: new Date() 
-    };
-    this.learningStats.set(id, stat);
+    const [stat] = await db
+      .insert(learningStats)
+      .values(insertStat)
+      .returning();
     return stat;
   }
 
   // Achievement methods
   async getAchievements(userId: number): Promise<Achievement[]> {
-    return Array.from(this.achievements.values()).filter(
-      (achievement) => achievement.userId === userId
-    );
+    return await db
+      .select()
+      .from(achievements)
+      .where(eq(achievements.userId, userId));
   }
 
   async createAchievement(insertAchievement: InsertAchievement): Promise<Achievement> {
-    const id = this.achievementsIdCounter++;
-    const achievement: Achievement = { 
-      ...insertAchievement, 
-      id, 
-      dateEarned: new Date() 
-    };
-    this.achievements.set(id, achievement);
+    const [achievement] = await db
+      .insert(achievements)
+      .values(insertAchievement)
+      .returning();
     return achievement;
   }
 
   // Parent settings methods
   async getParentSettings(): Promise<ParentSettings | undefined> {
-    // We'll only have one parent settings entry for now, so just return the first one
-    if (this.parentSettings.size > 0) {
-      return Array.from(this.parentSettings.values())[0];
-    }
-    return undefined;
+    const [settings] = await db.select().from(parentSettings).limit(1);
+    return settings;
   }
 
   async createParentSettings(insertSettings: InsertParentSettings): Promise<ParentSettings> {
-    const id = this.parentSettingsIdCounter++;
-    // Ensure all required fields are present
-    const settings: ParentSettings = { 
-      id,
-      pin: insertSettings.pin || '1234',
-      dailyGoal: insertSettings.dailyGoal || 20,
-      notifications: insertSettings.notifications !== undefined ? insertSettings.notifications : true,
-      soundEffects: insertSettings.soundEffects !== undefined ? insertSettings.soundEffects : true
-    };
-    this.parentSettings.set(id, settings);
+    const [settings] = await db
+      .insert(parentSettings)
+      .values(insertSettings)
+      .returning();
     return settings;
   }
 
   async updateParentSettings(id: number, partialSettings: Partial<InsertParentSettings>): Promise<ParentSettings | undefined> {
-    const existingSettings = this.parentSettings.get(id);
-    if (!existingSettings) return undefined;
-    
-    const updatedSettings = { ...existingSettings, ...partialSettings };
-    this.parentSettings.set(id, updatedSettings);
+    const [updatedSettings] = await db
+      .update(parentSettings)
+      .set(partialSettings)
+      .where(eq(parentSettings.id, id))
+      .returning();
     return updatedSettings;
   }
 
@@ -159,4 +116,21 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Initialize default parent settings if they don't exist
+async function initializeParentSettings() {
+  const existingSettings = await db.select().from(parentSettings).limit(1);
+  
+  if (existingSettings.length === 0) {
+    await db.insert(parentSettings).values({
+      pin: "1234",
+      dailyGoal: 20,
+      notifications: true,
+      soundEffects: true
+    });
+  }
+}
+
+// Initialize parent settings
+initializeParentSettings().catch(console.error);
+
+export const storage = new DatabaseStorage();
