@@ -131,14 +131,54 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "swimming", translation: "Schwimmen", imageUrl: "https://images.unsplash.com/photo-1560090995-dff67ad82687?fit=crop&w=600&h=400" }
     ];
   }
+  // Thema: Möbel - wenn der Benutzer es so eingegeben hat, aber die Normalisierung nicht funktionierte
+  else if (topic.toLowerCase() === "möbel" || topic.toLowerCase().includes("mobel")) {
+    genericVocab = [
+      { word: "table", translation: "Tisch", imageUrl: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?fit=crop&w=600&h=400" },
+      { word: "chair", translation: "Stuhl", imageUrl: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?fit=crop&w=600&h=400" },
+      { word: "sofa", translation: "Sofa", imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?fit=crop&w=600&h=400" },
+      { word: "bed", translation: "Bett", imageUrl: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fit=crop&w=600&h=400" },
+      { word: "wardrobe", translation: "Kleiderschrank", imageUrl: "https://images.unsplash.com/photo-1605365070248-299a182a1a6f?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Häuser
+  else if (topic.toLowerCase() === "häuser" || topic.toLowerCase().includes("hauser")) {
+    genericVocab = [
+      { word: "house", translation: "Haus", imageUrl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?fit=crop&w=600&h=400" },
+      { word: "apartment", translation: "Wohnung", imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?fit=crop&w=600&h=400" },
+      { word: "kitchen", translation: "Küche", imageUrl: "https://images.unsplash.com/photo-1556911220-bda9f7f3fe9b?fit=crop&w=600&h=400" },
+      { word: "bathroom", translation: "Badezimmer", imageUrl: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?fit=crop&w=600&h=400" },
+      { word: "bedroom", translation: "Schlafzimmer", imageUrl: "https://images.unsplash.com/photo-1540518614846-7eded433c457?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Geschirr
+  else if (topic.toLowerCase() === "geschirr") {
+    genericVocab = [
+      { word: "plate", translation: "Teller", imageUrl: "https://images.unsplash.com/photo-1589690432517-8c56a024bd95?fit=crop&w=600&h=400" },
+      { word: "cup", translation: "Tasse", imageUrl: "https://images.unsplash.com/photo-1577937927133-66ef06acdf10?fit=crop&w=600&h=400" },
+      { word: "glass", translation: "Glas", imageUrl: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?fit=crop&w=600&h=400" },
+      { word: "fork", translation: "Gabel", imageUrl: "https://images.unsplash.com/photo-1608221344464-7d7e6e23d954?fit=crop&w=600&h=400" },
+      { word: "knife", translation: "Messer", imageUrl: "https://images.unsplash.com/photo-1608221344454-a95d2f4e3dc1?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Fahrzeuge
+  else if (topic.toLowerCase() === "fahrzeuge" || topic.toLowerCase() === "autos") {
+    genericVocab = [
+      { word: "car", translation: "Auto", imageUrl: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?fit=crop&w=600&h=400" },
+      { word: "bicycle", translation: "Fahrrad", imageUrl: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?fit=crop&w=600&h=400" },
+      { word: "bus", translation: "Bus", imageUrl: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?fit=crop&w=600&h=400" },
+      { word: "train", translation: "Zug", imageUrl: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?fit=crop&w=600&h=400" },
+      { word: "airplane", translation: "Flugzeug", imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400" }
+    ];
+  }
   // Andere Themen - generische Vokabeln
   else {
     genericVocab = [
-      { word: topic + " 1", translation: topic + " Beispiel 1", imageUrl: genericImages[0] },
-      { word: topic + " 2", translation: topic + " Beispiel 2", imageUrl: genericImages[1] },
-      { word: topic + " 3", translation: topic + " Beispiel 3", imageUrl: genericImages[2] },
-      { word: topic + " 4", translation: topic + " Beispiel 4", imageUrl: genericImages[3] },
-      { word: topic + " 5", translation: topic + " Beispiel 5", imageUrl: genericImages[4] }
+      { word: "first", translation: topic + " Wort 1", imageUrl: genericImages[0] },
+      { word: "second", translation: topic + " Wort 2", imageUrl: genericImages[1] },
+      { word: "third", translation: topic + " Wort 3", imageUrl: genericImages[2] },
+      { word: "fourth", translation: topic + " Wort 4", imageUrl: genericImages[3] },
+      { word: "fifth", translation: topic + " Wort 5", imageUrl: genericImages[4] }
     ];
   }
   
