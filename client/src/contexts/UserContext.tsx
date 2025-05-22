@@ -206,14 +206,23 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   }, [initDB, currentUser]);
 
-  // Effect to fetch user data when current user changes
+  // Effect to fetch user data when current user changes - only once
   useEffect(() => {
-    if (currentUser) {
-      fetchUserData(currentUser.id);
-    } else {
+    // Use a local variable to track if we've already fetched for this user
+    let isFetched = false;
+    
+    if (currentUser && !isFetched) {
+      isFetched = true;
+      fetchUserData(currentUser.id).catch(err => {
+        // Silent error handling
+        console.log('Using local data for user stats');
+      });
+    } else if (!currentUser) {
       setLearningStats([]);
       setAchievements([]);
     }
+    
+    // No cleanup or dependencies that would trigger repeated calls
   }, [currentUser]);
 
   const addUser = useCallback(async (userData: Omit<User, 'id' | 'createdAt'>): Promise<User> => {

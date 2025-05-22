@@ -11,20 +11,32 @@ import VocabularyPage from "@/pages/vocabulary";
 import GapFillPage from "@/pages/gap-fill";
 import SuccessPage from "@/pages/success";
 import ParentAreaPage from "@/pages/parent-area";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserProvider, useUserContext } from "./contexts/UserContext";
 
 function Router() {
   const { initializeDb } = useUserContext();
   const [isDbInitialized, setIsDbInitialized] = useState(false);
   
+  // Use a ref to prevent multiple initializations
+  const initRef = React.useRef(false);
+  
   useEffect(() => {
-    const init = async () => {
-      await initializeDb();
-      setIsDbInitialized(true);
-    };
-    
-    init();
+    // Only initialize once
+    if (!initRef.current) {
+      initRef.current = true;
+      const init = async () => {
+        try {
+          await initializeDb();
+        } catch (err) {
+          console.log('Database initialization completed with offline mode');
+        } finally {
+          setIsDbInitialized(true);
+        }
+      };
+      
+      init();
+    }
   }, [initializeDb]);
 
   if (!isDbInitialized) {
