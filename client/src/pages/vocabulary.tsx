@@ -162,7 +162,8 @@ const VocabularyPage: React.FC = () => {
         setIsAnswerChecked(false);
       } else {
         // Game over, either due to no more lives or all questions answered
-        handleFinishLesson();
+        saveProgress();
+        navigate(`/success?score=${score}&total=${questions.length}`);
       }
     }, 3000);
   };
