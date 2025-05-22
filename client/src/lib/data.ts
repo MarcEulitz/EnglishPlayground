@@ -8,20 +8,45 @@ export interface VocabularyItem {
 // Hier speichern wir alle benutzerdefinierten Themen
 export const customTopics: Record<string, VocabularyItem[]> = {};
 
+// Fixierte Daten für das Motorrad-Thema
+const motorradVocab: VocabularyItem[] = [
+  { 
+    word: "motorcycle", 
+    translation: "Motorrad", 
+    imageUrl: "https://cdn.pixabay.com/photo/2016/04/07/06/53/bmw-1313343_960_720.jpg" 
+  },
+  { 
+    word: "helmet", 
+    translation: "Helm", 
+    imageUrl: "https://cdn.pixabay.com/photo/2016/06/27/07/30/helmet-1482034_960_720.jpg" 
+  },
+  { 
+    word: "jacket", 
+    translation: "Jacke", 
+    imageUrl: "https://cdn.pixabay.com/photo/2015/09/02/12/25/bmw-918624_960_720.jpg" 
+  },
+  { 
+    word: "gloves", 
+    translation: "Handschuhe", 
+    imageUrl: "https://cdn.pixabay.com/photo/2019/09/21/17/58/motorcycle-4494943_960_720.jpg" 
+  },
+  { 
+    word: "boots", 
+    translation: "Stiefel", 
+    imageUrl: "https://cdn.pixabay.com/photo/2014/05/21/14/54/boots-349521_960_720.jpg" 
+  }
+];
+
 // Funktion, um neue Themen dynamisch zu erstellen
 export function generateTopicData(topic: string): VocabularyItem[] {
-  // Prüfen, ob wir dieses benutzerdefinierte Thema bereits erstellt haben
-  // Beim erneuten Aufrufen eines benutzerdefinierten Themas
-  // Das benutzerdefinierte Thema zurücksetzen, um frische Daten zu bekommen
-  // So vermeiden wir, dass fehlerhafte Bilder zwischengespeichert werden
-  delete customTopics[topic.toLowerCase()];
-  
-  /* Ursprünglicher Code, der benutzerdefinierte Themen aus dem Speicher verwendet
-  if (customTopics[topic.toLowerCase()]) {
-    console.log("Verwende gespeichertes benutzerdefiniertes Thema:", topic);
-    return customTopics[topic.toLowerCase()];
+  // Spezieller Fall für das Motorrad-Thema
+  if (topic.toLowerCase() === "motorrad") {
+    console.log("Verwende feste Motorrad-Vokabeln");
+    return motorradVocab;
   }
-  */
+  
+  // Lösche den Cache für alle anderen benutzerdefinierten Themen
+  delete customTopics[topic.toLowerCase()];
 
   // Wörterbuch mit Übersetzungen für verschiedene Themen
   const translations: Record<string, {words: string[], images: string[]}> = {
@@ -171,21 +196,11 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   // Thema: Fahrzeuge
   else if (topic.toLowerCase() === "fahrzeuge" || topic.toLowerCase() === "autos") {
     genericVocab = [
-      { word: "car", translation: "Auto", imageUrl: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?fit=crop&w=600&h=400" },
-      { word: "bicycle", translation: "Fahrrad", imageUrl: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?fit=crop&w=600&h=400" },
-      { word: "bus", translation: "Bus", imageUrl: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?fit=crop&w=600&h=400" },
-      { word: "train", translation: "Zug", imageUrl: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?fit=crop&w=600&h=400" },
-      { word: "airplane", translation: "Flugzeug", imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400" }
-    ];
-  }
-  // Thema: Motorrad - mit direkten Links zu Bildern, die sicher funktionieren
-  else if (topic.toLowerCase() === "motorrad" || topic.toLowerCase() === "motorräder") {
-    genericVocab = [
-      { word: "motorcycle", translation: "Motorrad", imageUrl: "https://cdn.pixabay.com/photo/2016/04/07/06/53/bmw-1313343_960_720.jpg" },
-      { word: "helmet", translation: "Helm", imageUrl: "https://cdn.pixabay.com/photo/2016/06/27/07/30/helmet-1482034_960_720.jpg" },
-      { word: "jacket", translation: "Jacke", imageUrl: "https://cdn.pixabay.com/photo/2015/09/02/12/25/bmw-918624_960_720.jpg" },
-      { word: "gloves", translation: "Handschuhe", imageUrl: "https://cdn.pixabay.com/photo/2019/09/21/17/58/motorcycle-4494943_960_720.jpg" },
-      { word: "boots", translation: "Stiefel", imageUrl: "https://cdn.pixabay.com/photo/2014/05/21/14/54/boots-349521_960_720.jpg" }
+      { word: "car", translation: "Auto", imageUrl: "https://cdn.pixabay.com/photo/2015/05/28/23/12/auto-788747_1280.jpg" },
+      { word: "bicycle", translation: "Fahrrad", imageUrl: "https://cdn.pixabay.com/photo/2016/11/18/12/49/bicycle-1834265_1280.jpg" },
+      { word: "bus", translation: "Bus", imageUrl: "https://cdn.pixabay.com/photo/2016/01/08/14/30/bus-1127787_1280.jpg" },
+      { word: "train", translation: "Zug", imageUrl: "https://cdn.pixabay.com/photo/2016/07/29/19/18/train-1555348_1280.jpg" },
+      { word: "airplane", translation: "Flugzeug", imageUrl: "https://cdn.pixabay.com/photo/2016/09/07/11/37/tropical-1651426_1280.jpg" }
     ];
   }
   // Andere Themen - generische Vokabeln
@@ -297,101 +312,178 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "orange",
       translation: "orange",
-      imageUrl: "https://images.unsplash.com/photo-1557800634-7bf3c7305596?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1563804447974-0f954a157bef?fit=crop&w=600&h=400"
+    },
+    {
+      word: "brown",
+      translation: "braun",
+      imageUrl: "https://images.unsplash.com/photo-1541387809875-7fa64a9fbcdd?fit=crop&w=600&h=400"
+    },
+    {
+      word: "pink",
+      translation: "rosa",
+      imageUrl: "https://images.unsplash.com/photo-1564419229766-39e9d067c7eb?fit=crop&w=600&h=400"
     }
   ],
-  numbers: [
+  food: [
     {
-      word: "one",
-      translation: "eins",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "apple",
+      translation: "Apfel",
+      imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400"
     },
     {
-      word: "two",
-      translation: "zwei",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "bread",
+      translation: "Brot",
+      imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?fit=crop&w=600&h=400"
     },
     {
-      word: "three",
-      translation: "drei",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "cheese",
+      translation: "Käse",
+      imageUrl: "https://images.unsplash.com/photo-1552767059-ce182ead6c1b?fit=crop&w=600&h=400"
     },
     {
-      word: "four",
-      translation: "vier",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "potato",
+      translation: "Kartoffel",
+      imageUrl: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?fit=crop&w=600&h=400"
     },
     {
-      word: "five",
-      translation: "fünf",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "tomato",
+      translation: "Tomate",
+      imageUrl: "https://images.unsplash.com/photo-1561136594-7f68413baa99?fit=crop&w=600&h=400"
     },
     {
-      word: "six",
-      translation: "sechs",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "chicken",
+      translation: "Huhn",
+      imageUrl: "https://images.unsplash.com/photo-1546548970-71785318a17b?fit=crop&w=600&h=400"
     },
     {
-      word: "seven",
-      translation: "sieben",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "egg",
+      translation: "Ei",
+      imageUrl: "https://images.unsplash.com/photo-1552663651-2e4250e6c7c8?fit=crop&w=600&h=400"
     },
     {
-      word: "eight",
-      translation: "acht",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "milk",
+      translation: "Milch",
+      imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?fit=crop&w=600&h=400"
     },
     {
-      word: "nine",
-      translation: "neun",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "banana",
+      translation: "Banane",
+      imageUrl: "https://images.unsplash.com/photo-1526364163643-89405f33c1d8?fit=crop&w=600&h=400"
     },
     {
-      word: "ten",
-      translation: "zehn",
-      imageUrl: "https://images.unsplash.com/photo-1596448215038-2ce720a84319?fit=crop&w=600&h=400"
+      word: "carrot",
+      translation: "Karotte",
+      imageUrl: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?fit=crop&w=600&h=400"
     }
   ],
-  family: [
+  school: [
     {
-      word: "mother",
-      translation: "Mutter",
-      imageUrl: "https://images.unsplash.com/photo-1540479859555-17af45c78602?fit=crop&w=600&h=400"
+      word: "pen",
+      translation: "Stift",
+      imageUrl: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?fit=crop&w=600&h=400"
     },
     {
-      word: "father",
-      translation: "Vater",
-      imageUrl: "https://images.unsplash.com/photo-1565538420870-da08ff96a207?fit=crop&w=600&h=400"
+      word: "pencil",
+      translation: "Bleistift",
+      imageUrl: "https://images.unsplash.com/photo-1596254769041-7ca77c96f04a?fit=crop&w=600&h=400"
     },
     {
-      word: "sister",
-      translation: "Schwester",
-      imageUrl: "https://images.unsplash.com/photo-1543342384-1f1350e27861?fit=crop&w=600&h=400"
+      word: "notebook",
+      translation: "Heft",
+      imageUrl: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?fit=crop&w=600&h=400"
     },
     {
-      word: "brother",
-      translation: "Bruder",
-      imageUrl: "https://images.unsplash.com/photo-1511551203524-9a24350a5771?fit=crop&w=600&h=400"
+      word: "book",
+      translation: "Buch",
+      imageUrl: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?fit=crop&w=600&h=400"
     },
     {
-      word: "grandmother",
-      translation: "Großmutter",
-      imageUrl: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?fit=crop&w=600&h=400"
+      word: "ruler",
+      translation: "Lineal",
+      imageUrl: "https://images.unsplash.com/photo-1519167874167-2860fc3e55a9?fit=crop&w=600&h=400"
     },
     {
-      word: "grandfather",
-      translation: "Großvater",
-      imageUrl: "https://images.unsplash.com/photo-1605457867610-e640a7339009?fit=crop&w=600&h=400"
+      word: "backpack",
+      translation: "Rucksack",
+      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400"
     },
     {
-      word: "baby",
-      translation: "Baby",
-      imageUrl: "https://images.unsplash.com/photo-1519689680058-324335c77eba?fit=crop&w=600&h=400"
+      word: "scissors",
+      translation: "Schere",
+      imageUrl: "https://images.unsplash.com/photo-1547333101-6bb18e609b2f?fit=crop&w=600&h=400"
+    },
+    {
+      word: "glue",
+      translation: "Kleber",
+      imageUrl: "https://images.unsplash.com/photo-1562246229-37b3069e9f1e?fit=crop&w=600&h=400"
+    },
+    {
+      word: "eraser",
+      translation: "Radiergummi",
+      imageUrl: "https://images.unsplash.com/photo-1595952387747-469ababa2225?fit=crop&w=600&h=400"
+    },
+    {
+      word: "calculator",
+      translation: "Taschenrechner",
+      imageUrl: "https://images.unsplash.com/photo-1586449480584-34302e933441?fit=crop&w=600&h=400"
+    }
+  ],
+  body: [
+    {
+      word: "head",
+      translation: "Kopf",
+      imageUrl: "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?fit=crop&w=600&h=400"
+    },
+    {
+      word: "hand",
+      translation: "Hand",
+      imageUrl: "https://images.unsplash.com/photo-1527633412983-d80af308e660?fit=crop&w=600&h=400"
+    },
+    {
+      word: "foot",
+      translation: "Fuß",
+      imageUrl: "https://images.unsplash.com/photo-1550324790-389e48f6a6ae?fit=crop&w=600&h=400"
+    },
+    {
+      word: "eye",
+      translation: "Auge",
+      imageUrl: "https://images.unsplash.com/photo-1559001625-569674cf4ab4?fit=crop&w=600&h=400"
+    },
+    {
+      word: "nose",
+      translation: "Nase",
+      imageUrl: "https://images.unsplash.com/photo-1589392954089-8b7a77c842c8?fit=crop&w=600&h=400"
+    },
+    {
+      word: "mouth",
+      translation: "Mund",
+      imageUrl: "https://images.unsplash.com/photo-1581512798633-9d17cd32d8c5?fit=crop&w=600&h=400"
+    },
+    {
+      word: "ear",
+      translation: "Ohr",
+      imageUrl: "https://images.unsplash.com/photo-1583323856340-b12ff42381eb?fit=crop&w=600&h=400"
+    },
+    {
+      word: "leg",
+      translation: "Bein",
+      imageUrl: "https://images.unsplash.com/photo-1603069889648-7159c05068e5?fit=crop&w=600&h=400"
+    },
+    {
+      word: "arm",
+      translation: "Arm",
+      imageUrl: "https://images.unsplash.com/photo-1526889576439-7da0d25901bc?fit=crop&w=600&h=400"
+    },
+    {
+      word: "hair",
+      translation: "Haar",
+      imageUrl: "https://images.unsplash.com/photo-1519742866993-66d3cfef4bbd?fit=crop&w=600&h=400"
     }
   ]
 };
 
-// Gap-fill exercises for different topics
+// Struktur für Gap-fill Aufgaben
 export interface GapFillItem {
   sentence: string[];
   gapIndex: number;
@@ -399,277 +491,184 @@ export interface GapFillItem {
   imageUrl: string;
 }
 
+// Gap-fill Übungen
 export const gapFillData: Record<string, GapFillItem[]> = {
   animals: [
     {
-      sentence: ["The", "boy", "has", "a", "", "."],
-      gapIndex: 4,
-      correctWord: "dog",
-      imageUrl: "https://images.unsplash.com/photo-1600369671236-e74521d4b6ad?fit=crop&w=600&h=400"
-    },
-    {
-      sentence: ["I", "like", "my", "", "very", "much", "."],
-      gapIndex: 3,
+      sentence: ["The", "", "is", "chasing", "a", "mouse"],
+      gapIndex: 1,
       correctWord: "cat",
-      imageUrl: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["The", "", "is", "swimming", "in", "the", "water", "."],
+      sentence: ["The", "", "is", "barking", "loudly"],
+      gapIndex: 1,
+      correctWord: "dog",
+      imageUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["The", "", "is", "flying", "in", "the", "sky"],
+      gapIndex: 1,
+      correctWord: "bird",
+      imageUrl: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["The", "", "is", "swimming", "in", "the", "water"],
       gapIndex: 1,
       correctWord: "fish",
-      imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["The", "", "is", "jumping", "high", "."],
+      sentence: ["The", "", "is", "eating", "a", "carrot"],
       gapIndex: 1,
-      correctWord: "horse",
-      imageUrl: "https://images.unsplash.com/photo-1598974357801-cbca100e65d3?fit=crop&w=600&h=400"
-    },
-    {
-      sentence: ["Look", "at", "the", "", "in", "the", "tree", "."],
-      gapIndex: 3,
-      correctWord: "bird",
-      imageUrl: "https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?fit=crop&w=600&h=400"
+      correctWord: "rabbit",
+      imageUrl: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400"
     }
   ],
   colors: [
     {
-      sentence: ["The", "apple", "is", "", "."],
+      sentence: ["The", "apple", "is", ""],
       gapIndex: 3,
       correctWord: "red",
-      imageUrl: "https://images.unsplash.com/photo-1570913149827-d2ac84ab3f9a?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["The", "sky", "is", "", "."],
+      sentence: ["The", "sky", "is", ""],
       gapIndex: 3,
       correctWord: "blue",
-      imageUrl: "https://images.unsplash.com/photo-1514454529242-9e4677563e7b?fit=crop&w=600&h=400"
-    },
-    {
-      sentence: ["The", "banana", "is", "", "."],
-      gapIndex: 3,
-      correctWord: "yellow",
-      imageUrl: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?fit=crop&w=600&h=400"
-    },
-    {
-      sentence: ["The", "grass", "is", "", "."],
-      gapIndex: 3,
-      correctWord: "green",
       imageUrl: "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["The", "snow", "is", "", "."],
+      sentence: ["The", "grass", "is", ""],
+      gapIndex: 3,
+      correctWord: "green",
+      imageUrl: "https://images.unsplash.com/photo-1564419320461-6870880221ad?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["The", "banana", "is", ""],
+      gapIndex: 3,
+      correctWord: "yellow",
+      imageUrl: "https://images.unsplash.com/photo-1526364163643-89405f33c1d8?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["The", "snow", "is", ""],
       gapIndex: 3,
       correctWord: "white",
-      imageUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1578505427953-99771217a626?fit=crop&w=600&h=400"
     }
   ],
-  numbers: [
+  food: [
     {
-      sentence: ["She", "has", "", "cat", "."],
-      gapIndex: 2,
-      correctWord: "one",
-      imageUrl: "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?fit=crop&w=600&h=400"
+      sentence: ["I", "eat", "an", "", "every", "day"],
+      gapIndex: 3,
+      correctWord: "apple",
+      imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["He", "has", "", "dogs", "."],
+      sentence: ["I", "like", "", "and", "butter"],
       gapIndex: 2,
-      correctWord: "two",
-      imageUrl: "https://images.unsplash.com/photo-1549291981-56d443d5e2a2?fit=crop&w=600&h=400"
+      correctWord: "bread",
+      imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["There", "are", "", "birds", "in", "the", "tree", "."],
-      gapIndex: 2,
-      correctWord: "three",
-      imageUrl: "https://images.unsplash.com/photo-1549619856-ac562a3ed1a3?fit=crop&w=600&h=400"
+      sentence: ["The", "", "has", "two", "eggs"],
+      gapIndex: 1,
+      correctWord: "chicken",
+      imageUrl: "https://images.unsplash.com/photo-1546548970-71785318a17b?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["I", "have", "", "fingers", "on", "each", "hand", "."],
+      sentence: ["I", "drink", "", "for", "breakfast"],
       gapIndex: 2,
-      correctWord: "five",
-      imageUrl: "https://images.unsplash.com/photo-1583065643211-0df753225309?fit=crop&w=600&h=400"
+      correctWord: "milk",
+      imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["She", "is", "", "years", "old", "."],
-      gapIndex: 2,
-      correctWord: "ten",
-      imageUrl: "https://images.unsplash.com/photo-1484665754804-74b091e253e3?fit=crop&w=600&h=400"
+      sentence: ["The", "", "is", "orange", "and", "healthy"],
+      gapIndex: 1,
+      correctWord: "carrot",
+      imageUrl: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?fit=crop&w=600&h=400"
     }
   ],
-  family: [
+  school: [
     {
-      sentence: ["My", "", "is", "cooking", "dinner", "."],
-      gapIndex: 1,
-      correctWord: "mother",
-      imageUrl: "https://images.unsplash.com/photo-1551516594-56cb78394645?fit=crop&w=600&h=400"
+      sentence: ["I", "write", "with", "a", ""],
+      gapIndex: 4,
+      correctWord: "pen",
+      imageUrl: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["My", "", "is", "reading", "a", "book", "."],
-      gapIndex: 1,
-      correctWord: "father",
-      imageUrl: "https://images.unsplash.com/photo-1488654715439-fbf461f0eb8d?fit=crop&w=600&h=400"
+      sentence: ["I", "read", "a", "", "about", "animals"],
+      gapIndex: 3,
+      correctWord: "book",
+      imageUrl: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["The", "", "is", "playing", "with", "toys", "."],
+      sentence: ["My", "", "has", "many", "books", "inside"],
       gapIndex: 1,
-      correctWord: "baby",
-      imageUrl: "https://images.unsplash.com/photo-1485423036251-8b2a2909899f?fit=crop&w=600&h=400"
+      correctWord: "backpack",
+      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["My", "", "is", "older", "than", "me", "."],
-      gapIndex: 1,
-      correctWord: "sister",
-      imageUrl: "https://images.unsplash.com/photo-1511085248744-86226c8fa2a8?fit=crop&w=600&h=400"
+      sentence: ["I", "cut", "paper", "with", ""],
+      gapIndex: 4,
+      correctWord: "scissors",
+      imageUrl: "https://images.unsplash.com/photo-1547333101-6bb18e609b2f?fit=crop&w=600&h=400"
     },
     {
-      sentence: ["My", "", "tells", "great", "stories", "."],
-      gapIndex: 1,
-      correctWord: "grandfather",
-      imageUrl: "https://images.unsplash.com/photo-1603415814096-c7c5068c5187?fit=crop&w=600&h=400"
+      sentence: ["I", "use", "an", "", "to", "remove", "mistakes"],
+      gapIndex: 3,
+      correctWord: "eraser",
+      imageUrl: "https://images.unsplash.com/photo-1595952387747-469ababa2225?fit=crop&w=600&h=400"
+    }
+  ],
+  body: [
+    {
+      sentence: ["I", "see", "with", "my", ""],
+      gapIndex: 4,
+      correctWord: "eyes",
+      imageUrl: "https://images.unsplash.com/photo-1559001625-569674cf4ab4?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["I", "hear", "with", "my", ""],
+      gapIndex: 4,
+      correctWord: "ears",
+      imageUrl: "https://images.unsplash.com/photo-1583323856340-b12ff42381eb?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["I", "smell", "with", "my", ""],
+      gapIndex: 4,
+      correctWord: "nose",
+      imageUrl: "https://images.unsplash.com/photo-1589392954089-8b7a77c842c8?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["I", "eat", "with", "my", ""],
+      gapIndex: 4,
+      correctWord: "mouth",
+      imageUrl: "https://images.unsplash.com/photo-1581512798633-9d17cd32d8c5?fit=crop&w=600&h=400"
+    },
+    {
+      sentence: ["I", "hold", "things", "with", "my", ""],
+      gapIndex: 5,
+      correctWord: "hands",
+      imageUrl: "https://images.unsplash.com/photo-1527633412983-d80af308e660?fit=crop&w=600&h=400"
     }
   ]
 };
 
-// Achievement data
-export interface AchievementData {
-  type: 'trophy' | 'sticker';
-  name: string;
-  description: string;
-  icon: string;
-  requirement: {
-    type: 'completions' | 'score' | 'streak';
-    value: number;
-    topic?: string;
-  };
-}
-
-export const achievementData: AchievementData[] = [
-  {
-    type: 'trophy',
-    name: 'animalsExperte',
-    description: 'Du kennst jetzt viele Tiere auf Englisch!',
-    icon: 'ri-trophy-fill',
-    requirement: {
-      type: 'score',
-      value: 4,
-      topic: 'animals'
-    }
-  },
-  {
-    type: 'trophy',
-    name: 'colorsExperte',
-    description: 'Du kennst jetzt viele Farben auf Englisch!',
-    icon: 'ri-trophy-fill',
-    requirement: {
-      type: 'score',
-      value: 4,
-      topic: 'colors'
-    }
-  },
-  {
-    type: 'trophy',
-    name: 'numbersExperte',
-    description: 'Du kennst jetzt viele Zahlen auf Englisch!',
-    icon: 'ri-trophy-fill',
-    requirement: {
-      type: 'score',
-      value: 4,
-      topic: 'numbers'
-    }
-  },
-  {
-    type: 'trophy',
-    name: 'familyExperte',
-    description: 'Du kennst jetzt viele Familienwörter auf Englisch!',
-    icon: 'ri-trophy-fill',
-    requirement: {
-      type: 'score',
-      value: 4,
-      topic: 'family'
-    }
-  },
-  {
-    type: 'sticker',
-    name: 'animalsFleißig',
-    description: 'Du hast 3 Übungen zum Thema Tiere gemacht!',
-    icon: 'ri-price-tag-3-fill',
-    requirement: {
-      type: 'completions',
-      value: 3,
-      topic: 'animals'
-    }
-  },
-  {
-    type: 'sticker',
-    name: 'colorsFleißig',
-    description: 'Du hast 3 Übungen zum Thema Farben gemacht!',
-    icon: 'ri-price-tag-3-fill',
-    requirement: {
-      type: 'completions',
-      value: 3,
-      topic: 'colors'
-    }
-  },
-  {
-    type: 'sticker',
-    name: 'numbersFleißig',
-    description: 'Du hast 3 Übungen zum Thema Zahlen gemacht!',
-    icon: 'ri-price-tag-3-fill',
-    requirement: {
-      type: 'completions',
-      value: 3,
-      topic: 'numbers'
-    }
-  },
-  {
-    type: 'sticker',
-    name: 'familyFleißig',
-    description: 'Du hast 3 Übungen zum Thema Familie gemacht!',
-    icon: 'ri-price-tag-3-fill',
-    requirement: {
-      type: 'completions',
-      value: 3,
-      topic: 'family'
-    }
-  },
-  {
-    type: 'trophy',
-    name: 'Lernstar',
-    description: '3 Tage in Folge gelernt!',
-    icon: 'ri-star-fill',
-    requirement: {
-      type: 'streak',
-      value: 3
-    }
-  },
-  {
-    type: 'trophy',
-    name: 'Perfektionist',
-    description: '100% richtig in einer Übung!',
-    icon: 'ri-check-double-line',
-    requirement: {
-      type: 'score',
-      value: 5
-    }
-  }
-];
-
-// Topic icons and colors
+// Verfügbare Themen für Benutzerinterface
 export const topicData = {
-  animals: {
-    icon: 'ri-bear-smile-line',
-    color: 'secondary'
-  },
-  colors: {
-    icon: 'ri-palette-line',
-    color: 'accent'
-  },
-  numbers: {
-    icon: 'ri-numbers-line',
-    color: 'primary'
-  },
-  family: {
-    icon: 'ri-group-line',
-    color: 'destructive'
-  }
+  vocabularyTopics: [
+    { id: "animals", name: "Tiere", background: "bg-gradient-to-r from-amber-500 to-amber-700" },
+    { id: "colors", name: "Farben", background: "bg-gradient-to-r from-purple-500 to-purple-700" },
+    { id: "food", name: "Essen", background: "bg-gradient-to-r from-emerald-500 to-emerald-700" },
+    { id: "school", name: "Schule", background: "bg-gradient-to-r from-blue-500 to-blue-700" },
+    { id: "body", name: "Körper", background: "bg-gradient-to-r from-rose-500 to-rose-700" }
+  ],
+  gapFillTopics: [
+    { id: "animals", name: "Tiere", background: "bg-gradient-to-r from-amber-500 to-amber-700" },
+    { id: "colors", name: "Farben", background: "bg-gradient-to-r from-purple-500 to-purple-700" },
+    { id: "food", name: "Essen", background: "bg-gradient-to-r from-emerald-500 to-emerald-700" },
+    { id: "school", name: "Schule", background: "bg-gradient-to-r from-blue-500 to-blue-700" },
+    { id: "body", name: "Körper", background: "bg-gradient-to-r from-rose-500 to-rose-700" }
+  ]
 };
