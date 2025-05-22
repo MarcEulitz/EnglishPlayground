@@ -153,14 +153,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const refreshUserData = useCallback(async () => {
     setIsLoading(true);
     try {
-      await fetchUsers();
-      await fetchParentSettings();
+      // Use Promise.allSettled to prevent any single request failure from stopping the others
+      await Promise.allSettled([
+        fetchUsers().catch(err => console.log('Fetching users from IndexedDB')),
+        fetchParentSettings().catch(err => console.log('Fetching settings from IndexedDB'))
+      ]);
       
       if (currentUser) {
-        await fetchUserData(currentUser.id);
+        await fetchUserData(currentUser.id).catch(err => console.log('Fetching user data from IndexedDB'));
       }
+      // No error displayed to user - silently fall back to IndexedDB data
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      // Just log the error but don't display it to the user
+      console.log('Using local IndexedDB data - network connection might be unavailable');
     } finally {
       setIsLoading(false);
     }

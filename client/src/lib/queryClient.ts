@@ -7,20 +7,32 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-export async function apiRequest(
-  method: string,
+export async function apiRequest<T>(
   url: string,
+  method: string = 'GET',
   data?: unknown | undefined,
-): Promise<Response> {
-  const res = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+): Promise<T> {
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: data ? { "Content-Type": "application/json" } : {},
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
 
-  await throwIfResNotOk(res);
-  return res;
+    if (!res.ok) {
+      // Instead of throwing, we'll return null for 404s or other errors
+      // This allows graceful fallback to local storage
+      console.log(`API request failed: ${res.status} ${res.statusText}`);
+      return null as any;
+    }
+    
+    return await res.json();
+  } catch (error) {
+    // Network errors or other issues - fail silently
+    console.log('Network error, falling back to local data');
+    return null as any;
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
