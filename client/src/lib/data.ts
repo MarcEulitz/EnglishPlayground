@@ -5,8 +5,17 @@ export interface VocabularyItem {
   imageUrl: string;
 }
 
+// Hier speichern wir alle benutzerdefinierten Themen
+export const customTopics: Record<string, VocabularyItem[]> = {};
+
 // Funktion, um neue Themen dynamisch zu erstellen
 export function generateTopicData(topic: string): VocabularyItem[] {
+  // Prüfen, ob wir dieses benutzerdefinierte Thema bereits erstellt haben
+  if (customTopics[topic.toLowerCase()]) {
+    console.log("Verwende gespeichertes benutzerdefiniertes Thema:", topic);
+    return customTopics[topic.toLowerCase()];
+  }
+
   // Wörterbuch mit Übersetzungen für verschiedene Themen
   const translations: Record<string, {words: string[], images: string[]}> = {
     // Möbel - Furniture
@@ -87,14 +96,56 @@ export function generateTopicData(topic: string): VocabularyItem[] {
     }));
   }
   
-  // Fallback für unbekannte Themen - erstelle generische Vokabeln
-  return [
-    { word: "example 1", translation: "Beispiel 1", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
-    { word: "example 2", translation: "Beispiel 2", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
-    { word: "example 3", translation: "Beispiel 3", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
-    { word: "example 4", translation: "Beispiel 4", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
-    { word: "example 5", translation: "Beispiel 5", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" }
+  // Erstelle neue Vokabeln für unbekannte Themen
+  // Je nach Thema werden unterschiedliche Beispiele erstellt
+  
+  // Vorlagen für generische Bilder
+  const genericImages = [
+    "https://images.unsplash.com/photo-1561089489-f13d5e730d72?fit=crop&w=600&h=400",
+    "https://images.unsplash.com/photo-1546074177-ffdda98d214f?fit=crop&w=600&h=400",
+    "https://images.unsplash.com/photo-1535016120720-40c646be5580?fit=crop&w=600&h=400",
+    "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?fit=crop&w=600&h=400",
+    "https://images.unsplash.com/photo-1516321497487-e288fb19713f?fit=crop&w=600&h=400"
   ];
+  
+  // Vokabeln basierend auf dem Thema generieren
+  let genericVocab: VocabularyItem[] = [];
+  
+  // Thema: Hobby
+  if (topic.toLowerCase() === "hobby" || topic.toLowerCase() === "hobbys") {
+    genericVocab = [
+      { word: "reading", translation: "Lesen", imageUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?fit=crop&w=600&h=400" },
+      { word: "hiking", translation: "Wandern", imageUrl: "https://images.unsplash.com/photo-1551632811-561732d1e306?fit=crop&w=600&h=400" },
+      { word: "painting", translation: "Malen", imageUrl: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?fit=crop&w=600&h=400" },
+      { word: "swimming", translation: "Schwimmen", imageUrl: "https://images.unsplash.com/photo-1560090995-dff67ad82687?fit=crop&w=600&h=400" },
+      { word: "cooking", translation: "Kochen", imageUrl: "https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Sport
+  else if (topic.toLowerCase() === "sport" || topic.toLowerCase() === "sports") {
+    genericVocab = [
+      { word: "football", translation: "Fußball", imageUrl: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?fit=crop&w=600&h=400" },
+      { word: "basketball", translation: "Basketball", imageUrl: "https://images.unsplash.com/photo-1546519638-68e109498ffc?fit=crop&w=600&h=400" },
+      { word: "tennis", translation: "Tennis", imageUrl: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?fit=crop&w=600&h=400" },
+      { word: "running", translation: "Laufen", imageUrl: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?fit=crop&w=600&h=400" },
+      { word: "swimming", translation: "Schwimmen", imageUrl: "https://images.unsplash.com/photo-1560090995-dff67ad82687?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Andere Themen - generische Vokabeln
+  else {
+    genericVocab = [
+      { word: topic + " 1", translation: topic + " Beispiel 1", imageUrl: genericImages[0] },
+      { word: topic + " 2", translation: topic + " Beispiel 2", imageUrl: genericImages[1] },
+      { word: topic + " 3", translation: topic + " Beispiel 3", imageUrl: genericImages[2] },
+      { word: topic + " 4", translation: topic + " Beispiel 4", imageUrl: genericImages[3] },
+      { word: topic + " 5", translation: topic + " Beispiel 5", imageUrl: genericImages[4] }
+    ];
+  }
+  
+  // Speichere diese Vokabeln für zukünftige Verwendung
+  customTopics[topic.toLowerCase()] = genericVocab;
+  
+  return genericVocab;
 }
 
 export const vocabularyData: Record<string, VocabularyItem[]> = {
