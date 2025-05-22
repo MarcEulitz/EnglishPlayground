@@ -11,10 +11,17 @@ export const customTopics: Record<string, VocabularyItem[]> = {};
 // Funktion, um neue Themen dynamisch zu erstellen
 export function generateTopicData(topic: string): VocabularyItem[] {
   // Prüfen, ob wir dieses benutzerdefinierte Thema bereits erstellt haben
+  // Beim erneuten Aufrufen eines benutzerdefinierten Themas
+  // Das benutzerdefinierte Thema zurücksetzen, um frische Daten zu bekommen
+  // So vermeiden wir, dass fehlerhafte Bilder zwischengespeichert werden
+  delete customTopics[topic.toLowerCase()];
+  
+  /* Ursprünglicher Code, der benutzerdefinierte Themen aus dem Speicher verwendet
   if (customTopics[topic.toLowerCase()]) {
     console.log("Verwende gespeichertes benutzerdefiniertes Thema:", topic);
     return customTopics[topic.toLowerCase()];
   }
+  */
 
   // Wörterbuch mit Übersetzungen für verschiedene Themen
   const translations: Record<string, {words: string[], images: string[]}> = {
@@ -174,11 +181,11 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   // Thema: Motorrad
   else if (topic.toLowerCase() === "motorrad" || topic.toLowerCase() === "motorräder") {
     genericVocab = [
-      { word: "motorcycle", translation: "Motorrad", imageUrl: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?fit=crop&w=600&h=400" },
-      { word: "helmet", translation: "Helm", imageUrl: "https://images.unsplash.com/photo-1562256999-1a8c6a437d6b?fit=crop&w=600&h=400" },
-      { word: "jacket", translation: "Jacke", imageUrl: "https://images.unsplash.com/photo-1591213954196-2d0ccb3f8d4c?fit=crop&w=600&h=400" },
-      { word: "gloves", translation: "Handschuhe", imageUrl: "https://images.unsplash.com/photo-1583312700563-d705a34196fe?fit=crop&w=600&h=400" },
-      { word: "boots", translation: "Stiefel", imageUrl: "https://images.unsplash.com/photo-1617689563472-c66428e89236?fit=crop&w=600&h=400" }
+      { word: "motorcycle", translation: "Motorrad", imageUrl: "https://images.pexels.com/photos/163210/motorcycle-racer-racing-race-163210.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { word: "helmet", translation: "Helm", imageUrl: "https://images.pexels.com/photos/4391470/pexels-photo-4391470.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { word: "jacket", translation: "Jacke", imageUrl: "https://images.pexels.com/photos/6923361/pexels-photo-6923361.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { word: "gloves", translation: "Handschuhe", imageUrl: "https://images.pexels.com/photos/6128428/pexels-photo-6128428.jpeg?auto=compress&cs=tinysrgb&w=600" },
+      { word: "boots", translation: "Stiefel", imageUrl: "https://images.pexels.com/photos/267242/pexels-photo-267242.jpeg?auto=compress&cs=tinysrgb&w=600" }
     ];
   }
   // Andere Themen - generische Vokabeln
