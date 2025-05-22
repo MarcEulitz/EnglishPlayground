@@ -115,6 +115,56 @@ const VocabularyPage: React.FC = () => {
     
     playAudio('click');
     setSelectedAnswer(option);
+    
+    // Automatisch die Antwort überprüfen, sobald eine Option ausgewählt wurde
+    setIsAnswerChecked(true);
+    const correct = option === currentQuestion.word;
+    setIsCorrect(correct);
+    setFeedbackType(correct ? 'correct' : 'wrong');
+    setShowFeedback(true);
+    
+    if (correct) {
+      // Play sound effect first
+      playAudio('correct');
+      
+      // Then play character voice with a slight delay
+      setTimeout(() => {
+        playCharacterPhrase('correct', { 
+          character: 'mia', 
+          emotion: 'happy' 
+        });
+      }, 500);
+      
+      setScore(score + 1);
+    } else {
+      // Play sound effect first
+      playAudio('wrong');
+      
+      // Then play character voice with a slight delay
+      setTimeout(() => {
+        playCharacterPhrase('wrong', { 
+          character: 'buddy', 
+          emotion: 'encouraging' 
+        });
+      }, 500);
+      
+      setLives(lives - 1);
+    }
+    
+    // Wait before moving to next question (longer to allow for character voice)
+    timerRef.current = window.setTimeout(() => {
+      setShowFeedback(false);
+      
+      if (currentQuestionIndex < questions.length - 1 && lives > 0) {
+        // Move to next question
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedAnswer(null);
+        setIsAnswerChecked(false);
+      } else {
+        // Game over, either due to no more lives or all questions answered
+        saveResults();
+      }
+    }, 3000);
   };
 
   const handleCheckAnswer = () => {
