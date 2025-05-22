@@ -7,7 +7,7 @@ import CharacterFeedback from '@/components/CharacterFeedback';
 import useAudio from '@/hooks/use-audio';
 import { Button } from '@/components/ui/button';
 import { getRandomItems, shuffleArray } from '@/lib/utils';
-import { vocabularyData } from '@/lib/data';
+import { vocabularyData, generateTopicData } from '@/lib/data';
 
 interface VocabularyQuestion {
   id: number;
@@ -40,19 +40,24 @@ const VocabularyPage: React.FC = () => {
   // Prepare questions
   useEffect(() => {
     const topic = params.topic || 'animals';
-    const topicData = vocabularyData[topic] || vocabularyData.animals;
     
-    // Get 5 random vocabulary items
-    const selectedVocab = getRandomItems(topicData, 5);
+    // Prüfen, ob das Thema in den vordefinierten Daten existiert
+    // Ansonsten generieren wir dynamische Daten für das benutzerdefinierte Thema
+    const topicData = vocabularyData[topic] || generateTopicData(topic);
+    
+    // Get 5 random vocabulary items (oder alle, wenn weniger als 5 verfügbar sind)
+    const itemCount = Math.min(topicData.length, 5);
+    const selectedVocab = getRandomItems(topicData, itemCount);
     
     // Create questions with options
     const preparedQuestions = selectedVocab.map((vocab, index) => {
-      // Get 3 wrong options from other vocabulary items
+      // Get 3 wrong options from other vocabulary items (oder weniger, falls nicht genug verfügbar)
       const otherWords = topicData
         .filter(v => v.word !== vocab.word)
         .map(v => v.word);
       
-      const wrongOptions = getRandomItems(otherWords, 3);
+      const optionCount = Math.min(otherWords.length, 3);
+      const wrongOptions = getRandomItems(otherWords, optionCount);
       
       // Combine correct answer with wrong options and shuffle
       const options = shuffleArray([vocab.word, ...wrongOptions]);

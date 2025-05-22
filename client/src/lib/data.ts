@@ -5,6 +5,95 @@ export interface VocabularyItem {
   imageUrl: string;
 }
 
+// Funktion, um neue Themen dynamisch zu erstellen
+export function generateTopicData(topic: string): VocabularyItem[] {
+  // Wörterbuch mit Übersetzungen für verschiedene Themen
+  const translations: Record<string, {words: string[], images: string[]}> = {
+    // Möbel - Furniture
+    "möbel": {
+      words: ["table", "chair", "sofa", "bed", "wardrobe", "shelf", "desk", "couch", "cupboard", "drawer"],
+      images: [
+        "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?fit=crop&w=600&h=400", // table
+        "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?fit=crop&w=600&h=400", // chair
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?fit=crop&w=600&h=400", // sofa
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?fit=crop&w=600&h=400", // bed
+        "https://images.unsplash.com/photo-1605365070248-299a182a1a6f?fit=crop&w=600&h=400", // wardrobe
+        "https://images.unsplash.com/photo-1588447606638-82e9a47d517c?fit=crop&w=600&h=400", // shelf
+        "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?fit=crop&w=600&h=400", // desk
+        "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?fit=crop&w=600&h=400", // couch
+        "https://images.unsplash.com/photo-1594640467204-2b3408e8a5f4?fit=crop&w=600&h=400", // cupboard
+        "https://images.unsplash.com/photo-1596162954151-cdcb4c0f70a8?fit=crop&w=600&h=400"  // drawer
+      ]
+    },
+    // Häuser - Houses
+    "häuser": {
+      words: ["house", "apartment", "kitchen", "bathroom", "bedroom", "living room", "garden", "basement", "roof", "garage"],
+      images: [
+        "https://images.unsplash.com/photo-1518780664697-55e3ad937233?fit=crop&w=600&h=400", // house
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?fit=crop&w=600&h=400", // apartment
+        "https://images.unsplash.com/photo-1556911220-bda9f7f3fe9b?fit=crop&w=600&h=400", // kitchen
+        "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?fit=crop&w=600&h=400", // bathroom
+        "https://images.unsplash.com/photo-1540518614846-7eded433c457?fit=crop&w=600&h=400", // bedroom
+        "https://images.unsplash.com/photo-1524758631624-e2822e304c36?fit=crop&w=600&h=400", // living room
+        "https://images.unsplash.com/photo-1558521958-0a228e77fc99?fit=crop&w=600&h=400", // garden
+        "https://images.unsplash.com/photo-1557417170-7239da1f9fb3?fit=crop&w=600&h=400", // basement
+        "https://images.unsplash.com/photo-1564767609363-78b5b9c4f388?fit=crop&w=600&h=400", // roof
+        "https://images.unsplash.com/photo-1558036117-15d82a90b9b1?fit=crop&w=600&h=400"  // garage
+      ]
+    },
+    // Geschirr - Tableware
+    "geschirr": {
+      words: ["plate", "cup", "glass", "fork", "knife", "spoon", "bowl", "mug", "teapot", "pan"],
+      images: [
+        "https://images.unsplash.com/photo-1589690432517-8c56a024bd95?fit=crop&w=600&h=400", // plate
+        "https://images.unsplash.com/photo-1577937927133-66ef06acdf10?fit=crop&w=600&h=400", // cup
+        "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?fit=crop&w=600&h=400", // glass
+        "https://images.unsplash.com/photo-1608221344464-7d7e6e23d954?fit=crop&w=600&h=400", // fork
+        "https://images.unsplash.com/photo-1608221344454-a95d2f4e3dc1?fit=crop&w=600&h=400", // knife
+        "https://images.unsplash.com/photo-1608221344485-ba8062e158d3?fit=crop&w=600&h=400", // spoon
+        "https://images.unsplash.com/photo-1557782332-76d84fb1a2aa?fit=crop&w=600&h=400", // bowl
+        "https://images.unsplash.com/photo-1577937927258-89af3a453cb2?fit=crop&w=600&h=400", // mug
+        "https://images.unsplash.com/photo-1608277361618-e9573ee6400e?fit=crop&w=600&h=400", // teapot
+        "https://images.unsplash.com/photo-1590794056599-7d83ac9ec560?fit=crop&w=600&h=400"  // pan
+      ]
+    }
+  };
+  
+  // Deutsche Übersetzungen
+  const germanWords: Record<string, string[]> = {
+    "möbel": ["Tisch", "Stuhl", "Sofa", "Bett", "Kleiderschrank", "Regal", "Schreibtisch", "Couch", "Schrank", "Schublade"],
+    "häuser": ["Haus", "Wohnung", "Küche", "Badezimmer", "Schlafzimmer", "Wohnzimmer", "Garten", "Keller", "Dach", "Garage"],
+    "geschirr": ["Teller", "Tasse", "Glas", "Gabel", "Messer", "Löffel", "Schüssel", "Becher", "Teekanne", "Pfanne"]
+  };
+  
+  // Normalisiere den Themenname (Kleinbuchstaben, ohne Umlaute)
+  const normalizedTopic = topic.toLowerCase()
+    .replace('ä', 'a').replace('ö', 'o').replace('ü', 'u').replace('ß', 'ss');
+  
+  // Prüfe, ob wir dieses Thema kennen
+  if (translations[normalizedTopic]) {
+    const words = translations[normalizedTopic].words;
+    const images = translations[normalizedTopic].images;
+    const germanWordsList = germanWords[normalizedTopic] || [];
+    
+    // Erstelle die Vokabelitems
+    return words.map((word, index) => ({
+      word: word,
+      translation: germanWordsList[index] || word,
+      imageUrl: images[index] || 'https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400'
+    }));
+  }
+  
+  // Fallback für unbekannte Themen - erstelle generische Vokabeln
+  return [
+    { word: "example 1", translation: "Beispiel 1", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
+    { word: "example 2", translation: "Beispiel 2", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
+    { word: "example 3", translation: "Beispiel 3", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
+    { word: "example 4", translation: "Beispiel 4", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" },
+    { word: "example 5", translation: "Beispiel 5", imageUrl: "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400" }
+  ];
+}
+
 export const vocabularyData: Record<string, VocabularyItem[]> = {
   animals: [
     {
