@@ -53,6 +53,50 @@ const WelcomePage: React.FC = () => {
   return (
     <div id="welcomeScreen" className="flex flex-col min-h-screen p-6">
       <div className="flex-1 flex flex-col items-center justify-center splash-animation">
+        {/* London Bridge Image */}
+        <div className="w-80 h-56 rounded-lg overflow-hidden mb-6 shadow-lg">
+          <svg width="100%" height="100%" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+            {/* Sky */}
+            <rect width="800" height="300" fill="#87CEEB" />
+            
+            {/* River Thames */}
+            <rect y="300" width="800" height="200" fill="#1E90FF" />
+            
+            {/* London Bridge */}
+            <rect x="100" y="250" width="600" height="50" fill="#808080" />
+            
+            {/* Bridge Pillars */}
+            <rect x="150" y="300" width="30" height="150" fill="#696969" />
+            <rect x="300" y="300" width="30" height="150" fill="#696969" />
+            <rect x="450" y="300" width="30" height="150" fill="#696969" />
+            <rect x="600" y="300" width="30" height="150" fill="#696969" />
+            
+            {/* Bridge Arches */}
+            <path d="M150,300 Q215,350 300,300" fill="none" stroke="#696969" strokeWidth="5" />
+            <path d="M300,300 Q375,350 450,300" fill="none" stroke="#696969" strokeWidth="5" />
+            <path d="M450,300 Q525,350 600,300" fill="none" stroke="#696969" strokeWidth="5" />
+            
+            {/* Bridge Railing */}
+            <rect x="100" y="230" width="600" height="20" fill="#A9A9A9" />
+            
+            {/* Tower Bridge Towers - Making it look more iconic */}
+            <rect x="175" y="150" width="50" height="100" fill="#F5DEB3" />
+            <rect x="550" y="150" width="50" height="100" fill="#F5DEB3" />
+            <rect x="165" y="130" width="70" height="20" fill="#8B4513" />
+            <rect x="540" y="130" width="70" height="20" fill="#8B4513" />
+            
+            {/* Sun */}
+            <circle cx="700" cy="80" r="40" fill="#FFD700" />
+            
+            {/* Small boat */}
+            <rect x="400" y="350" width="60" height="20" fill="#8B4513" />
+            <rect x="420" y="330" width="20" height="20" fill="#FFFFFF" />
+            
+            {/* Text */}
+            <text x="400" y="100" textAnchor="middle" fill="#000000" fontFamily="Arial" fontSize="24" fontWeight="bold">London Bridge</text>
+          </svg>
+        </div>
+
         {/* App Logo */}
         <div className="w-40 h-40 bg-primary rounded-full flex items-center justify-center mb-6 border-4 border-white shadow-lg">
           <h1 className="text-white text-4xl font-extrabold">Mia's</h1>
