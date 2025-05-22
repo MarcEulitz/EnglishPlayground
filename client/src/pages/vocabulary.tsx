@@ -43,35 +43,35 @@ const VocabularyPage: React.FC = () => {
       id: 1,
       word: "motorcycle",
       translation: "Motorrad",
-      imageUrl: "https://cdn.pixabay.com/photo/2016/04/07/06/53/bmw-1313343_960_720.jpg",
+      imageUrl: "https://img.freepik.com/free-photo/modern-sports-motorcycle-rides-highway_114579-5071.jpg",
       options: ["motorcycle", "scooter", "bicycle", "car"]
     },
     {
       id: 2,
       word: "helmet",
       translation: "Helm",
-      imageUrl: "https://cdn.pixabay.com/photo/2016/06/27/07/30/helmet-1482034_960_720.jpg",
+      imageUrl: "https://img.freepik.com/free-vector/realistic-motorcycle-helmet_23-2147500155.jpg",
       options: ["helmet", "hat", "cap", "gloves"]
     },
     {
       id: 3,
       word: "jacket",
       translation: "Jacke",
-      imageUrl: "https://cdn.pixabay.com/photo/2015/09/02/12/25/bmw-918624_960_720.jpg",
+      imageUrl: "https://img.freepik.com/free-photo/leather-jacket-hangs-wooden-hanger_93675-130511.jpg",
       options: ["jacket", "shirt", "pants", "boots"]
     },
     {
       id: 4,
       word: "gloves",
       translation: "Handschuhe",
-      imageUrl: "https://cdn.pixabay.com/photo/2019/09/21/17/58/motorcycle-4494943_960_720.jpg",
+      imageUrl: "https://img.freepik.com/free-photo/leather-bikers-gloves_93675-129277.jpg",
       options: ["gloves", "socks", "helmet", "jacket"]
     },
     {
       id: 5,
       word: "boots",
       translation: "Stiefel",
-      imageUrl: "https://cdn.pixabay.com/photo/2014/05/21/14/54/boots-349521_960_720.jpg",
+      imageUrl: "https://img.freepik.com/free-photo/leather-boots_1203-8146.jpg",
       options: ["boots", "shoes", "sandals", "gloves"]
     }
   ];
