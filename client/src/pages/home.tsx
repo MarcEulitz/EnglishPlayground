@@ -8,12 +8,16 @@ import CharacterFeedback from '@/components/CharacterFeedback';
 import useAudio from '@/hooks/use-audio';
 import { calculateLevel } from '@/lib/utils';
 import { avatars } from '@/components/AvatarSelection';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const HomePage: React.FC = () => {
   const [, navigate] = useLocation();
   const { currentUser, achievements, learningStats, parentSettings } = useUserContext();
   const { playAudio, playCharacterPhrase } = useAudio();
   const [showGreeting, setShowGreeting] = useState(false);
+  const [customTopic, setCustomTopic] = useState('');
+  const [isAddingTopic, setIsAddingTopic] = useState(false);
   
   // Redirect to welcome page if no user is selected
   useEffect(() => {
@@ -65,6 +69,23 @@ const HomePage: React.FC = () => {
   const handleCategoryClick = (category: string) => {
     playAudio('click');
     navigate(`/vocabulary/${category}`);
+  };
+  
+  const handleCustomTopicSubmit = () => {
+    if (customTopic.trim()) {
+      playAudio('click');
+      navigate(`/vocabulary/${customTopic.trim()}`);
+      setCustomTopic('');
+      setIsAddingTopic(false);
+    }
+  };
+  
+  const toggleAddTopic = () => {
+    setIsAddingTopic(!isAddingTopic);
+    if (!isAddingTopic) {
+      // Reset custom topic when opening the input
+      setCustomTopic('');
+    }
   };
 
   return (
