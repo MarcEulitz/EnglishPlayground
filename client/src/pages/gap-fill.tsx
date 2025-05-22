@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'wouter';
 import { useUserContext } from '@/contexts/UserContext';
 import ProgressBar from '@/components/ProgressBar';
 import AudioWave from '@/components/AudioWave';
+import CharacterFeedback from '@/components/CharacterFeedback';
 import useAudio from '@/hooks/use-audio';
 import { Button } from '@/components/ui/button';
 import { getRandomItems, shuffleArray } from '@/lib/utils';
@@ -21,7 +22,7 @@ const GapFillPage: React.FC = () => {
   const params = useParams<{ topic: string }>();
   const [, navigate] = useLocation();
   const { currentUser, addLearningStat } = useUserContext();
-  const { playAudio, playWord } = useAudio();
+  const { playAudio, playWord, playCharacterPhrase } = useAudio();
   
   const [lives, setLives] = useState(3);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -32,6 +33,8 @@ const GapFillPage: React.FC = () => {
   const [score, setScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [startTime] = useState(Date.now());
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackType, setFeedbackType] = useState<'correct' | 'wrong'>('correct');
   
   const timerRef = useRef<number | null>(null);
 
