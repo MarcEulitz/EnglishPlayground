@@ -74,24 +74,29 @@ const WelcomePage: React.FC = () => {
         {users.length > 0 && (
           <div className="w-full mb-6">
             <h2 className="text-xl font-bold mb-4 text-center">Wer bist du?</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {users.map(user => (
-                <button 
-                  key={user.id}
-                  className="user-select bg-white rounded-xl p-4 flex flex-col items-center shadow-md hover:shadow-lg transition-all"
-                  onClick={() => handleUserSelect(user.id)}
-                >
-                  <img 
-                    src={getAvatarUrl(user.avatarId)} 
-                    alt={`Avatar - ${user.username}`} 
-                    className="w-20 h-20 rounded-full mb-2 border-2 border-primary"
-                  />
-                  <span className="font-bold">{user.username}</span>
-                  <div className="mt-1">
-                    <StarRating count={getUserStars(user.id)} />
-                  </div>
-                </button>
-              ))}
+            <div className="flex flex-col items-center">
+              {/* Single user button with prominent styling */}
+              <button 
+                className="user-select bg-white rounded-xl p-6 flex flex-col items-center shadow-md hover:shadow-lg transition-all w-48"
+                onClick={() => handleUserSelect(users[0].id)}
+              >
+                <img 
+                  src={getAvatarUrl(users[0].avatarId)} 
+                  alt={`Avatar - ${users[0].username}`} 
+                  className="w-24 h-24 rounded-full mb-3 border-2 border-primary"
+                />
+                <span className="font-bold text-lg">{users[0].username}</span>
+                <div className="mt-2">
+                  <StarRating count={getUserStars(users[0].id)} />
+                </div>
+              </button>
+              
+              {/* Info about other profiles */}
+              {users.length > 1 && (
+                <p className="text-sm text-gray-600 mt-4 text-center">
+                  {users.length - 1} weitere Profile verfügbar
+                </p>
+              )}
             </div>
           </div>
         )}
