@@ -171,6 +171,16 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "airplane", translation: "Flugzeug", imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400" }
     ];
   }
+  // Thema: Motorrad
+  else if (topic.toLowerCase() === "motorrad" || topic.toLowerCase() === "motorräder") {
+    genericVocab = [
+      { word: "motorcycle", translation: "Motorrad", imageUrl: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?fit=crop&w=600&h=400" },
+      { word: "helmet", translation: "Helm", imageUrl: "https://images.unsplash.com/photo-1562256999-1a8c6a437d6b?fit=crop&w=600&h=400" },
+      { word: "jacket", translation: "Jacke", imageUrl: "https://images.unsplash.com/photo-1591213954196-2d0ccb3f8d4c?fit=crop&w=600&h=400" },
+      { word: "gloves", translation: "Handschuhe", imageUrl: "https://images.unsplash.com/photo-1583312700563-d705a34196fe?fit=crop&w=600&h=400" },
+      { word: "boots", translation: "Stiefel", imageUrl: "https://images.unsplash.com/photo-1617689563472-c66428e89236?fit=crop&w=600&h=400" }
+    ];
+  }
   // Andere Themen - generische Vokabeln
   else {
     genericVocab = [
