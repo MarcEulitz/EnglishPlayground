@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'wouter';
 import { useUserContext } from '@/contexts/UserContext';
 import ProgressBar from '@/components/ProgressBar';
 import AudioWave from '@/components/AudioWave';
+import CharacterFeedback from '@/components/CharacterFeedback';
 import useAudio from '@/hooks/use-audio';
 import { Button } from '@/components/ui/button';
 import { getRandomItems, shuffleArray } from '@/lib/utils';
@@ -20,7 +21,7 @@ const VocabularyPage: React.FC = () => {
   const params = useParams<{ topic: string }>();
   const [, navigate] = useLocation();
   const { currentUser, addLearningStat } = useUserContext();
-  const { playAudio, playWord, audioEnabled } = useAudio();
+  const { playAudio, playWord, playCharacterPhrase, audioEnabled } = useAudio();
   
   const [lives, setLives] = useState(3);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -31,6 +32,8 @@ const VocabularyPage: React.FC = () => {
   const [score, setScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [startTime] = useState(Date.now());
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackType, setFeedbackType] = useState<'correct' | 'wrong'>('correct');
   
   const timerRef = useRef<number | null>(null);
 
@@ -115,17 +118,41 @@ const VocabularyPage: React.FC = () => {
     setIsAnswerChecked(true);
     const correct = selectedAnswer === currentQuestion.word;
     setIsCorrect(correct);
+    setFeedbackType(correct ? 'correct' : 'wrong');
+    setShowFeedback(true);
     
     if (correct) {
+      // Play sound effect first
       playAudio('correct');
+      
+      // Then play character voice with a slight delay
+      setTimeout(() => {
+        playCharacterPhrase('correct', { 
+          character: 'mia', 
+          emotion: 'happy' 
+        });
+      }, 500);
+      
       setScore(score + 1);
     } else {
+      // Play sound effect first
       playAudio('wrong');
+      
+      // Then play character voice with a slight delay
+      setTimeout(() => {
+        playCharacterPhrase('wrong', { 
+          character: 'buddy', 
+          emotion: 'encouraging' 
+        });
+      }, 500);
+      
       setLives(lives - 1);
     }
     
-    // Wait before moving to next question
+    // Wait before moving to next question (longer to allow for character voice)
     timerRef.current = window.setTimeout(() => {
+      setShowFeedback(false);
+      
       if (currentQuestionIndex === questions.length - 1 || lives <= 1 && !correct) {
         // End of quiz or out of lives
         saveProgress();
@@ -244,6 +271,35 @@ const VocabularyPage: React.FC = () => {
         </div>
       </div>
       
+      {/* Character Feedback */}
+      {showFeedback && (
+        <div className={`fixed bottom-24 right-4 p-3 rounded-2xl shadow-lg animate-bounce-small ${
+          feedbackType === 'correct' ? 'bg-success/90' : 'bg-primary/90'
+        }`}>
+          <div className="flex items-center">
+            <div className="w-12 h-12 rounded-full bg-white mr-3 overflow-hidden">
+              <img 
+                src={feedbackType === 'correct' 
+                  ? "https://api.dicebear.com/7.x/personas/svg?seed=mia&face=smile&backgroundColor=b6e3f4" 
+                  : "https://api.dicebear.com/7.x/personas/svg?seed=buddy&face=concerned&backgroundColor=ffdfbf"} 
+                alt={feedbackType === 'correct' ? "Mia" : "Buddy"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="text-white max-w-[150px]">
+              <p className="font-bold">
+                {feedbackType === 'correct' ? "Mia" : "Buddy"}
+              </p>
+              <p className="text-sm">
+                {feedbackType === 'correct' 
+                  ? "Well done!" 
+                  : "Let's try again!"}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation Buttons */}
       <div className="fixed bottom-0 left-0 right-0 p-4 max-w-xl mx-auto">
         <Button
