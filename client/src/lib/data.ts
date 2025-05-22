@@ -178,14 +178,14 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "airplane", translation: "Flugzeug", imageUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400" }
     ];
   }
-  // Thema: Motorrad
+  // Thema: Motorrad - mit direkten Links zu Bildern, die sicher funktionieren
   else if (topic.toLowerCase() === "motorrad" || topic.toLowerCase() === "motorräder") {
     genericVocab = [
-      { word: "motorcycle", translation: "Motorrad", imageUrl: "https://images.pexels.com/photos/163210/motorcycle-racer-racing-race-163210.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { word: "helmet", translation: "Helm", imageUrl: "https://images.pexels.com/photos/4391470/pexels-photo-4391470.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { word: "jacket", translation: "Jacke", imageUrl: "https://images.pexels.com/photos/6923361/pexels-photo-6923361.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { word: "gloves", translation: "Handschuhe", imageUrl: "https://images.pexels.com/photos/6128428/pexels-photo-6128428.jpeg?auto=compress&cs=tinysrgb&w=600" },
-      { word: "boots", translation: "Stiefel", imageUrl: "https://images.pexels.com/photos/267242/pexels-photo-267242.jpeg?auto=compress&cs=tinysrgb&w=600" }
+      { word: "motorcycle", translation: "Motorrad", imageUrl: "https://cdn.pixabay.com/photo/2016/04/07/06/53/bmw-1313343_960_720.jpg" },
+      { word: "helmet", translation: "Helm", imageUrl: "https://cdn.pixabay.com/photo/2016/06/27/07/30/helmet-1482034_960_720.jpg" },
+      { word: "jacket", translation: "Jacke", imageUrl: "https://cdn.pixabay.com/photo/2015/09/02/12/25/bmw-918624_960_720.jpg" },
+      { word: "gloves", translation: "Handschuhe", imageUrl: "https://cdn.pixabay.com/photo/2019/09/21/17/58/motorcycle-4494943_960_720.jpg" },
+      { word: "boots", translation: "Stiefel", imageUrl: "https://cdn.pixabay.com/photo/2014/05/21/14/54/boots-349521_960_720.jpg" }
     ];
   }
   // Andere Themen - generische Vokabeln

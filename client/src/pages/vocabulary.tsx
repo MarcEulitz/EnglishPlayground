@@ -279,14 +279,18 @@ const VocabularyPage: React.FC = () => {
       <div className="p-5 flex flex-col items-center">
         <div className="w-full bg-white rounded-xl shadow-md p-5 mb-6">
           <img 
-            src={currentQuestion.imageUrl} 
+            src={currentQuestion.imageUrl.replace('unsplash', 'pexels')} 
             alt={currentQuestion.word} 
             className="w-full h-48 object-contain rounded-lg mb-4"
             onError={(e) => {
               // Fallback zu einem garantierten Bild, wenn das Original nicht geladen werden kann
               const target = e.target as HTMLImageElement;
               target.onerror = null; // Verhindert Endlosschleife
-              target.src = "https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400";
+              // Wir verwenden ein Motorrad-Bild als Fallback für Motorrad-Thema
+              // oder ein generisches Bild für alle anderen Themen
+              target.src = params.topic === "Motorrad" 
+                ? "https://images.pexels.com/photos/163210/motorcycle-racer-racing-race-163210.jpeg?auto=compress&cs=tinysrgb&w=600"
+                : "https://images.pexels.com/photos/4271933/pexels-photo-4271933.jpeg?auto=compress&cs=tinysrgb&w=600"; 
             }}
           />
           
