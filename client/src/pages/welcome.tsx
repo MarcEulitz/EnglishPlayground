@@ -60,11 +60,6 @@ const WelcomePage: React.FC = () => {
         filter: 'brightness(0.6)',
       }}></div>
       
-      {/* London Bridge Caption */}
-      <div className="absolute top-4 left-4 z-10 bg-white/80 px-3 py-1 rounded-lg shadow-md">
-        <h3 className="font-bold text-primary">London Bridge</h3>
-      </div>
-      
       <div className="flex-1 flex flex-col items-center justify-center splash-animation relative z-10 bg-white/80 p-6 rounded-xl shadow-lg my-10 backdrop-blur-sm">
 
 
