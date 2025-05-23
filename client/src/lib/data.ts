@@ -8,32 +8,32 @@ export interface VocabularyItem {
 // Hier speichern wir alle benutzerdefinierten Themen
 export const customTopics: Record<string, VocabularyItem[]> = {};
 
-// Fixierte Daten für das Motorrad-Thema mit hochwertigen SVG-Bildern
+// Fixierte Daten für das Motorrad-Thema mit echten Internet-Bildern
 const motorradVocab: VocabularyItem[] = [
   { 
     word: "motorcycle", 
     translation: "Motorrad", 
-    imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cdefs%3E%3ClinearGradient id='bike' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff4444'/%3E%3Cstop offset='100%25' stop-color='%23cc0000'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle fill='%23222' cx='40' cy='85' r='25'/%3E%3Ccircle fill='%23444' cx='40' cy='85' r='18'/%3E%3Ccircle fill='%23222' cx='160' cy='85' r='25'/%3E%3Ccircle fill='%23444' cx='160' cy='85' r='18'/%3E%3Cpath fill='url(%23bike)' d='M65 60 L135 60 L150 75 L135 75 L65 75 Z'/%3E%3Cpath stroke='%23333' stroke-width='4' fill='none' d='M65 75 L90 45 L130 45'/%3E%3Cpath stroke='%23666' stroke-width='3' fill='none' d='M40 85 L65 75 L160 85'/%3E%3Ccircle fill='%23333' cx='100' cy='40' r='8'/%3E%3C/svg%3E"
+    imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?fit=crop&w=600&h=400"
   },
   { 
     word: "helmet", 
     translation: "Helm", 
-    imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cdefs%3E%3ClinearGradient id='helmet' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ff0000'/%3E%3Cstop offset='100%25' stop-color='%23990000'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cellipse fill='url(%23helmet)' cx='100' cy='60' rx='45' ry='35'/%3E%3Crect fill='%23333' width='50' height='12' x='75' y='55' rx='6'/%3E%3Cellipse fill='%23666' cx='100' cy='35' rx='15' ry='8'/%3E%3C/svg%3E"
+    imageUrl: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?fit=crop&w=600&h=400"
   },
   { 
     word: "wheel", 
     translation: "Rad", 
-    imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Ccircle fill='%23222' cx='100' cy='60' r='45'/%3E%3Ccircle fill='%23444' cx='100' cy='60' r='35'/%3E%3Ccircle fill='%23666' cx='100' cy='60' r='25'/%3E%3Ccircle fill='%23999' cx='100' cy='60' r='10'/%3E%3Cpath stroke='%23333' stroke-width='3' d='M100 25 L100 95 M75 35 L125 85 M125 35 L75 85 M65 60 L135 60'/%3E%3C/svg%3E"
+    imageUrl: "https://images.unsplash.com/photo-1558489580-faa74691fdc5?fit=crop&w=600&h=400"
   },
   { 
     word: "engine", 
     translation: "Motor", 
-    imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23555' width='80' height='50' x='60' y='35' rx='8'/%3E%3Crect fill='%23777' width='60' height='30' x='70' y='45' rx='4'/%3E%3Crect fill='%23333' width='20' height='15' x='50' y='50'/%3E%3Crect fill='%23333' width='20' height='15' x='130' y='50'/%3E%3Ccircle fill='%23ff4444' cx='100' cy='25' r='8'/%3E%3Cpath stroke='%23999' stroke-width='2' d='M80 35 L80 20 M120 35 L120 20'/%3E%3C/svg%3E"
+    imageUrl: "https://images.unsplash.com/photo-1632636503074-7c28e5ad7da6?fit=crop&w=600&h=400"
   },
   { 
     word: "speed", 
     translation: "Geschwindigkeit", 
-    imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath stroke='%23ff4444' stroke-width='6' fill='none' d='M30 60 L60 40 L90 60 L120 40 L150 60 L180 40'/%3E%3Cpath stroke='%23ff6666' stroke-width='4' fill='none' d='M35 75 L65 60 L95 75 L125 60 L155 75 L185 60'/%3E%3Cpath stroke='%23ff8888' stroke-width='3' fill='none' d='M40 90 L70 80 L100 90 L130 80 L160 90'/%3E%3C/svg%3E"
+    imageUrl: "https://images.unsplash.com/photo-1515569067071-ec3b51335dd0?fit=crop&w=600&h=400"
   }
 ];
 
