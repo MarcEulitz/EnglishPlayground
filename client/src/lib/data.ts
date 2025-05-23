@@ -42,12 +42,53 @@ const motorradVocab: VocabularyItem[] = [
   }
 ];
 
+// Intelligente Bildsuche für bessere, passende Bilder
+async function findBestImageForWord(category: string, word: string, translation: string): Promise<string> {
+  try {
+    const response = await fetch('/api/find-best-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category, word, translation })
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log(`Intelligente Bildauswahl für ${word}:`, result.reasoning);
+      return result.bestImageUrl;
+    }
+  } catch (error) {
+    console.error("Intelligente Bildsuche fehlgeschlagen:", error);
+  }
+  
+  // Fallback zu kuratiertem Bild
+  return getManuallySelectedImage(category, word);
+}
+
+// Manuell kuratierte Fallback-Bilder
+function getManuallySelectedImage(category: string, word: string): string {
+  const imageMap: Record<string, Record<string, string>> = {
+    "motorrad": {
+      "motorcycle": "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop",
+      "helmet": "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=800&h=600&fit=crop",
+      "wheel": "https://images.unsplash.com/photo-1520175480921-4edfa2983e0f?w=800&h=600&fit=crop",
+      "engine": "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?w=800&h=600&fit=crop",
+      "speed": "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&h=600&fit=crop"
+    }
+  };
+  
+  return imageMap[category.toLowerCase()]?.[word.toLowerCase()] || 
+         "https://images.unsplash.com/photo-1561089489-f13d5e730d72?w=800&h=600&fit=crop";
+}
+
 // Funktion, um neue Themen dynamisch zu erstellen
 export function generateTopicData(topic: string): VocabularyItem[] {
-  // Spezieller Fall für das Motorrad-Thema
+  // Spezieller Fall für das Motorrad-Thema mit intelligenter Bildauswahl
   if (topic.toLowerCase() === "motorrad") {
-    console.log("Verwende feste Motorrad-Vokabeln");
-    return motorradVocab;
+    console.log("Verwende intelligente Motorrad-Bildauswahl");
+    return motorradVocab.map(item => ({
+      ...item,
+      imageUrl: getManuallySelectedImage("motorrad", item.word) // Zunächst manuell, dann intelligent upgraden
+    }));
   }
   
   // Lösche den Cache für alle anderen benutzerdefinierten Themen
