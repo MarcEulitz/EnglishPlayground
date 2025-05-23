@@ -580,7 +580,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "sheep",
       translation: "Schaf",
-      imageUrl: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?fit=crop&w=600&h=400"
     },
     {
       word: "chicken",
@@ -595,7 +595,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "frog",
       translation: "Frosch",
-      imageUrl: "https://images.unsplash.com/photo-1564419229895-7bd50f3abb13?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400"
     }
   ],
   colors: [
