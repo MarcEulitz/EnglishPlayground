@@ -595,7 +595,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "frog",
       translation: "Frosch",
-      imageUrl: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1496070242169-b672c576566b?fit=crop&w=600&h=400"
     }
   ],
   colors: [
