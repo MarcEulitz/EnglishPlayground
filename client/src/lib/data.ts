@@ -8,32 +8,37 @@ export interface VocabularyItem {
 // Hier speichern wir alle benutzerdefinierten Themen
 export const customTopics: Record<string, VocabularyItem[]> = {};
 
-// Fixierte Daten für das Motorrad-Thema mit eindeutigen, spezifischen Bildern
+// Fixierte Daten für das Motorrad-Thema mit präziser Bildlogik
 const motorradVocab: VocabularyItem[] = [
   { 
     word: "motorcycle", 
     translation: "Motorrad", 
-    imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&crop=center"
+    // Spezifische Suche: "motorcycle side view professional photo"
+    imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop"
   },
   { 
     word: "helmet", 
     translation: "Helm", 
-    imageUrl: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=800&h=600&fit=crop&crop=center"
+    // Spezifische Suche: "motorcycle helmet close up black"
+    imageUrl: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=800&h=600&fit=crop"
   },
   { 
     word: "wheel", 
     translation: "Rad", 
-    imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&h=600&fit=crop&crop=center"
+    // Spezifische Suche: "motorcycle wheel rim close up NOT bicycle"
+    imageUrl: "https://images.unsplash.com/photo-1520175480921-4edfa2983e0f?w=800&h=600&fit=crop"
   },
   { 
     word: "engine", 
     translation: "Motor", 
-    imageUrl: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=600&fit=crop&crop=center"
+    // Spezifische Suche: "motorcycle engine block chrome"
+    imageUrl: "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?w=800&h=600&fit=crop"
   },
   { 
     word: "speed", 
     translation: "Geschwindigkeit", 
-    imageUrl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&crop=center"
+    // Spezifische Suche: "motorcycle speedometer dashboard"
+    imageUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&h=600&fit=crop"
   }
 ];
 
