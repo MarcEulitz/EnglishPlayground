@@ -226,7 +226,7 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   // Thema: Family/Familie
   else if (topic.toLowerCase() === "family" || topic.toLowerCase() === "familie") {
     genericVocab = [
-      { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
       { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fit=crop&w=600&h=400" },
       { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
       { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=600&h=400" },
