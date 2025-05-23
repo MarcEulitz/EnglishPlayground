@@ -266,7 +266,22 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "two", translation: "Zwei", imageUrl: "https://images.unsplash.com/photo-1632247189047-b11b8e6edf93?fit=crop&w=600&h=400" },
       { word: "three", translation: "Drei", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
       { word: "four", translation: "Vier", imageUrl: "https://images.unsplash.com/photo-1605106901227-991bd663255c?fit=crop&w=600&h=400" },
-      { word: "five", translation: "Fünf", imageUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?fit=crop&w=600&h=400" }
+      { word: "five", translation: "Fünf", imageUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?fit=crop&w=600&h=400" },
+      { word: "six", translation: "Sechs", imageUrl: "https://images.unsplash.com/photo-1611048267451-e6ed903d4a38?fit=crop&w=600&h=400" },
+      { word: "seven", translation: "Sieben", imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?fit=crop&w=600&h=400" },
+      { word: "eight", translation: "Acht", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "nine", translation: "Neun", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "ten", translation: "Zehn", imageUrl: "https://images.unsplash.com/photo-1611048267451-e6ed903d4a38?fit=crop&w=600&h=400" },
+      { word: "eleven", translation: "Elf", imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?fit=crop&w=600&h=400" },
+      { word: "twelve", translation: "Zwölf", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "thirteen", translation: "Dreizehn", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "fourteen", translation: "Vierzehn", imageUrl: "https://images.unsplash.com/photo-1611048267451-e6ed903d4a38?fit=crop&w=600&h=400" },
+      { word: "fifteen", translation: "Fünfzehn", imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?fit=crop&w=600&h=400" },
+      { word: "sixteen", translation: "Sechzehn", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "seventeen", translation: "Siebzehn", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "eighteen", translation: "Achtzehn", imageUrl: "https://images.unsplash.com/photo-1611048267451-e6ed903d4a38?fit=crop&w=600&h=400" },
+      { word: "nineteen", translation: "Neunzehn", imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?fit=crop&w=600&h=400" },
+      { word: "twenty", translation: "Zwanzig", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" }
     ];
   }
   // Thema: Family/Familie
@@ -276,7 +291,22 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fit=crop&w=600&h=400" },
       { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
       { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=600&h=400" },
-      { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?fit=crop&w=600&h=400" }
+      { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?fit=crop&w=600&h=400" },
+      { word: "grandmother", translation: "Großmutter", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400" },
+      { word: "grandfather", translation: "Großvater", imageUrl: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?fit=crop&w=600&h=400" },
+      { word: "aunt", translation: "Tante", imageUrl: "https://images.unsplash.com/photo-1494790108755-2616c2900c36?fit=crop&w=600&h=400" },
+      { word: "uncle", translation: "Onkel", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400" },
+      { word: "cousin", translation: "Cousin", imageUrl: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?fit=crop&w=600&h=400" },
+      { word: "son", translation: "Sohn", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
+      { word: "daughter", translation: "Tochter", imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=600&h=400" },
+      { word: "husband", translation: "Ehemann", imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fit=crop&w=600&h=400" },
+      { word: "wife", translation: "Ehefrau", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
+      { word: "parents", translation: "Eltern", imageUrl: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400" },
+      { word: "children", translation: "Kinder", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "family", translation: "Familie", imageUrl: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400" },
+      { word: "nephew", translation: "Neffe", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
+      { word: "niece", translation: "Nichte", imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=600&h=400" },
+      { word: "twin", translation: "Zwilling", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" }
     ];
   }
   // Thema: Colors/Farben
@@ -503,6 +533,51 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
       word: "pink",
       translation: "rosa",
       imageUrl: "https://images.unsplash.com/photo-1564419229766-39e9d067c7eb?fit=crop&w=600&h=400"
+    },
+    {
+      word: "gray",
+      translation: "grau",
+      imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?fit=crop&w=600&h=400"
+    },
+    {
+      word: "silver",
+      translation: "silber",
+      imageUrl: "https://images.unsplash.com/photo-1610375461246-83df859d849d?fit=crop&w=600&h=400"
+    },
+    {
+      word: "gold",
+      translation: "gold",
+      imageUrl: "https://images.unsplash.com/photo-1585847406679-7e013ce1748b?fit=crop&w=600&h=400"
+    },
+    {
+      word: "turquoise",
+      translation: "türkis",
+      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
+    },
+    {
+      word: "violet",
+      translation: "violett",
+      imageUrl: "https://images.unsplash.com/photo-1564419229895-7bd50f3abb13?fit=crop&w=600&h=400"
+    },
+    {
+      word: "lime",
+      translation: "hellgrün",
+      imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?fit=crop&w=600&h=400"
+    },
+    {
+      word: "navy",
+      translation: "marineblau",
+      imageUrl: "https://images.unsplash.com/photo-1557800636-894a64c1696f?fit=crop&w=600&h=400"
+    },
+    {
+      word: "cyan",
+      translation: "cyan",
+      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
+    },
+    {
+      word: "maroon",
+      translation: "kastanienbraun",
+      imageUrl: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?fit=crop&w=600&h=400"
     }
   ],
   food: [
@@ -555,6 +630,56 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
       word: "carrot",
       translation: "Karotte",
       imageUrl: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?fit=crop&w=600&h=400"
+    },
+    {
+      word: "fish",
+      translation: "Fisch",
+      imageUrl: "https://images.unsplash.com/photo-1544943910-4c1dc44aab44?fit=crop&w=600&h=400"
+    },
+    {
+      word: "rice",
+      translation: "Reis",
+      imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e31c?fit=crop&w=600&h=400"
+    },
+    {
+      word: "pasta",
+      translation: "Nudeln",
+      imageUrl: "https://images.unsplash.com/photo-1551892374-ecf8ff3cd72c?fit=crop&w=600&h=400"
+    },
+    {
+      word: "orange",
+      translation: "Orange",
+      imageUrl: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400"
+    },
+    {
+      word: "cookie",
+      translation: "Keks",
+      imageUrl: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?fit=crop&w=600&h=400"
+    },
+    {
+      word: "cake",
+      translation: "Kuchen",
+      imageUrl: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?fit=crop&w=600&h=400"
+    },
+    {
+      word: "soup",
+      translation: "Suppe",
+      imageUrl: "https://images.unsplash.com/photo-1547592180-85f173990554?fit=crop&w=600&h=400"
+    },
+    {
+      word: "salad",
+      translation: "Salat",
+      imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?fit=crop&w=600&h=400"
+    },
+    {
+      word: "sandwich",
+      translation: "Sandwich",
+      imageUrl: "https://images.unsplash.com/photo-1539252554453-80ab65ce3586?fit=crop&w=600&h=400"
+    },
+    {
+      word: "pizza",
+      translation: "Pizza",
+      imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?fit=crop&w=600&h=400"
     }
   ],
   school: [
