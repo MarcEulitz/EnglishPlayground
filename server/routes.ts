@@ -181,6 +181,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bildvalidierung API
+  app.post('/api/validate-image', async (req, res) => {
+    try {
+      const { imageUrl, englishWord, germanTranslation, category } = req.body;
+      
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(400).json({ 
+          error: 'OpenAI API Key nicht gefunden. Bitte API Key einrichten.' 
+        });
+      }
+      
+      const { validateImage } = await import('./imageValidator');
+      const result = await validateImage(imageUrl, englishWord, germanTranslation, category);
+      
+      res.json(result);
+    } catch (error) {
+      console.error('Bildvalidierung Fehler:', error);
+      res.status(500).json({ error: 'Bildvalidierung fehlgeschlagen' });
+    }
+  });
+
+  // Batch-Validierung einer ganzen Kategorie
+  app.post('/api/validate-category', async (req, res) => {
+    try {
+      const { vocabularyItems, category } = req.body;
+      
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(400).json({ 
+          error: 'OpenAI API Key nicht gefunden. Bitte API Key einrichten.' 
+        });
+      }
+      
+      const { validateAllImagesInCategory } = await import('./imageValidator');
+      const results = await validateAllImagesInCategory(vocabularyItems, category);
+      
+      res.json(results);
+    } catch (error) {
+      console.error('Kategorie-Validierung Fehler:', error);
+      res.status(500).json({ error: 'Kategorie-Validierung fehlgeschlagen' });
+    }
+  });
+
+  // Besseres Bild finden
+  app.post('/api/find-better-image', async (req, res) => {
+    try {
+      const { englishWord, germanTranslation, category } = req.body;
+      
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(400).json({ 
+          error: 'OpenAI API Key nicht gefunden. Bitte API Key einrichten.' 
+        });
+      }
+      
+      const { findValidatedImage } = await import('./imageValidator');
+      const result = await findValidatedImage(englishWord, germanTranslation, category);
+      
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(404).json({ error: 'Kein besseres Bild gefunden' });
+      }
+    } catch (error) {
+      console.error('Bildsuche Fehler:', error);
+      res.status(500).json({ error: 'Bildsuche fehlgeschlagen' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
