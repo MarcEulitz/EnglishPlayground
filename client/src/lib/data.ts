@@ -216,11 +216,11 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   // Thema: Numbers/Zahlen
   else if (topic.toLowerCase() === "numbers" || topic.toLowerCase() === "zahlen") {
     genericVocab = [
-      { word: "one", translation: "Eins", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%2344ff44'%3E1%3C/text%3E%3C/svg%3E" },
-      { word: "two", translation: "Zwei", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%23ff4444'%3E2%3C/text%3E%3C/svg%3E" },
-      { word: "three", translation: "Drei", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%234444ff'%3E3%3C/text%3E%3C/svg%3E" },
-      { word: "four", translation: "Vier", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%23ff8800'%3E4%3C/text%3E%3C/svg%3E" },
-      { word: "five", translation: "Fünf", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%238800ff'%3E5%3C/text%3E%3C/svg%3E" }
+      { word: "one", translation: "Eins", imageUrl: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?fit=crop&w=600&h=400" },
+      { word: "two", translation: "Zwei", imageUrl: "https://images.unsplash.com/photo-1632247189047-b11b8e6edf93?fit=crop&w=600&h=400" },
+      { word: "three", translation: "Drei", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
+      { word: "four", translation: "Vier", imageUrl: "https://images.unsplash.com/photo-1605106901227-991bd663255c?fit=crop&w=600&h=400" },
+      { word: "five", translation: "Fünf", imageUrl: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?fit=crop&w=600&h=400" }
     ];
   }
   // Thema: Family/Familie
@@ -233,42 +233,62 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?fit=crop&w=600&h=400" }
     ];
   }
+  // Thema: Colors/Farben
+  else if (topic.toLowerCase() === "colors" || topic.toLowerCase() === "farben") {
+    genericVocab = [
+      { word: "red", translation: "Rot", imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?fit=crop&w=600&h=400" },
+      { word: "blue", translation: "Blau", imageUrl: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?fit=crop&w=600&h=400" },
+      { word: "green", translation: "Grün", imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400" },
+      { word: "yellow", translation: "Gelb", imageUrl: "https://images.unsplash.com/photo-1464207687429-7505649dae38?fit=crop&w=600&h=400" },
+      { word: "orange", translation: "Orange", imageUrl: "https://images.unsplash.com/photo-1557800636-894a64c1696f?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Body/Körper
+  else if (topic.toLowerCase() === "body" || topic.toLowerCase() === "körper") {
+    genericVocab = [
+      { word: "head", translation: "Kopf", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
+      { word: "hand", translation: "Hand", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "foot", translation: "Fuß", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400" },
+      { word: "eye", translation: "Auge", imageUrl: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?fit=crop&w=600&h=400" },
+      { word: "mouth", translation: "Mund", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba880ac?fit=crop&w=600&h=400" }
+    ];
+  }
   // Andere Themen - standardisierte Vokabeln mit besseren Namen statt nur Nummern
   else {
-    // Typische Wörter und Übersetzungen für unbekannte Themen
+    // Themen-spezifische Wörter und Übersetzungen für unbekannte Themen
     const typicalWords = [
-      { english: "important", german: "wichtig" },
-      { english: "beautiful", german: "schön" },
-      { english: "interesting", german: "interessant" },
-      { english: "useful", german: "nützlich" },
-      { english: "special", german: "besonders" }
+      { english: "big", german: "groß" },
+      { english: "small", german: "klein" },
+      { english: "fast", german: "schnell" },
+      { english: "slow", german: "langsam" },
+      { english: "happy", german: "glücklich" }
     ];
     
     genericVocab = [
       { 
         word: typicalWords[0].english, 
         translation: typicalWords[0].german, 
-        imageUrl: genericImages[0] 
+        imageUrl: "https://images.unsplash.com/photo-1561089489-f13d5e730d72?fit=crop&w=600&h=400" 
       },
       { 
         word: typicalWords[1].english, 
         translation: typicalWords[1].german, 
-        imageUrl: genericImages[1] 
+        imageUrl: "https://images.unsplash.com/photo-1546074177-ffdda98d214f?fit=crop&w=600&h=400" 
       },
       { 
         word: typicalWords[2].english, 
         translation: typicalWords[2].german, 
-        imageUrl: genericImages[2] 
+        imageUrl: "https://images.unsplash.com/photo-1535016120720-40c646be5580?fit=crop&w=600&h=400" 
       },
       { 
         word: typicalWords[3].english, 
         translation: typicalWords[3].german, 
-        imageUrl: genericImages[3] 
+        imageUrl: "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?fit=crop&w=600&h=400" 
       },
       { 
         word: typicalWords[4].english, 
         translation: typicalWords[4].german, 
-        imageUrl: genericImages[4] 
+        imageUrl: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?fit=crop&w=600&h=400" 
       }
     ];
   }
