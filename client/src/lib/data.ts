@@ -213,6 +213,16 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "bench", translation: "Bank", imageUrl: "https://cdn.pixabay.com/photo/2015/11/07/11/28/park-bench-1031332_1280.jpg" }
     ];
   }
+  // Thema: Numbers/Zahlen
+  else if (topic.toLowerCase() === "numbers" || topic.toLowerCase() === "zahlen") {
+    genericVocab = [
+      { word: "one", translation: "Eins", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%2344ff44'%3E1%3C/text%3E%3C/svg%3E" },
+      { word: "two", translation: "Zwei", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%23ff4444'%3E2%3C/text%3E%3C/svg%3E" },
+      { word: "three", translation: "Drei", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%234444ff'%3E3%3C/text%3E%3C/svg%3E" },
+      { word: "four", translation: "Vier", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%23ff8800'%3E4%3C/text%3E%3C/svg%3E" },
+      { word: "five", translation: "Fünf", imageUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Crect fill='%23f0f0f0' width='200' height='120'/%3E%3Ctext x='100' y='70' text-anchor='middle' font-size='60' font-weight='bold' fill='%238800ff'%3E5%3C/text%3E%3C/svg%3E" }
+    ];
+  }
   // Andere Themen - standardisierte Vokabeln mit besseren Namen statt nur Nummern
   else {
     // Typische Wörter und Übersetzungen für unbekannte Themen
