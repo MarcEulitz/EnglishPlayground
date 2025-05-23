@@ -37,44 +37,7 @@ const VocabularyPage: React.FC = () => {
   
   const timerRef = useRef<number | null>(null);
 
-  // Vordefinierte Motorrad-Vokabeln mit Base64-SVG-Bildern
-  const motorradWords = [
-    {
-      id: 1,
-      word: "motorcycle",
-      translation: "Motorrad",
-      imageUrl: motorcycleSvg,
-      options: ["motorcycle", "scooter", "bicycle", "car"]
-    },
-    {
-      id: 2,
-      word: "helmet",
-      translation: "Helm",
-      imageUrl: helmetSvg,
-      options: ["helmet", "hat", "cap", "gloves"]
-    },
-    {
-      id: 3,
-      word: "jacket",
-      translation: "Jacke",
-      imageUrl: jacketSvg,
-      options: ["jacket", "shirt", "pants", "boots"]
-    },
-    {
-      id: 4,
-      word: "gloves",
-      translation: "Handschuhe",
-      imageUrl: glovesSvg,
-      options: ["gloves", "socks", "helmet", "jacket"]
-    },
-    {
-      id: 5,
-      word: "boots",
-      translation: "Stiefel",
-      imageUrl: bootsSvg,
-      options: ["boots", "shoes", "sandals", "gloves"]
-    }
-  ];
+  // Entfernt - nicht mehr benötigt, verwenden generateTopicData direkt
 
   // Prepare questions
   useEffect(() => {
