@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useUserContext } from '@/contexts/UserContext';
 import PinEntry from '@/components/PinEntry';
+import ImageValidator from '@/components/ImageValidator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import ProgressBar from '@/components/ProgressBar';
 import { formatTime } from '@/lib/utils';
 import useAudio from '@/hooks/use-audio';
+import { vocabularyData } from '@/lib/data';
 
 const ParentAreaPage: React.FC = () => {
   const [, navigate] = useLocation();

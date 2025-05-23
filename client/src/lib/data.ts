@@ -853,7 +853,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "head",
       translation: "Kopf",
-      imageUrl: "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1594824388736-2ad19c83ee80?fit=crop&w=600&h=400"
     },
     {
       word: "hand",
@@ -868,7 +868,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "eye",
       translation: "Auge",
-      imageUrl: "https://images.unsplash.com/photo-1559001625-569674cf4ab4?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?fit=crop&w=600&h=400"
     },
     {
       word: "nose",
@@ -898,7 +898,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "hair",
       translation: "Haar",
-      imageUrl: "https://images.unsplash.com/photo-1519742866993-66d3cfef4bbd?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?fit=crop&w=600&h=400"
     }
   ]
 };
