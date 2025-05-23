@@ -8,6 +8,7 @@ import {
   insertParentSettingsSchema
 } from "@shared/schema";
 import { z } from "zod";
+import { findBestImage } from "./imageSearch";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
@@ -151,6 +152,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: error.errors });
       }
       res.status(500).json({ message: "Failed to validate PIN" });
+    }
+  });
+
+  // Intelligente Bildsuche API
+  app.post("/api/find-best-image", async (req, res) => {
+    try {
+      const imageSearchSchema = z.object({
+        category: z.string(),
+        word: z.string(),
+        translation: z.string()
+      });
+      
+      const { category, word, translation } = imageSearchSchema.parse(req.body);
+      const result = await findBestImage(category, word, translation);
+      
+      res.json(result);
+      
+    } catch (error) {
+      console.error("Error in intelligent image search:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: error.errors });
+      }
+      res.status(500).json({ 
+        message: "Failed to find best image",
+        error: error.message 
+      });
     }
   });
 
