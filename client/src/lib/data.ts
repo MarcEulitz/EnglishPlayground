@@ -396,6 +396,61 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
       word: "elephant",
       translation: "Elefant",
       imageUrl: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400"
+    },
+    {
+      word: "tiger",
+      translation: "Tiger",
+      imageUrl: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?fit=crop&w=600&h=400"
+    },
+    {
+      word: "rabbit",
+      translation: "Hase",
+      imageUrl: "https://images.unsplash.com/photo-1574087334602-6bb9b7c6e9b4?fit=crop&w=600&h=400"
+    },
+    {
+      word: "mouse",
+      translation: "Maus",
+      imageUrl: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400"
+    },
+    {
+      word: "bear",
+      translation: "Bär",
+      imageUrl: "https://images.unsplash.com/photo-1544985361-b420d7b71802?fit=crop&w=600&h=400"
+    },
+    {
+      word: "monkey",
+      translation: "Affe",
+      imageUrl: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400"
+    },
+    {
+      word: "giraffe",
+      translation: "Giraffe",
+      imageUrl: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?fit=crop&w=600&h=400"
+    },
+    {
+      word: "zebra",
+      translation: "Zebra",
+      imageUrl: "https://images.unsplash.com/photo-1551969014-7d2c4cddf0b6?fit=crop&w=600&h=400"
+    },
+    {
+      word: "sheep",
+      translation: "Schaf",
+      imageUrl: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400"
+    },
+    {
+      word: "chicken",
+      translation: "Huhn",
+      imageUrl: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400"
+    },
+    {
+      word: "duck",
+      translation: "Ente",
+      imageUrl: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=600&h=400"
+    },
+    {
+      word: "frog",
+      translation: "Frosch",
+      imageUrl: "https://images.unsplash.com/photo-1564419229895-7bd50f3abb13?fit=crop&w=600&h=400"
     }
   ],
   colors: [
