@@ -8,32 +8,32 @@ export interface VocabularyItem {
 // Hier speichern wir alle benutzerdefinierten Themen
 export const customTopics: Record<string, VocabularyItem[]> = {};
 
-// Fixierte Daten für das Motorrad-Thema mit echten Internet-Bildern
+// Fixierte Daten für das Motorrad-Thema mit passenden Internet-Bildern
 const motorradVocab: VocabularyItem[] = [
   { 
     word: "motorcycle", 
     translation: "Motorrad", 
-    imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?fit=crop&w=600&h=400"
+    imageUrl: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?fit=crop&w=600&h=400"
   },
   { 
     word: "helmet", 
     translation: "Helm", 
-    imageUrl: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?fit=crop&w=600&h=400"
+    imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
   },
   { 
     word: "wheel", 
     translation: "Rad", 
-    imageUrl: "https://images.unsplash.com/photo-1558489580-faa74691fdc5?fit=crop&w=600&h=400"
+    imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?fit=crop&w=600&h=400"
   },
   { 
     word: "engine", 
     translation: "Motor", 
-    imageUrl: "https://images.unsplash.com/photo-1632636503074-7c28e5ad7da6?fit=crop&w=600&h=400"
+    imageUrl: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?fit=crop&w=600&h=400"
   },
   { 
     word: "speed", 
     translation: "Geschwindigkeit", 
-    imageUrl: "https://images.unsplash.com/photo-1515569067071-ec3b51335dd0?fit=crop&w=600&h=400"
+    imageUrl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400"
   }
 ];
 
