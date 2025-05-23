@@ -602,7 +602,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "red",
       translation: "rot",
-      imageUrl: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?fit=crop&w=600&h=400"
     },
     {
       word: "blue",
@@ -612,7 +612,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "green",
       translation: "grün",
-      imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
     },
     {
       word: "yellow",
@@ -637,7 +637,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "orange",
       translation: "orange",
-      imageUrl: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?fit=crop&w=600&h=400"
     },
     {
       word: "brown",
@@ -699,7 +699,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "apple",
       translation: "Apfel",
-      imageUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?fit=crop&w=600&h=400"
     },
     {
       word: "bread",
@@ -729,7 +729,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "egg",
       translation: "Ei",
-      imageUrl: "https://images.unsplash.com/photo-1552663651-2e4250e6c7c8?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?fit=crop&w=600&h=400"
     },
     {
       word: "milk",
@@ -764,7 +764,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "orange",
       translation: "Orange",
-      imageUrl: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?fit=crop&w=600&h=400"
     },
     {
       word: "cookie",
