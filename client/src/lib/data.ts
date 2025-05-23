@@ -229,7 +229,7 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
       { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fit=crop&w=600&h=400" },
       { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
-      { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1494790108755-2616c355b6e6?fit=crop&w=600&h=400" },
+      { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=600&h=400" },
       { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?fit=crop&w=600&h=400" }
     ];
   }
