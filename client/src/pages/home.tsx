@@ -205,68 +205,132 @@ const HomePage: React.FC = () => {
         {/* Learning Categories */}
         <div className="mb-6">
           <h2 className="text-xl font-bold mb-3 text-primary">Themen</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {/* Animals Category */}
             <button 
-              className="category-card bg-white rounded-xl p-4 shadow-md flex flex-col items-center"
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
               onClick={() => handleCategoryClick('animals')}
             >
-              <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center text-white mb-2">
-                <i className="ri-bear-smile-line text-3xl"></i>
+              <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-bear-smile-line text-2xl"></i>
               </div>
-              <h3 className="font-bold">Tiere</h3>
+              <h3 className="font-bold text-sm">Tiere</h3>
               <div className="mt-1 flex">
-                <i className="ri-star-fill text-secondary"></i>
-                <i className="ri-star-fill text-secondary"></i>
-                <i className="ri-star-line text-gray-300"></i>
+                <i className="ri-star-fill text-secondary text-xs"></i>
+                <i className="ri-star-fill text-secondary text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
               </div>
             </button>
             
             {/* Colors Category */}
             <button 
-              className="category-card bg-white rounded-xl p-4 shadow-md flex flex-col items-center"
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
               onClick={() => handleCategoryClick('colors')}
             >
-              <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center text-white mb-2">
-                <i className="ri-palette-line text-3xl"></i>
+              <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-palette-line text-2xl"></i>
               </div>
-              <h3 className="font-bold">Farben</h3>
+              <h3 className="font-bold text-sm">Farben</h3>
               <div className="mt-1 flex">
-                <i className="ri-star-fill text-secondary"></i>
-                <i className="ri-star-line text-gray-300"></i>
-                <i className="ri-star-line text-gray-300"></i>
+                <i className="ri-star-fill text-secondary text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
               </div>
             </button>
             
             {/* Numbers Category */}
             <button 
-              className="category-card bg-white rounded-xl p-4 shadow-md flex flex-col items-center"
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
               onClick={() => handleCategoryClick('numbers')}
             >
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white mb-2">
-                <i className="ri-numbers-line text-3xl"></i>
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-numbers-line text-2xl"></i>
               </div>
-              <h3 className="font-bold">Zahlen</h3>
+              <h3 className="font-bold text-sm">Zahlen</h3>
               <div className="mt-1 flex">
-                <i className="ri-star-fill text-secondary"></i>
-                <i className="ri-star-fill text-secondary"></i>
-                <i className="ri-star-fill text-secondary"></i>
+                <i className="ri-star-fill text-secondary text-xs"></i>
+                <i className="ri-star-fill text-secondary text-xs"></i>
+                <i className="ri-star-fill text-secondary text-xs"></i>
               </div>
             </button>
             
             {/* Family Category */}
             <button 
-              className="category-card bg-white rounded-xl p-4 shadow-md flex flex-col items-center"
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
               onClick={() => handleCategoryClick('family')}
             >
-              <div className="w-16 h-16 bg-destructive rounded-full flex items-center justify-center text-white mb-2">
-                <i className="ri-group-line text-3xl"></i>
+              <div className="w-12 h-12 bg-destructive rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-group-line text-2xl"></i>
               </div>
-              <h3 className="font-bold">Familie</h3>
+              <h3 className="font-bold text-sm">Familie</h3>
               <div className="mt-1 flex">
-                <i className="ri-star-line text-gray-300"></i>
-                <i className="ri-star-line text-gray-300"></i>
-                <i className="ri-star-line text-gray-300"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* Food Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('food')}
+            >
+              <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-restaurant-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Essen</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* School Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('school')}
+            >
+              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-school-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Schule</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* Body Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('body')}
+            >
+              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-body-scan-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Körper</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* Transport Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('transport')}
+            >
+              <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-car-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Transport</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
               </div>
             </button>
           </div>
