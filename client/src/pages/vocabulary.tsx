@@ -294,13 +294,8 @@ const VocabularyPage: React.FC = () => {
                 if (params.topic.toLowerCase() === "garten") {
                   target.src = "https://cdn.pixabay.com/photo/2014/07/31/15/04/garden-406125_1280.jpg";
                 } else if (params.topic.toLowerCase() === "motorrad") {
-                  // Für Motorrad verwenden wir die direkten SVG-Bilder aus der Komponente
-                  if (currentQuestion.word === "motorcycle") target.src = motorcycleSvg;
-                  else if (currentQuestion.word === "helmet") target.src = helmetSvg;
-                  else if (currentQuestion.word === "jacket") target.src = jacketSvg;
-                  else if (currentQuestion.word === "gloves") target.src = glovesSvg;
-                  else if (currentQuestion.word === "boots") target.src = bootsSvg;
-                  else target.src = motorcycleSvg; // Fallback
+                  // Fallback für Motorrad-Thema
+                  target.src = "https://cdn.pixabay.com/photo/2016/04/07/06/53/bmw-1313343_1280.jpg";
                 } else {
                   target.src = "https://cdn.pixabay.com/photo/2016/09/10/17/18/book-1659717_1280.jpg";
                 }
