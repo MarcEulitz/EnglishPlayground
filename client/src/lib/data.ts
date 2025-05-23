@@ -19,20 +19,20 @@ const motorradVocab: VocabularyItem[] = [
   { 
     word: "helmet", 
     translation: "Helm", 
-    // Spezifische Suche: "motorcycle helmet close up black"
-    imageUrl: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=800&h=600&fit=crop"
+    // Moderner Motorradhelm: Schwarz, glänzend
+    imageUrl: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=800&h=600&fit=crop"
   },
   { 
     word: "wheel", 
     translation: "Rad", 
-    // Spezifische Suche: "motorcycle wheel rim close up NOT bicycle"
-    imageUrl: "https://images.unsplash.com/photo-1520175480921-4edfa2983e0f?w=800&h=600&fit=crop"
+    // MOTORRAD-Rad: Chrome-Felge, nicht Fahrrad!
+    imageUrl: "https://images.unsplash.com/photo-1503736334592-24ad73c3d1ac?w=800&h=600&fit=crop"
   },
   { 
     word: "engine", 
     translation: "Motor", 
-    // Spezifische Suche: "motorcycle engine block chrome"
-    imageUrl: "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?w=800&h=600&fit=crop"
+    // MOTORRAD-Motor: V-Twin Motor, nicht Auto!
+    imageUrl: "https://images.unsplash.com/photo-1616661481974-0e665c5ab317?w=800&h=600&fit=crop"
   },
   { 
     word: "speed", 

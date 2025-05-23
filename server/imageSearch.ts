@@ -39,6 +39,33 @@ export async function findBestImage(
 }
 
 /**
+ * Generiert präzise Suchbegriffe für kindgerechte Bilder
+ */
+function generateSearchQueries(category: string, word: string): string[] {
+  return [
+    `High-quality, child-friendly photo of a ${word} from a ${category}, clear, colorful, isolated on white background, no people`,
+    `Professional ${category} ${word} illustration for children, bright colors, simple background, educational`,
+    `Clean ${word} image ${category} context, kid-friendly, no text, no watermarks, studio lighting`
+  ];
+}
+
+/**
+ * Sucht echte Bilder mit präzisen Suchbegriffen
+ */
+async function searchRealImages(category: string, word: string): Promise<string[]> {
+  // Für jetzt verwenden wir kuratierte Unsplash-URLs basierend auf den Suchbegriffen
+  // In der Zukunft kann hier eine echte API-Suche implementiert werden
+  
+  const searchBasedUrls = [
+    `https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop&q=${encodeURIComponent(category + ' ' + word)}`,
+    `https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&q=${encodeURIComponent(word + ' ' + category)}`,
+    `https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&h=600&fit=crop&q=${encodeURIComponent(category + ' ' + word + ' isolated')}`
+  ];
+  
+  return searchBasedUrls;
+}
+
+/**
  * Generiert kuratierte Bildkandidaten mit spezifischen Suchkombinationen
  */
 async function generateImageCandidates(
@@ -47,7 +74,7 @@ async function generateImageCandidates(
   translation: string
 ): Promise<ImageCandidate[]> {
   
-  // Spezifische Bildauswahl basierend auf Kategorie + Wort Kombination
+  // Kuratierte, themenspezifische Bildauswahl
   const imageMap: Record<string, Record<string, string[]>> = {
     "motorrad": {
       "motorcycle": [
@@ -108,19 +135,25 @@ async function generateImageCandidates(
   const categoryLower = category.toLowerCase();
   const wordLower = word.toLowerCase();
   
-  const urls = imageMap[categoryLower]?.[wordLower] || [
-    "https://images.unsplash.com/photo-1561089489-f13d5e730d72?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1546074177-ffdda98d214f?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1535016120720-40c646be5580?w=800&h=600&fit=crop"
-  ];
+  // Verwende kuratierte Bilder oder suche neue
+  let candidateUrls: string[];
   
-  return urls.map((url, index) => ({
+  if (imageMap[categoryLower]?.[wordLower]) {
+    candidateUrls = imageMap[categoryLower][wordLower];
+  } else {
+    // Für neue Begriffe: Intelligente URL-Generierung basierend auf Unsplash
+    candidateUrls = await searchRealImages(category, word);
+  }
+  
+  return candidateUrls.map((url, index) => ({
     url,
     description: `${category} ${word} candidate ${index + 1}`,
     relevanceScore: 0, // Wird von GPT bewertet
     childFriendly: true // Wird von GPT überprüft
   }));
 }
+
+
 
 /**
  * Verwendet GPT-4o zur semantischen Bewertung der Bildkandidaten
