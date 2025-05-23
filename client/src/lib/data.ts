@@ -575,7 +575,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "zebra",
       translation: "Zebra",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?fit=crop&w=600&h=400"
     },
     {
       word: "sheep",
