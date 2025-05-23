@@ -333,6 +333,70 @@ const HomePage: React.FC = () => {
                 <i className="ri-star-line text-gray-300 text-xs"></i>
               </div>
             </button>
+            
+            {/* Home & Rooms Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('home')}
+            >
+              <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-home-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Zuhause</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* Shapes Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('shapes')}
+            >
+              <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-shapes-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Formen</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* Clothes Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('clothes')}
+            >
+              <div className="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-shirt-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Kleidung</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
+            
+            {/* Nature & Weather Category */}
+            <button 
+              className="category-card bg-white rounded-xl p-3 shadow-md flex flex-col items-center"
+              onClick={() => handleCategoryClick('nature')}
+            >
+              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white mb-2">
+                <i className="ri-leaf-line text-2xl"></i>
+              </div>
+              <h3 className="font-bold text-sm">Natur</h3>
+              <div className="mt-1 flex">
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+                <i className="ri-star-line text-gray-300 text-xs"></i>
+              </div>
+            </button>
           </div>
           
           {/* Custom Topic Section */}

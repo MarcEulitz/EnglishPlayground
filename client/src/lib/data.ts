@@ -319,14 +319,129 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { word: "orange", translation: "Orange", imageUrl: "https://images.unsplash.com/photo-1557800636-894a64c1696f?fit=crop&w=600&h=400" }
     ];
   }
-  // Thema: Body/Körper
-  else if (topic.toLowerCase() === "body" || topic.toLowerCase() === "körper") {
+  // Thema: Home/Zuhause & Zimmer
+  else if (topic.toLowerCase() === "home" || topic.toLowerCase() === "zuhause" || topic.toLowerCase() === "rooms" || topic.toLowerCase() === "zimmer") {
     genericVocab = [
-      { word: "head", translation: "Kopf", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
+      { word: "bed", translation: "Bett", imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400" },
+      { word: "chair", translation: "Stuhl", imageUrl: "https://images.unsplash.com/photo-1549497538-303791108f95?fit=crop&w=600&h=400" },
+      { word: "kitchen", translation: "Küche", imageUrl: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?fit=crop&w=600&h=400" },
+      { word: "lamp", translation: "Lampe", imageUrl: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?fit=crop&w=600&h=400" },
+      { word: "table", translation: "Tisch", imageUrl: "https://images.unsplash.com/photo-1549497538-303791108f95?fit=crop&w=600&h=400" },
+      { word: "window", translation: "Fenster", imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?fit=crop&w=600&h=400" },
+      { word: "door", translation: "Tür", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "sofa", translation: "Sofa", imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?fit=crop&w=600&h=400" },
+      { word: "carpet", translation: "Teppich", imageUrl: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?fit=crop&w=600&h=400" },
+      { word: "mirror", translation: "Spiegel", imageUrl: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?fit=crop&w=600&h=400" },
+      { word: "bathroom", translation: "Badezimmer", imageUrl: "https://images.unsplash.com/photo-1620626011761-996317b8d101?fit=crop&w=600&h=400" },
+      { word: "bedroom", translation: "Schlafzimmer", imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400" },
+      { word: "closet", translation: "Schrank", imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?fit=crop&w=600&h=400" },
+      { word: "stairs", translation: "Treppe", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400" },
+      { word: "roof", translation: "Dach", imageUrl: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?fit=crop&w=600&h=400" },
+      { word: "garden", translation: "Garten", imageUrl: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?fit=crop&w=600&h=400" },
+      { word: "garage", translation: "Garage", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "balcony", translation: "Balkon", imageUrl: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?fit=crop&w=600&h=400" },
+      { word: "fence", translation: "Zaun", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400" },
+      { word: "chimney", translation: "Schornstein", imageUrl: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Shapes/Formen  
+  else if (topic.toLowerCase() === "shapes" || topic.toLowerCase() === "formen") {
+    genericVocab = [
+      { word: "circle", translation: "Kreis", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "square", translation: "Quadrat", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "triangle", translation: "Dreieck", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
+      { word: "heart", translation: "Herz", imageUrl: "https://images.unsplash.com/photo-1564419229766-39e9d067c7eb?fit=crop&w=600&h=400" },
+      { word: "star", translation: "Stern", imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?fit=crop&w=600&h=400" },
+      { word: "rectangle", translation: "Rechteck", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "oval", translation: "Oval", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "diamond", translation: "Diamant", imageUrl: "https://images.unsplash.com/photo-1585847406679-7e013ce1748b?fit=crop&w=600&h=400" },
+      { word: "cross", translation: "Kreuz", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
+      { word: "line", translation: "Linie", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "cube", translation: "Würfel", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "sphere", translation: "Kugel", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "pyramid", translation: "Pyramide", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
+      { word: "cone", translation: "Kegel", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
+      { word: "cylinder", translation: "Zylinder", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "arrow", translation: "Pfeil", imageUrl: "https://images.unsplash.com/photo-1587564627010-e5a23f74e08d?fit=crop&w=600&h=400" },
+      { word: "moon", translation: "Mond", imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?fit=crop&w=600&h=400" },
+      { word: "crescent", translation: "Halbmond", imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?fit=crop&w=600&h=400" },
+      { word: "hexagon", translation: "Sechseck", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" },
+      { word: "octagon", translation: "Achteck", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Clothes/Kleidung
+  else if (topic.toLowerCase() === "clothes" || topic.toLowerCase() === "kleidung") {
+    genericVocab = [
+      { word: "pants", translation: "Hose", imageUrl: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?fit=crop&w=600&h=400" },
+      { word: "jacket", translation: "Jacke", imageUrl: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?fit=crop&w=600&h=400" },
+      { word: "hat", translation: "Mütze", imageUrl: "https://images.unsplash.com/photo-1521369909029-2afed882baee?fit=crop&w=600&h=400" },
+      { word: "dress", translation: "Kleid", imageUrl: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?fit=crop&w=600&h=400" },
+      { word: "shirt", translation: "Hemd", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?fit=crop&w=600&h=400" },
+      { word: "shoes", translation: "Schuhe", imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400" },
+      { word: "socks", translation: "Socken", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "gloves", translation: "Handschuhe", imageUrl: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?fit=crop&w=600&h=400" },
+      { word: "scarf", translation: "Schal", imageUrl: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?fit=crop&w=600&h=400" },
+      { word: "sweater", translation: "Pullover", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?fit=crop&w=600&h=400" },
+      { word: "coat", translation: "Mantel", imageUrl: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?fit=crop&w=600&h=400" },
+      { word: "boots", translation: "Stiefel", imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400" },
+      { word: "skirt", translation: "Rock", imageUrl: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?fit=crop&w=600&h=400" },
+      { word: "belt", translation: "Gürtel", imageUrl: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?fit=crop&w=600&h=400" },
+      { word: "tie", translation: "Krawatte", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?fit=crop&w=600&h=400" },
+      { word: "underwear", translation: "Unterwäsche", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "pajamas", translation: "Schlafanzug", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?fit=crop&w=600&h=400" },
+      { word: "cap", translation: "Kappe", imageUrl: "https://images.unsplash.com/photo-1521369909029-2afed882baee?fit=crop&w=600&h=400" },
+      { word: "vest", translation: "Weste", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?fit=crop&w=600&h=400" },
+      { word: "uniform", translation: "Uniform", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Body/Körper & Gesundheit
+  else if (topic.toLowerCase() === "body" || topic.toLowerCase() === "körper" || topic.toLowerCase() === "health" || topic.toLowerCase() === "gesundheit") {
+    genericVocab = [
+      { word: "eye", translation: "Auge", imageUrl: "https://images.unsplash.com/photo-1564564295391-7f24f26f568b?fit=crop&w=600&h=400" },
       { word: "hand", translation: "Hand", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "dentist", translation: "Zahnarzt", imageUrl: "https://images.unsplash.com/photo-1551847507-78a2c58ced73?fit=crop&w=600&h=400" },
+      { word: "bandage", translation: "Pflaster", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
+      { word: "head", translation: "Kopf", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
       { word: "foot", translation: "Fuß", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400" },
-      { word: "eye", translation: "Auge", imageUrl: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?fit=crop&w=600&h=400" },
-      { word: "mouth", translation: "Mund", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba880ac?fit=crop&w=600&h=400" }
+      { word: "nose", translation: "Nase", imageUrl: "https://images.unsplash.com/photo-1564564295391-7f24f26f568b?fit=crop&w=600&h=400" },
+      { word: "mouth", translation: "Mund", imageUrl: "https://images.unsplash.com/photo-1564564295391-7f24f26f568b?fit=crop&w=600&h=400" },
+      { word: "ear", translation: "Ohr", imageUrl: "https://images.unsplash.com/photo-1564564295391-7f24f26f568b?fit=crop&w=600&h=400" },
+      { word: "arm", translation: "Arm", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "leg", translation: "Bein", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400" },
+      { word: "finger", translation: "Finger", imageUrl: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400" },
+      { word: "tooth", translation: "Zahn", imageUrl: "https://images.unsplash.com/photo-1551847507-78a2c58ced73?fit=crop&w=600&h=400" },
+      { word: "hair", translation: "Haar", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
+      { word: "doctor", translation: "Arzt", imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?fit=crop&w=600&h=400" },
+      { word: "medicine", translation: "Medizin", imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?fit=crop&w=600&h=400" },
+      { word: "hospital", translation: "Krankenhaus", imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?fit=crop&w=600&h=400" },
+      { word: "healthy", translation: "Gesund", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400" },
+      { word: "sick", translation: "Krank", imageUrl: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?fit=crop&w=600&h=400" },
+      { word: "exercise", translation: "Sport", imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400" }
+    ];
+  }
+  // Thema: Nature/Natur & Wetter
+  else if (topic.toLowerCase() === "nature" || topic.toLowerCase() === "natur" || topic.toLowerCase() === "weather" || topic.toLowerCase() === "wetter") {
+    genericVocab = [
+      { word: "tree", translation: "Baum", imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400" },
+      { word: "rain", translation: "Regen", imageUrl: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?fit=crop&w=600&h=400" },
+      { word: "sun", translation: "Sonne", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "wind", translation: "Wind", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "flower", translation: "Blume", imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?fit=crop&w=600&h=400" },
+      { word: "grass", translation: "Gras", imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400" },
+      { word: "cloud", translation: "Wolke", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "snow", translation: "Schnee", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "mountain", translation: "Berg", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "river", translation: "Fluss", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "ocean", translation: "Ozean", imageUrl: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?fit=crop&w=600&h=400" },
+      { word: "forest", translation: "Wald", imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400" },
+      { word: "beach", translation: "Strand", imageUrl: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?fit=crop&w=600&h=400" },
+      { word: "thunder", translation: "Donner", imageUrl: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?fit=crop&w=600&h=400" },
+      { word: "lightning", translation: "Blitz", imageUrl: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?fit=crop&w=600&h=400" },
+      { word: "hot", translation: "Heiß", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "cold", translation: "Kalt", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "warm", translation: "Warm", imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400" },
+      { word: "rainbow", translation: "Regenbogen", imageUrl: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?fit=crop&w=600&h=400" },
+      { word: "storm", translation: "Sturm", imageUrl: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?fit=crop&w=600&h=400" }
     ];
   }
   // Andere Themen - standardisierte Vokabeln mit besseren Namen statt nur Nummern
