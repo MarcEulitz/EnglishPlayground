@@ -226,11 +226,11 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   // Thema: Family/Familie
   else if (topic.toLowerCase() === "family" || topic.toLowerCase() === "familie") {
     genericVocab = [
-      { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1594736797933-d0401ba880ac?fit=crop&w=600&h=400" },
-      { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400" },
-      { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1534126416832-7d5df3b88c6c?fit=crop&w=600&h=400" },
-      { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400" },
-      { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400" }
+      { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" },
+      { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fit=crop&w=600&h=400" },
+      { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
+      { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1494790108755-2616c355b6e6?fit=crop&w=600&h=400" },
+      { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?fit=crop&w=600&h=400" }
     ];
   }
   // Andere Themen - standardisierte Vokabeln mit besseren Namen statt nur Nummern
