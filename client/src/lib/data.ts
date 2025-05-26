@@ -607,17 +607,17 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "blue",
       translation: "blau",
-      imageUrl: "https://images.unsplash.com/photo-1479030160180-b1860951d696?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?fit=crop&w=600&h=400"
     },
     {
       word: "green",
       translation: "grün",
-      imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1564419320461-6870880221ad?fit=crop&w=600&h=400"
     },
     {
       word: "yellow",
       translation: "gelb",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1526364163643-89405f33c1d8?fit=crop&w=600&h=400"
     },
     {
       word: "orange",
@@ -642,12 +642,12 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "black",
       translation: "schwarz",
-      imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?fit=crop&w=600&h=400"
     },
     {
       word: "white",
       translation: "weiß",
-      imageUrl: "https://images.unsplash.com/photo-1578505427953-99771217a626?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?fit=crop&w=600&h=400"
     }
   ],
   food: [
