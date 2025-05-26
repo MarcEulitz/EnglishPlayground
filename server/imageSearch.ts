@@ -138,9 +138,9 @@ async function generateImageCandidates(
         "https://images.unsplash.com/photo-1553979459-d2229ba7433a?w=800&h=600&fit=crop"  // red strawberry
       ],
       "blue": [
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop", // blue sky
-        "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop", // blue ocean
-        "https://images.unsplash.com/photo-1572276596237-5db2c3e16c5d?w=800&h=600&fit=crop"  // blue blueberries
+        "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop", // clear blue sky
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop", // blue sky with clouds
+        "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop"  // blue ocean
       ],
       "green": [
         "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop", // green leaf
