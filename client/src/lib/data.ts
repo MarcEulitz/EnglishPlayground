@@ -50,7 +50,7 @@ async function findBestImageForWord(category: string, word: string, translation:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ category, word, translation })
     });
-
+    
     if (response.ok) {
       const result = await response.json();
       console.log(`Intelligente Bildauswahl für ${word}:`, result.reasoning);
@@ -59,7 +59,7 @@ async function findBestImageForWord(category: string, word: string, translation:
   } catch (error) {
     console.error("Intelligente Bildsuche fehlgeschlagen:", error);
   }
-
+  
   // Fallback zu kuratiertem Bild
   return getManuallySelectedImage(category, word);
 }
@@ -75,7 +75,7 @@ function getManuallySelectedImage(category: string, word: string): string {
       "speed": "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&h=600&fit=crop"
     }
   };
-
+  
   return imageMap[category.toLowerCase()]?.[word.toLowerCase()] || 
          "https://images.unsplash.com/photo-1561089489-f13d5e730d72?w=800&h=600&fit=crop";
 }
@@ -90,7 +90,7 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       imageUrl: getManuallySelectedImage("motorrad", item.word) // Zunächst manuell, dann intelligent upgraden
     }));
   }
-
+  
   // Lösche den Cache für alle anderen benutzerdefinierten Themen
   delete customTopics[topic.toLowerCase()];
 
@@ -145,27 +145,27 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       ]
     }
   };
-
+  
   // Deutsche Übersetzungen
   const germanWords: Record<string, string[]> = {
     "möbel": ["Tisch", "Stuhl", "Sofa", "Bett", "Kleiderschrank", "Regal", "Schreibtisch", "Couch", "Schrank", "Schublade"],
     "häuser": ["Haus", "Wohnung", "Küche", "Badezimmer", "Schlafzimmer", "Wohnzimmer", "Garten", "Keller", "Dach", "Garage"],
     "geschirr": ["Teller", "Tasse", "Glas", "Gabel", "Messer", "Löffel", "Schüssel", "Becher", "Teekanne", "Pfanne"]
   };
-
+  
   // Normalisiere den Themenname (Kleinbuchstaben, ohne Umlaute)
   // Verwende reguläre Ausdrücke mit globalem Flag, um alle Vorkommen zu ersetzen
   let normalizedTopic = topic.toLowerCase()
     .replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss');
-
+    
   console.log('Normalisiertes Thema:', normalizedTopic, 'Original:', topic);
-
+  
   // Prüfe, ob wir dieses Thema kennen
   if (translations[normalizedTopic]) {
     const words = translations[normalizedTopic].words;
     const images = translations[normalizedTopic].images;
     const germanWordsList = germanWords[normalizedTopic] || [];
-
+    
     // Erstelle die Vokabelitems
     return words.map((word, index) => ({
       word: word,
@@ -173,10 +173,10 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       imageUrl: images[index] || 'https://images.unsplash.com/photo-1557682250-62777ba51e7a?fit=crop&w=600&h=400'
     }));
   }
-
+  
   // Erstelle neue Vokabeln für unbekannte Themen
   // Je nach Thema werden unterschiedliche Beispiele erstellt
-
+  
   // Vorlagen für generische Bilder
   const genericImages = [
     "https://images.unsplash.com/photo-1561089489-f13d5e730d72?fit=crop&w=600&h=400",
@@ -185,10 +185,10 @@ export function generateTopicData(topic: string): VocabularyItem[] {
     "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?fit=crop&w=600&h=400",
     "https://images.unsplash.com/photo-1516321497487-e288fb19713f?fit=crop&w=600&h=400"
   ];
-
+  
   // Vokabeln basierend auf dem Thema generieren
   let genericVocab: VocabularyItem[] = [];
-
+  
   // Thema: Hobby
   if (topic.toLowerCase() === "hobby" || topic.toLowerCase() === "hobbys") {
     genericVocab = [
@@ -287,7 +287,6 @@ export function generateTopicData(topic: string): VocabularyItem[] {
   // Thema: Family/Familie
   else if (topic.toLowerCase() === "family" || topic.toLowerCase() === "familie") {
     genericVocab = [
-```text
       { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?fit=crop&w=600&h=400" },
       { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?fit=crop&w=600&h=400" },
       { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400" },
@@ -455,7 +454,7 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       { english: "slow", german: "langsam" },
       { english: "happy", german: "glücklich" }
     ];
-
+    
     genericVocab = [
       { 
         word: typicalWords[0].english, 
@@ -484,10 +483,10 @@ export function generateTopicData(topic: string): VocabularyItem[] {
       }
     ];
   }
-
+  
   // Speichere diese Vokabeln für zukünftige Verwendung
   customTopics[topic.toLowerCase()] = genericVocab;
-
+  
   return genericVocab;
 }
 
@@ -603,52 +602,52 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "red",
       translation: "rot",
-      imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?fit=crop&w=600&h=400"
     },
     {
       word: "blue",
       translation: "blau",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1528495612343-9ca9f4a9f67c?fit=crop&w=600&h=400"
     },
     {
       word: "green",
       translation: "grün",
-      imageUrl: "https://images.unsplash.com/photo-1551024506-0bccd828d307?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1564419320461-6870880221ad?fit=crop&w=600&h=400"
     },
     {
       word: "yellow",
       translation: "gelb",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400&q=sun"
+      imageUrl: "https://images.unsplash.com/photo-1526364163643-89405f33c1d8?fit=crop&w=600&h=400"
     },
     {
       word: "orange",
       translation: "orange",
-      imageUrl: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?fit=crop&w=600&h=400"
     },
     {
       word: "purple",
       translation: "lila",
-      imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1541963463532-d68292c34d19?fit=crop&w=600&h=400"
     },
     {
       word: "pink",
       translation: "rosa",
-      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400&q=pink+backpack"
+      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400"
     },
     {
       word: "brown",
       translation: "braun",
-      imageUrl: "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?fit=crop&w=600&h=400"
     },
     {
       word: "black",
       translation: "schwarz",
-      imageUrl: "https://images.unsplash.com/photo-1520637836862-4d197d17c90a?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?fit=crop&w=600&h=400"
     },
     {
       word: "white",
       translation: "weiß",
-      imageUrl: "https://images.unsplash.com/photo-1571842210855-9cd193b25593?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?fit=crop&w=600&h=400"
     }
   ],
   food: [
