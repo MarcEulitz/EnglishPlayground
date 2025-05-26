@@ -602,37 +602,22 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "red",
       translation: "rot",
-      imageUrl: "https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?fit=crop&w=600&h=400"
     },
     {
       word: "blue",
       translation: "blau",
-      imageUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1479030160180-b1860951d696?fit=crop&w=600&h=400"
     },
     {
       word: "green",
       translation: "grün",
-      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?fit=crop&w=600&h=400"
     },
     {
       word: "yellow",
       translation: "gelb",
-      imageUrl: "https://images.unsplash.com/photo-1518562180175-34a163b1de9b?fit=crop&w=600&h=400"
-    },
-    {
-      word: "black",
-      translation: "schwarz",
-      imageUrl: "https://images.unsplash.com/photo-1550684376-efcbd6e3f031?fit=crop&w=600&h=400"
-    },
-    {
-      word: "white",
-      translation: "weiß",
-      imageUrl: "https://images.unsplash.com/photo-1558470598-a5dda9640f68?fit=crop&w=600&h=400"
-    },
-    {
-      word: "purple",
-      translation: "lila",
-      imageUrl: "https://images.unsplash.com/photo-1564419229895-7bd50f3abb13?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400"
     },
     {
       word: "orange",
@@ -640,59 +625,29 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
       imageUrl: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?fit=crop&w=600&h=400"
     },
     {
-      word: "brown",
-      translation: "braun",
-      imageUrl: "https://images.unsplash.com/photo-1541387809875-7fa64a9fbcdd?fit=crop&w=600&h=400"
+      word: "purple",
+      translation: "lila",
+      imageUrl: "https://images.unsplash.com/photo-1541963463532-d68292c34d19?fit=crop&w=600&h=400"
     },
     {
       word: "pink",
       translation: "rosa",
-      imageUrl: "https://images.unsplash.com/photo-1564419229766-39e9d067c7eb?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400"
     },
     {
-      word: "gray",
-      translation: "grau",
+      word: "brown",
+      translation: "braun",
+      imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc7b?fit=crop&w=600&h=400"
+    },
+    {
+      word: "black",
+      translation: "schwarz",
       imageUrl: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?fit=crop&w=600&h=400"
     },
     {
-      word: "silver",
-      translation: "silber",
-      imageUrl: "https://images.unsplash.com/photo-1509395062183-67c5ad6faff9?fit=crop&w=600&h=400"
-    },
-    {
-      word: "gold",
-      translation: "gold",
-      imageUrl: "https://images.unsplash.com/photo-1585847406679-7e013ce1748b?fit=crop&w=600&h=400"
-    },
-    {
-      word: "turquoise",
-      translation: "türkis",
-      imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400"
-    },
-    {
-      word: "violet",
-      translation: "violett",
-      imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?fit=crop&w=600&h=400"
-    },
-    {
-      word: "lime",
-      translation: "hellgrün",
-      imageUrl: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?fit=crop&w=600&h=400"
-    },
-    {
-      word: "navy",
-      translation: "marineblau",
-      imageUrl: "https://images.unsplash.com/photo-1557800636-894a64c1696f?fit=crop&w=600&h=400"
-    },
-    {
-      word: "cyan",
-      translation: "cyan",
-      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
-    },
-    {
-      word: "maroon",
-      translation: "kastanienbraun",
-      imageUrl: "https://images.unsplash.com/photo-1531804055935-76f44d7c3621?fit=crop&w=600&h=400"
+      word: "white",
+      translation: "weiß",
+      imageUrl: "https://images.unsplash.com/photo-1578505427953-99771217a626?fit=crop&w=600&h=400"
     }
   ],
   food: [
