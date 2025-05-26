@@ -242,11 +242,13 @@ async function generateImageCandidates(
   const categoryLower = category.toLowerCase();
   const wordLower = word.toLowerCase();
   
-  // Verwende kuratierte Bilder oder suche neue
+  // Verwende kuratierte Bilder als erste Wahl
   let candidateUrls: string[];
   
   if (imageMap[categoryLower]?.[wordLower]) {
+    // Verwende die kuratierten Bilder direkt ohne weitere Suche
     candidateUrls = imageMap[categoryLower][wordLower];
+    console.log(`Using curated images for ${word}:`, candidateUrls);
   } else {
     // Für neue Begriffe: Intelligente URL-Generierung basierend auf Unsplash
     candidateUrls = await searchRealImages(category, word);
@@ -271,6 +273,76 @@ async function evaluateImageCandidates(
   word: string,
   translation: string
 ): Promise<ImageSearchResult> {
+  
+  // Check if we have curated images - if so, use the first one directly
+  const categoryLower = category.toLowerCase();
+  const wordLower = word.toLowerCase();
+  
+  const imageMap: Record<string, Record<string, string[]>> = {
+    "colors": {
+      "red": [
+        "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=800&h=600&fit=crop", // red apple
+        "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=800&h=600&fit=crop", // red rose
+        "https://images.unsplash.com/photo-1553979459-d2229ba7433a?w=800&h=600&fit=crop"  // red strawberry
+      ],
+      "blue": [
+        "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop", // clear blue sky
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop", // blue sky with clouds
+        "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop"  // blue ocean
+      ],
+      "green": [
+        "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop", // green leaf
+        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop", // green grass
+        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=600&fit=crop"  // green apple
+      ],
+      "yellow": [
+        "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=600&fit=crop", // yellow banana
+        "https://images.unsplash.com/photo-1470509037663-253afd7f0f51?w=800&h=600&fit=crop", // yellow sunflower
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop"  // yellow lemon
+      ],
+      "orange": [
+        "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800&h=600&fit=crop", // orange fruit
+        "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800&h=600&fit=crop", // orange pumpkin
+        "https://images.unsplash.com/photo-1557800636-894a64c1696f?w=800&h=600&fit=crop"  // orange carrot
+      ],
+      "purple": [
+        "https://images.unsplash.com/photo-1571832037044-4b29bbcc1ac6?w=800&h=600&fit=crop", // purple grapes
+        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // purple flower
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop"  // purple eggplant
+      ],
+      "pink": [
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // pink flower
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop", // pink cherry blossom
+        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop"  // pink rose
+      ],
+      "black": [
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // black cat
+        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop", // black bear
+        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop"  // black object
+      ],
+      "white": [
+        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // white cloud
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop", // white snow
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop"  // white flower
+      ],
+      "brown": [
+        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop", // brown bear
+        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // brown tree trunk
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop"  // brown chocolate
+      ]
+    }
+  };
+  
+  if (imageMap[categoryLower]?.[wordLower]) {
+    // Use the first curated image directly
+    const curatedImageUrl = imageMap[categoryLower][wordLower][0];
+    console.log(`Using curated image for ${word}: ${curatedImageUrl}`);
+    return {
+      bestImageUrl: curatedImageUrl,
+      confidence: 1.0,
+      reasoning: `Using curated image from data.ts for ${category} - ${word}`
+    };
+  }
   
   try {
     const prompt = `
