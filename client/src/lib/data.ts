@@ -617,7 +617,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "yellow",
       translation: "gelb",
-      imageUrl: "https://images.unsplash.com/photo-1557800636-894a64c1696f?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1518562180175-34a163b1de9b?fit=crop&w=600&h=400"
     },
     {
       word: "black",
@@ -657,7 +657,7 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "silver",
       translation: "silber",
-      imageUrl: "https://images.unsplash.com/photo-1610375461246-83df859d849d?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1509395062183-67c5ad6faff9?fit=crop&w=600&h=400"
     },
     {
       word: "gold",
@@ -667,12 +667,12 @@ export const vocabularyData: Record<string, VocabularyItem[]> = {
     {
       word: "turquoise",
       translation: "türkis",
-      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400"
     },
     {
       word: "violet",
       translation: "violett",
-      imageUrl: "https://images.unsplash.com/photo-1564419229895-7bd50f3abb13?fit=crop&w=600&h=400"
+      imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?fit=crop&w=600&h=400"
     },
     {
       word: "lime",
