@@ -39,59 +39,9 @@ export async function findBestImage(
 }
 
 /**
- * Prompt für Farben-Kategorie zur Generierung passender Suchbegriffe
- */
-const promptColorsCategory = (color: string) => `
-You are helping to create a vocabulary app for children aged 6 to 11.
-
-The current category is: "Colors".
-
-Your task:
-Suggest a simple search term that will return a clear, realistic, and age-appropriate image representing the color "${color}".
-
-Guidelines:
-- The image should clearly show the color as the main subject.
-- Avoid abstract art, symbols, illustrations, or logos.
-- Prefer natural objects (e.g. "a red apple", "a green leaf", "a blue sky", etc.).
-- The result should be suitable for children and easily understood.
-- Use nouns that help children associate the color with a real object.
-
-Return only the search term (max. 4 words), nothing else.
-`;
-
-/**
  * Generiert präzise Suchbegriffe für kindgerechte Bilder
  */
-async function generateSearchQueries(category: string, word: string): Promise<string[]> {
-  // Spezielle Behandlung für Farben-Kategorie
-  if (category.toLowerCase() === 'colors' || category.toLowerCase() === 'farben') {
-    try {
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: promptColorsCategory(word) }],
-        max_tokens: 20
-      });
-      
-      const aiSearchTerm = response.choices[0].message.content?.trim() || `${word} color object`;
-      
-      return [
-        aiSearchTerm,
-        `${word} colored object for children`,
-        `bright ${word} natural object`,
-        `${word} color educational photo`
-      ];
-    } catch (error) {
-      console.error('Error generating color search term:', error);
-      // Fallback für Farben
-      return [
-        `${word} colored object`,
-        `${word} natural object`,
-        `bright ${word} photo`
-      ];
-    }
-  }
-  
-  // Standard-Suchbegriffe für andere Kategorien
+function generateSearchQueries(category: string, word: string): string[] {
   return [
     `High-quality, child-friendly photo of a ${word} from a ${category}, clear, colorful, isolated on white background, no people`,
     `Professional ${category} ${word} illustration for children, bright colors, simple background, educational`,
@@ -103,19 +53,14 @@ async function generateSearchQueries(category: string, word: string): Promise<st
  * Sucht echte Bilder mit präzisen Suchbegriffen
  */
 async function searchRealImages(category: string, word: string): Promise<string[]> {
-  // Generiere intelligente Suchbegriffe
-  const searchQueries = await generateSearchQueries(category, word);
+  // Für jetzt verwenden wir kuratierte Unsplash-URLs basierend auf den Suchbegriffen
+  // In der Zukunft kann hier eine echte API-Suche implementiert werden
   
-  // Erstelle URLs basierend auf den generierten Suchbegriffen
-  const searchBasedUrls = searchQueries.map(query => 
-    `https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop&q=${encodeURIComponent(query)}`
-  );
-  
-  // Füge auch fallback URLs hinzu
-  searchBasedUrls.push(
+  const searchBasedUrls = [
+    `https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop&q=${encodeURIComponent(category + ' ' + word)}`,
     `https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop&q=${encodeURIComponent(word + ' ' + category)}`,
     `https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&h=600&fit=crop&q=${encodeURIComponent(category + ' ' + word + ' isolated')}`
-  );
+  ];
   
   return searchBasedUrls;
 }
@@ -131,58 +76,6 @@ async function generateImageCandidates(
   
   // Kuratierte, themenspezifische Bildauswahl
   const imageMap: Record<string, Record<string, string[]>> = {
-    "colors": {
-      "red": [
-        "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=800&h=600&fit=crop", // red apple
-        "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=800&h=600&fit=crop", // red rose
-        "https://images.unsplash.com/photo-1553979459-d2229ba7433a?w=800&h=600&fit=crop"  // red strawberry
-      ],
-      "blue": [
-        "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop", // clear blue sky
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop", // blue sky with clouds
-        "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop"  // blue ocean
-      ],
-      "green": [
-        "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop", // green leaf
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop", // green grass
-        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=600&fit=crop"  // green apple
-      ],
-      "yellow": [
-        "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=600&fit=crop", // yellow banana
-        "https://images.unsplash.com/photo-1470509037663-253afd7f0f51?w=800&h=600&fit=crop", // yellow sunflower
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop"  // yellow lemon
-      ],
-      "orange": [
-        "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800&h=600&fit=crop", // orange fruit
-        "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800&h=600&fit=crop", // orange pumpkin
-        "https://images.unsplash.com/photo-1557800636-894a64c1696f?w=800&h=600&fit=crop"  // orange carrot
-      ],
-      "purple": [
-        "https://images.unsplash.com/photo-1571832037044-4b29bbcc1ac6?w=800&h=600&fit=crop", // purple grapes
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // purple flower
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop"  // purple eggplant
-      ],
-      "pink": [
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // pink flower
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop", // pink cherry blossom
-        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop"  // pink rose
-      ],
-      "black": [
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // black cat
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop", // black bear
-        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop"  // black object
-      ],
-      "white": [
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // white cloud
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop", // white snow
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop"  // white flower
-      ],
-      "brown": [
-        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop", // brown bear
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // brown tree trunk
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop"  // brown chocolate
-      ]
-    },
     "motorrad": {
       "motorcycle": [
         "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&h=600&fit=crop",
@@ -242,13 +135,11 @@ async function generateImageCandidates(
   const categoryLower = category.toLowerCase();
   const wordLower = word.toLowerCase();
   
-  // Verwende kuratierte Bilder als erste Wahl
+  // Verwende kuratierte Bilder oder suche neue
   let candidateUrls: string[];
   
   if (imageMap[categoryLower]?.[wordLower]) {
-    // Verwende die kuratierten Bilder direkt ohne weitere Suche
     candidateUrls = imageMap[categoryLower][wordLower];
-    console.log(`Using curated images for ${word}:`, candidateUrls);
   } else {
     // Für neue Begriffe: Intelligente URL-Generierung basierend auf Unsplash
     candidateUrls = await searchRealImages(category, word);
@@ -273,76 +164,6 @@ async function evaluateImageCandidates(
   word: string,
   translation: string
 ): Promise<ImageSearchResult> {
-  
-  // Check if we have curated images - if so, use the first one directly
-  const categoryLower = category.toLowerCase();
-  const wordLower = word.toLowerCase();
-  
-  const imageMap: Record<string, Record<string, string[]>> = {
-    "colors": {
-      "red": [
-        "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=800&h=600&fit=crop", // red apple
-        "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=800&h=600&fit=crop", // red rose
-        "https://images.unsplash.com/photo-1553979459-d2229ba7433a?w=800&h=600&fit=crop"  // red strawberry
-      ],
-      "blue": [
-        "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=600&fit=crop", // clear blue sky
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop", // blue sky with clouds
-        "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop"  // blue ocean
-      ],
-      "green": [
-        "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop", // green leaf
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop", // green grass
-        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=600&fit=crop"  // green apple
-      ],
-      "yellow": [
-        "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=600&fit=crop", // yellow banana
-        "https://images.unsplash.com/photo-1470509037663-253afd7f0f51?w=800&h=600&fit=crop", // yellow sunflower
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop"  // yellow lemon
-      ],
-      "orange": [
-        "https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800&h=600&fit=crop", // orange fruit
-        "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800&h=600&fit=crop", // orange pumpkin
-        "https://images.unsplash.com/photo-1557800636-894a64c1696f?w=800&h=600&fit=crop"  // orange carrot
-      ],
-      "purple": [
-        "https://images.unsplash.com/photo-1571832037044-4b29bbcc1ac6?w=800&h=600&fit=crop", // purple grapes
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // purple flower
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop"  // purple eggplant
-      ],
-      "pink": [
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // pink flower
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop", // pink cherry blossom
-        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop"  // pink rose
-      ],
-      "black": [
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop", // black cat
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop", // black bear
-        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop"  // black object
-      ],
-      "white": [
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // white cloud
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop", // white snow
-        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop"  // white flower
-      ],
-      "brown": [
-        "https://images.unsplash.com/photo-1519750783826-e2420f4d687f?w=800&h=600&fit=crop", // brown bear
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=600&fit=crop", // brown tree trunk
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=600&fit=crop"  // brown chocolate
-      ]
-    }
-  };
-  
-  if (imageMap[categoryLower]?.[wordLower]) {
-    // Use the first curated image directly
-    const curatedImageUrl = imageMap[categoryLower][wordLower][0];
-    console.log(`Using curated image for ${word}: ${curatedImageUrl}`);
-    return {
-      bestImageUrl: curatedImageUrl,
-      confidence: 1.0,
-      reasoning: `Using curated image from data.ts for ${category} - ${word}`
-    };
-  }
   
   try {
     const prompt = `
