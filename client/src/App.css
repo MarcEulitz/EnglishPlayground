@@ -1,0 +1,54 @@
+/* Hintergrundbild auf dem <body> */
+body {
+  background-image: url("/images/london-bridge.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+/* Halbtransparentes Overlay für bessere Lesbarkeit */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* dunkleres Overlay */
+  z-index: -1;
+}
+
+/* Optional: Wenn du gezielt Container abdunkeln möchtest */
+.background-image {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/cd/Tower_Bridge_London_Feb_2006.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Weißes halbtransparentes Overlay z.B. für Boxen oder Seiten */
+.overlay {
+  background-color: rgba(255, 255, 255, 0.85);
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+/* Ladeanzeige */
+.loader {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.loader-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0077cc;
+}
