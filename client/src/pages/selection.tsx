@@ -19,10 +19,16 @@ const SelectionPage: React.FC = () => {
       </h1>
       <div className="flex flex-col gap-4 w-full max-w-xs">
         <Button
-          onClick={() => handleSelect("/select-mode")}
+          onClick={() => handleSelect("/vocabulary/animals")}
           className="text-lg py-4"
         >
-          🎯 Lernmodus wählen
+          🧠 Vokabeltrainer starten
+        </Button>
+        <Button
+          onClick={() => handleSelect("/gap-fill/animals")}
+          className="text-lg py-4"
+        >
+          ✍️ Lückentext starten
         </Button>
       </div>
     </div>
