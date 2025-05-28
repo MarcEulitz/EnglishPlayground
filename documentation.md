@@ -3,43 +3,44 @@
 
 ## 1. App-Zweck und Zielgruppe
 
-### Was ist "Mias Englischwelt"?
-Eine interaktive Englisch-Lern-App speziell für Kinder im Alter von 6-11 Jahren. Die App macht das Englischlernen spielerisch und motivierend durch:
-
-- **Vokabeltraining** mit Bildern und Audio
-- **Lückentexte** zum Üben der Grammatik
-- **Belohnungssystem** mit Trophäen und Stickern
-- **Fortschrittsverfolgung** für Eltern
-- **Gamification** mit Levels und Achievements
+### Was ist Mias Englischwelt?
+**Mias Englischwelt** ist eine interaktive Web-App zum Englischlernen für Kinder. Sie macht das Sprachenlernen spielerisch und motivierend durch:
+- Bildbasiertes Vokabeltraining
+- Lückentexte mit Drag & Drop
+- Charaktere, die Feedback geben
+- Belohnungssystem mit Trophäen und Stickern
+- Fortschrittsverfolgung für Eltern
 
 ### Zielgruppe
-- **Primär**: Kinder (6-11 Jahre) zum selbstständigen Englischlernen
-- **Sekundär**: Eltern zur Überwachung des Lernfortschritts
-- **Tertiär**: Lehrkräfte als Unterrichtsunterstützung
+- **Hauptnutzer**: Kinder im Alter von 6-11 Jahren
+- **Sekundärnutzer**: Eltern (Fortschrittskontrolle und Einstellungen)
+- **Einsatzbereich**: Zu Hause, in der Schule, unterwegs
 
 ## 2. Verwendete Technologien
 
 ### Frontend (Client)
-- **React 18** mit TypeScript - Moderne UI-Komponenten
-- **Wouter** - Leichtgewichtiges Routing
-- **TanStack React Query** - Datenmanagement und API-Calls
-- **Tailwind CSS** - Utility-First CSS Framework
-- **ShadCN UI** - Vorgefertigte UI-Komponenten
-- **IndexedDB** - Lokale Datenspeicherung (Fallback)
+- **React 18** mit TypeScript - Moderne UI-Entwicklung
+- **Vite** - Schnelles Build-Tool und Entwicklungsserver
+- **Wouter** - Leichtgewichtige Routing-Bibliothek
+- **TailwindCSS** - Utility-First CSS Framework
+- **Radix UI + ShadCN** - Hochwertige UI-Komponenten
+- **TanStack React Query** - API-Datenmanagement
+- **IndexedDB** - Client-seitige Datenspeicherung (Offline-Fallback)
 
 ### Backend (Server)
 - **Node.js** mit Express.js - Web-Server
-- **TypeScript** - Typsichere Programmierung
-- **Drizzle ORM** - Datenbankzugriff
-- **PostgreSQL** - Hauptdatenbank
-- **Zod** - Schema-Validierung
+- **TypeScript** - Typisierte JavaScript-Entwicklung
+- **Drizzle ORM** - Datenbankzugriff und Migrationen
+- **PostgreSQL** - Hauptdatenbank (mit IndexedDB als Fallback)
+- **Zod** - Schema-Validierung für APIs
 
-### Externe Services
-- **OpenAI API** - KI-gestützte Bildvalidierung
-- **Unsplash/Pexels** - Hochwertige Lernbilder
-- **Freesound.org** - Audio-Effekte
-- **Google Fonts** - Schriftarten (Nunito)
-- **Remix Icons** - Icon-Bibliothek
+### KI-Integration
+- **OpenAI GPT-4o** - Intelligente Bildauswahl und -validierung
+- **Text-to-Speech APIs** - Aussprache und Audio-Feedback
+
+### Deployment & Tools
+- **Replit** - Hosting und Entwicklungsumgebung
+- **Vite Dev Server** - Hot Module Replacement für Entwicklung
 
 ## 3. Projektstruktur
 
@@ -47,90 +48,144 @@ Eine interaktive Englisch-Lern-App speziell für Kinder im Alter von 6-11 Jahren
 ├── client/                 # Frontend (React App)
 │   ├── src/
 │   │   ├── components/     # Wiederverwendbare UI-Komponenten
+│   │   │   ├── ui/         # ShadCN UI-Komponenten
+│   │   │   ├── AudioWave.tsx
+│   │   │   ├── AvatarSelection.tsx
+│   │   │   ├── BottomNavigation.tsx
+│   │   │   ├── CelebrationEffect.tsx
+│   │   │   ├── CharacterFeedback.tsx
+│   │   │   ├── ImageValidator.tsx
+│   │   │   ├── PinEntry.tsx
+│   │   │   ├── ProgressBar.tsx
+│   │   │   └── StarRating.tsx
 │   │   ├── pages/         # Hauptseiten der App
+│   │   │   ├── welcome.tsx        # Startseite mit Benutzerauswahl
+│   │   │   ├── create-user.tsx    # Neue Benutzer erstellen
+│   │   │   ├── home.tsx           # Hauptmenü mit Lernkategorien
+│   │   │   ├── vocabulary.tsx     # Vokabeltraining
+│   │   │   ├── gap-fill.tsx       # Lückentext-Übungen
+│   │   │   ├── success.tsx        # Erfolgsseite nach Übungen
+│   │   │   └── parent-area.tsx    # Elternbereich
 │   │   ├── hooks/         # Custom React Hooks
+│   │   │   ├── use-audio.ts       # Audio-System
+│   │   │   ├── use-indexeddb.ts   # Offline-Datenspeicherung
+│   │   │   └── use-toast.ts       # Benachrichtigungen
 │   │   ├── contexts/      # React Context für Zustandsmanagement
-│   │   └── lib/           # Hilfsfunktionen und Daten
-│   └── index.html         # Haupt-HTML-Datei
+│   │   │   └── UserContext.tsx    # Globaler App-Zustand
+│   │   ├── lib/           # Hilfsfunktionen und Daten
+│   │   │   ├── data.ts            # Vokabeldaten und Themen
+│   │   │   ├── utils.ts           # Hilfsfunktionen
+│   │   │   └── queryClient.ts     # API-Konfiguration
+│   │   ├── App.tsx        # Haupt-App-Komponente
+│   │   ├── main.tsx       # React-Einstiegspunkt
+│   │   └── index.css      # Globale Styles
+│   └── index.html         # HTML-Template
 ├── server/                # Backend (Express Server)
-│   ├── routes.ts          # API-Endpunkte
-│   ├── storage.ts         # Datenbankoperationen
-│   ├── imageValidator.ts  # KI-Bildvalidierung
-│   └── index.ts           # Server-Startpunkt
-├── shared/                # Geteilte Typen und Schemas
-│   └── schema.ts          # Datenbankschemas
-└── public/                # Statische Dateien
+│   ├── index.ts          # Server-Startpunkt
+│   ├── routes.ts         # API-Endpunkte
+│   ├── storage.ts        # Datenbankoperationen
+│   ├── imageSearch.ts    # KI-gestützte Bildsuche
+│   ├── imageValidator.ts # KI-Bildvalidierung
+│   ├── db.ts            # Datenbank-Konfiguration
+│   └── vite.ts          # Vite-Integration
+├── shared/               # Geteilte Typen und Schemas
+│   └── schema.ts         # Datenbankschemas mit Zod
+├── public/               # Statische Dateien
+└── package.json          # Projekt-Konfiguration
 ```
 
-### Wichtige Dateien im Detail
+### Wichtigste Dateien im Detail
 
-#### Frontend-Hauptdateien
-- `client/src/App.tsx` - Haupt-App-Komponente mit Routing
-- `client/src/pages/home.tsx` - Startseite mit Lernkategorien
-- `client/src/pages/vocabulary.tsx` - Vokabeltraining
-- `client/src/pages/parent-area.tsx` - Elternbereich mit Statistiken
-- `client/src/contexts/UserContext.tsx` - Globaler App-Zustand
+#### Frontend-Kern
+- **`App.tsx`**: Haupt-Router und Layout der Anwendung
+- **`UserContext.tsx`**: Verwaltet Benutzerdaten, Lernstatistiken und App-Zustand
+- **`home.tsx`**: Startseite mit allen Lernkategorien und Fortschrittsanzeige
 
-#### Backend-Hauptdateien
-- `server/index.ts` - Express-Server-Setup
-- `server/routes.ts` - Alle API-Routen
-- `server/storage.ts` - Datenbankzugriff-Logik
-- `shared/schema.ts` - Datenbank-Tabellen-Definitionen
+#### Backend-Kern
+- **`server/index.ts`**: Express-Server mit Port 5000 (Replit-Standard)
+- **`server/routes.ts`**: Alle API-Endpunkte für Frontend-Backend-Kommunikation
+- **`server/storage.ts`**: Datenbankzugriff mit Drizzle ORM
 
 ## 4. Funktionen & Logik
 
 ### Benutzer-Management
-**Datei**: `client/src/pages/welcome.tsx`, `client/src/pages/create-user.tsx`
-- Benutzerprofile erstellen mit Avatar-Auswahl
-- Altersangabe für angepasste Inhalte
-- Profilauswahl beim App-Start
+**Dateien**: `welcome.tsx`, `create-user.tsx`, `UserContext.tsx`
+
+- **Benutzerprofile erstellen**: Kinder wählen Namen, Avatar und Alter
+- **Profilauswahl**: Einfache Auswahl beim App-Start
+- **Mehrbenutzer-Support**: Verschiedene Kinder können eigene Profile haben
+
+```typescript
+// Beispiel: Benutzer erstellen
+const createUser = async (userData: InsertUser) => {
+  const user = await storage.createUser(userData);
+  setCurrentUser(user);
+};
+```
 
 ### Lernaktivitäten
 
-#### Vokabeltraining
-**Datei**: `client/src/pages/vocabulary.tsx`
-- Zeigt Bilder mit englischen Wörtern
-- Audio-Wiedergabe für Aussprache
-- Multiple-Choice-Antworten
-- Sofortiges Feedback mit Charakteranimationen
+#### Vokabeltraining (`vocabulary.tsx`)
+- **Bildbasiertes Lernen**: Zeigt Bilder mit deutschen Übersetzungen
+- **Audio-Aussprache**: Kinder hören englische Wörter
+- **Multiple Choice**: 4 Antwortmöglichkeiten pro Frage
+- **Sofortiges Feedback**: Charaktere geben motivierendes Feedback
 
-#### Lückentexte
-**Datei**: `client/src/pages/gap-fill.tsx`
-- Sätze mit fehlenden Wörtern
-- Drag & Drop oder Eingabe-Interface
-- Kontextbasiertes Lernen
+```typescript
+// Beispiel: Frage beantworten
+const handleOptionClick = (option: string) => {
+  const correct = option === currentQuestion.word;
+  if (correct) {
+    playAudio('correct');
+    playCharacterPhrase('correct', { character: 'mia' });
+    setScore(score + 1);
+  }
+};
+```
+
+#### Lückentext-Übungen (`gap-fill.tsx`)
+- **Kontextbasiertes Lernen**: Vollständige Sätze mit fehlenden Wörtern
+- **Drag & Drop Interface**: Intuitive Bedienung für Kinder
+- **Verschiedene Schwierigkeitsgrade**: Je nach Alter und Fortschritt
+
+### Audio-System (`use-audio.ts`)
+- **Sprachausgabe**: Charakterstimmen für Feedback
+- **Wort-Aussprache**: Englische Vokabeln anhören
+- **Sound-Effekte**: Für Interaktionen und Erfolge
+- **Elternkontrolle**: Audio kann deaktiviert werden
+
+```typescript
+// Beispiel: Audio abspielen
+const playWord = (word: string) => {
+  const audio = new Audio(`/api/speech/${word}`);
+  audio.play();
+};
+```
 
 ### Fortschrittssystem
-**Datei**: `client/src/components/ProgressBar.tsx`, Achievement-System
-- Level-System basierend auf abgeschlossenen Aktivitäten
-- Trophäen für Meilensteine
-- Sticker für tägliche Ziele
-- Lernzeit-Tracking
+**Dateien**: `ProgressBar.tsx`, Achievement-System
 
-### Elternbereich
-**Datei**: `client/src/pages/parent-area.tsx`
-- PIN-geschützter Zugang (Standard: 1234)
-- Lernstatistiken pro Kind
-- Einstellungen für tägliche Lernziele
-- Audio-/Benachrichtigungseinstellungen
+- **Level-System**: Fortschritt basierend auf abgeschlossenen Übungen
+- **Trophäen**: Für große Meilensteine (z.B. 50 richtige Antworten)
+- **Sticker**: Für tägliche Ziele und kleinere Erfolge
+- **Lernzeit-Tracking**: Verfolgt täglich verbrachte Zeit
 
-### Audio-System
-**Datei**: `client/src/hooks/use-audio.ts`
-- Charakterstimmen für Feedback
-- Sound-Effekte für Interaktionen
-- Aussprache-Audio für Vokabeln
-- Ein/Aus-Schaltung durch Eltern
+### Elternbereich (`parent-area.tsx`)
+- **PIN-Schutz**: Standardmäßig "1234", anpassbar
+- **Lernstatistiken**: Detaillierte Übersicht pro Kind
+- **Einstellungen**: Tägliche Lernziele, Audio-Kontrolle
+- **Fortschrittsvisualisierung**: Diagramme und Übersichten
 
 ## 5. Datenmodell
 
-### Tabellen-Struktur
+### Datenbank-Tabellen (PostgreSQL/IndexedDB)
 
 #### users (Benutzer)
 ```typescript
 {
   id: number,           // Eindeutige Benutzer-ID
   username: string,     // Anzeigename des Kindes
-  avatarId: number,     // Gewähltes Avatar-Bild
+  avatarId: number,     // Gewähltes Avatar-Bild (1-6)
   age: number,          // Alter für angepasste Inhalte
   createdAt: Date       // Erstellungsdatum
 }
@@ -141,21 +196,21 @@ Eine interaktive Englisch-Lern-App speziell für Kinder im Alter von 6-11 Jahren
 {
   id: number,           // Eindeutige Statistik-ID
   userId: number,       // Verweis auf Benutzer
-  topic: string,        // Lernthema (z.B. "animals")
-  score: number,        // Erreichte Punkte (0-5)
+  topic: string,        // Lernthema (z.B. "animals", "colors")
+  score: number,        // Erreichte Punkte (0-5 pro Übung)
   duration: number,     // Lernzeit in Sekunden
   date: Date           // Zeitstempel der Aktivität
 }
 ```
 
-#### achievements (Erfolge)
+#### achievements (Erfolge/Belohnungen)
 ```typescript
 {
   id: number,           // Eindeutige Achievement-ID
   userId: number,       // Verweis auf Benutzer
   type: string,         // "trophy" oder "sticker"
   name: string,         // Name des Erfolgs
-  description: string,  // Beschreibung
+  description: string,  // Beschreibung der Leistung
   dateEarned: Date     // Zeitpunkt der Auszeichnung
 }
 ```
@@ -165,197 +220,271 @@ Eine interaktive Englisch-Lern-App speziell für Kinder im Alter von 6-11 Jahren
 {
   id: number,           // Eindeutige Einstellungs-ID
   pin: string,          // Eltern-PIN (Standard: "1234")
-  dailyGoal: number,    // Tägliches Lernziel in Minuten
-  notifications: boolean, // Benachrichtigungen an/aus
-  soundEffects: boolean   // Audio-Effekte an/aus
+  dailyGoal: number,    // Tägliches Lernziel in Minuten (Standard: 20)
+  notifications: boolean, // Benachrichtigungen aktiviert
+  soundEffects: boolean   // Audio-Effekte aktiviert
 }
 ```
 
 ### Datenspeicherung
-- **Primär**: PostgreSQL-Datenbank über Drizzle ORM
-- **Fallback**: IndexedDB im Browser (bei Verbindungsproblemen)
-- **Cache**: React Query für optimierte API-Anfragen
+- **Produktiv**: PostgreSQL-Datenbank (über Drizzle ORM)
+- **Entwicklung/Offline**: IndexedDB im Browser als Fallback
+- **API-Kommunikation**: RESTful Endpoints mit JSON-Datenformat
 
 ## 6. Integrationen
 
-### OpenAI API Integration
-**Datei**: `server/imageValidator.ts`
-- **Zweck**: Automatische Validierung von Lernbildern
-- **Funktionen**:
-  - Überprüfung, ob Bilder zum Lernwort passen
-  - Bewertung der Bildqualität für Kinder
-  - Vorschläge für bessere Alternativen
+### OpenAI GPT-4o Integration
+**Dateien**: `imageSearch.ts`, `imageValidator.ts`
+
+#### Intelligente Bildsuche
+- **Zweck**: Findet semantisch passende, kinderfreundliche Bilder
+- **Funktionsweise**: GPT-4o bewertet Bildkandidaten nach Relevanz und Kindertauglichkeit
+- **Beispiel**: Für "motorcycle" + "wheel" findet es spezifisch Motorradräder (nicht Fahrradräder)
 
 ```typescript
-// Beispiel einer Bildvalidierung
-const result = await validateImage(
-  "https://example.com/cat-image.jpg",
-  "cat",           // Englisches Wort
-  "Katze",         // Deutsche Übersetzung
-  "animals"        // Kategorie
-);
+// Beispiel: Bildsuche mit KI
+const findBestImage = async (category: string, word: string, translation: string) => {
+  const candidates = await generateImageCandidates(category, word, translation);
+  const evaluation = await evaluateImageCandidates(candidates, category, word, translation);
+  return evaluation.bestImageUrl;
+};
 ```
 
-### Unsplash/Pexels Bildsuche
-**Datei**: `server/imageSearch.ts`
-- Kuratierte, kinderfreundliche Bilder
-- Automatische Bildoptimierung
-- Fallback-Strategien bei fehlenden Bildern
+#### Bildvalidierung
+- **Qualitätskontrolle**: Überprüft vorhandene Bilder auf Korrektheit
+- **Batch-Verarbeitung**: Kann ganze Kategorien auf einmal validieren
+- **Feedback-System**: Schlägt bessere Alternativen vor
 
-### Audio-Integration
-- **Freesound.org**: Lizenzfreie Sound-Effekte
-- **Web Speech API**: Zukünftige Spracherkennung
-- **HTML5 Audio**: Plattformübergreifende Wiedergabe
+### Text-to-Speech (Geplant)
+- **Aussprache-Training**: Kinder hören korrekte englische Aussprache
+- **Charakterstimmen**: Verschiedene Stimmen für Mia, Buddy und andere Charaktere
+- **Mehrsprachigkeit**: Deutsch für Anweisungen, Englisch für Vokabeln
+
+### Replit-Integration
+- **Hosting**: App läuft vollständig auf Replit
+- **Automatisches Deployment**: Änderungen werden sofort live geschaltet
+- **Umgebungsvariablen**: Sichere Speicherung von API-Keys
+- **Port-Weiterleitung**: Port 5000 wird automatisch öffentlich zugänglich gemacht
 
 ## 7. Besonderheiten und Erweiterungsmöglichkeiten
 
 ### Aktuelle Besonderheiten
 
-#### KI-gestützte Bildvalidierung
-- Automatische Qualitätskontrolle von Lernmaterialien
-- Kontextbewertung für Altersangemessenheit
-- Kontinuierliche Verbesserung der Bilddatenbank
+#### Adaptive Lernkategorien
+- **Vordefinierte Themen**: Tiere, Farben, Zahlen, Familie, Essen, etc.
+- **Benutzerdefinierte Themen**: Eltern/Kinder können eigene Kategorien hinzufügen
+- **KI-generierte Inhalte**: Neue Themen werden automatisch mit passenden Bildern gefüllt
 
-#### Offline-Funktionalität
-- IndexedDB als Fallback bei Netzwerkproblemen
-- Lokale Zwischenspeicherung von Lerninhalten
-- Synchronisation bei Wiederverbindung
+#### Gamification-Elemente
+- **Lebenssystem**: 3 Leben pro Übung, motiviert zu Konzentration
+- **Charaktere mit Persönlichkeit**: Mia (ermutigend), Buddy (unterstützend)
+- **Fortschritts-Visualisierung**: Sterne, Level, Prozentbalken
 
 #### Responsive Design
-- Optimiert für Tablets (Hauptzielgerät)
-- Funktioniert auf Smartphones und Desktops
-- Touch-freundliche Benutzeroberfläche
+- **Tablet-optimiert**: Hauptzielgerät für Kinder
+- **Smartphone-tauglich**: Funktioniert auch unterwegs
+- **Touch-freundlich**: Große Buttons, intuitive Gesten
 
 ### Mögliche Erweiterungen
 
 #### Neue Lernmodule
-- **Hörverständnis**: Audio-Geschichten mit Fragen
-- **Spracherkennung**: Aussprache-Training mit Feedback
+- **Hörverstehen**: Audio-Geschichten mit Verständnisfragen
+- **Spracherkennung**: Aussprache-Training mit KI-Feedback
 - **Schreibtraining**: Buchstaben und Wörter nachzeichnen
 - **Dialoge**: Rollenspiele mit KI-Charakteren
 
 #### Erweiterte Gamification
-- **Multiplayer**: Lernen mit Freunden
-- **Wettbewerbe**: Wöchentliche Challenges
-- **Sammelkarten**: Virtuelle Belohnungen
-- **Geschichten**: Lernfortschritt in Abenteuern
+- **Multiplayer-Modus**: Lernen mit Freunden und Geschwistern
+- **Wöchentliche Challenges**: Besondere Aufgaben und Wettbewerbe
+- **Sammelkarten-System**: Virtuelle Belohnungen für Fortschritte
+- **Story-Modus**: Lernfortschritt in Abenteuer-Geschichten eingebettet
 
 #### Technische Verbesserungen
-- **PWA**: Installation als App auf Geräten
-- **Push-Notifications**: Erinnerungen an Lernzeiten
-- **Offline-First**: Vollständige Offline-Funktionalität
-- **Analytics**: Detaillierte Lernanalysen
+- **Progressive Web App (PWA)**: Installation als echte App auf Geräten
+- **Push-Notifications**: Freundliche Erinnerungen an Lernzeiten
+- **Offline-First Architecture**: Vollständige Funktionalität ohne Internet
+- **Erweiterte Analytics**: Detaillierte Lernmuster und Empfehlungen
 
 #### Pädagogische Features
-- **Adaptive Schwierigkeit**: KI passt Schwierigkeitsgrad an
-- **Personalisierte Wiederholung**: Spaced Repetition System
-- **Lehrerbereich**: Tools für Schulen und Klassen
-- **Curriculum-Integration**: Anpassung an Lehrpläne
+- **Adaptive Schwierigkeit**: KI passt Schwierigkeitsgrad automatisch an
+- **Spaced Repetition**: Intelligente Wiederholung schwieriger Vokabeln
+- **Lehrerbereich**: Tools für Schulen und Klassenmanagement
+- **Curriculum-Integration**: Anpassung an nationale Lehrpläne
 
 ## 8. Hinweise zur lokalen Weiterentwicklung
 
 ### Entwicklungsumgebung Setup
 
 #### Voraussetzungen
-- Node.js 18+ installiert
-- PostgreSQL-Datenbank (optional, nutzt IndexedDB als Fallback)
-- Code-Editor (VS Code empfohlen)
+- **Node.js 18+** installiert
+- **Git** für Versionskontrolle
+- **Code-Editor** (VS Code empfohlen)
+- **PostgreSQL** (optional, nutzt IndexedDB als Fallback)
 
 #### Erste Schritte
 ```bash
-# 1. Abhängigkeiten installieren
+# 1. Projekt klonen (falls extern)
+git clone <repository-url>
+cd englisch-lern-app
+
+# 2. Abhängigkeiten installieren
 npm install
 
-# 2. Umgebungsvariablen setzen (optional)
+# 3. Umgebungsvariablen setzen (optional)
 # Erstelle .env-Datei in server/ für:
-DATABASE_URL=postgresql://...
-OPENAI_API_KEY=sk-...
+# DATABASE_URL=postgresql://user:password@host:port/database
+# OPENAI_API_KEY=sk-...
 
-# 3. Datenbank initialisieren (falls verfügbar)
+# 4. Datenbank initialisieren (falls PostgreSQL verfügbar)
 npm run db:push
 
-# 4. Entwicklungsserver starten
+# 5. Entwicklungsserver starten
 npm run dev
 ```
 
 #### Wichtige npm-Befehle
-- `npm run dev` - Startet Frontend und Backend gleichzeitig
-- `npm run build` - Erstellt Production-Build
-- `npm run db:push` - Synchronisiert Datenbankschema
-- `npm run db:studio` - Öffnet Drizzle Studio (DB-GUI)
+- **`npm run dev`**: Startet Frontend und Backend gleichzeitig
+- **`npm run build`**: Erstellt Production-Build des Frontends
+- **`npm run db:push`**: Synchronisiert Datenbankschema mit Code
+- **`npm run db:studio`**: Öffnet Drizzle Studio (Datenbank-GUI)
 
 ### Arbeiten mit der Codebase
 
 #### Neue Lernkategorien hinzufügen
-1. **Vokabeldaten erweitern** (`client/src/lib/data.ts`)
-2. **Icons hinzufügen** (`client/src/pages/home.tsx`)
-3. **Routing aktualisieren** (`client/src/App.tsx`)
+```typescript
+// 1. Vokabeldaten erweitern (client/src/lib/data.ts)
+export const vocabularyData = {
+  // ... bestehende Kategorien
+  newCategory: [
+    { word: "example", translation: "Beispiel", imageUrl: "..." }
+  ]
+};
+
+// 2. UI-Icon hinzufügen (client/src/pages/home.tsx)
+<button onClick={() => handleCategoryClick('newCategory')}>
+  <i className="ri-new-icon"></i>
+  <span>Neue Kategorie</span>
+</button>
+```
 
 #### Neue UI-Komponenten erstellen
-1. **Komponente erstellen** in `client/src/components/`
-2. **Styling** mit Tailwind CSS
-3. **Integration** in bestehende Seiten
+```typescript
+// 1. Komponente erstellen (client/src/components/NewComponent.tsx)
+import React from 'react';
+
+interface Props {
+  title: string;
+  onClick: () => void;
+}
+
+export const NewComponent: React.FC<Props> = ({ title, onClick }) => {
+  return (
+    <button 
+      onClick={onClick}
+      className="bg-primary text-white p-4 rounded-xl"
+    >
+      {title}
+    </button>
+  );
+};
+
+// 2. Komponente verwenden
+import { NewComponent } from '@/components/NewComponent';
+```
 
 #### API-Endpunkte erweitern
-1. **Route definieren** in `server/routes.ts`
-2. **Datenbankzugriff** in `server/storage.ts`
-3. **Schema validieren** mit Zod
+```typescript
+// 1. Route definieren (server/routes.ts)
+app.get("/api/new-endpoint", async (req, res) => {
+  try {
+    const data = await storage.getNewData();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Fehler beim Laden" });
+  }
+});
+
+// 2. Frontend-Hook erstellen
+export const useNewData = () => {
+  return useQuery({
+    queryKey: ['newData'],
+    queryFn: () => fetch('/api/new-endpoint').then(res => res.json())
+  });
+};
+```
 
 ### Debugging-Tipps
 
 #### Frontend-Debugging
-- Browser-Entwicklertools verwenden
-- React Developer Tools installieren
-- Console.log für Zustandsanalyse
+- **Browser-Entwicklertools**: F12 → Console für Fehler und Logs
+- **React Developer Tools**: Browser-Extension für Component-Debugging
+- **Network-Tab**: API-Aufrufe und Antworten überwachen
 
 #### Backend-Debugging
-- Server-Logs in Terminal beobachten
-- API-Endpunkte mit Postman testen
-- Datenbankzustand mit Drizzle Studio prüfen
+- **Server-Logs**: Terminal beobachten für Express-Logs
+- **API-Tests**: Postman oder curl für Endpoint-Tests
+- **Datenbank-Inspektion**: Drizzle Studio mit `npm run db:studio`
 
-#### Häufige Probleme
-- **CORS-Fehler**: Server und Client-URLs prüfen
-- **Datenbank-Verbindung**: DATABASE_URL überprüfen
-- **Audio-Probleme**: Browser-Autoplay-Richtlinien beachten
+#### Häufige Probleme lösen
+
+**Problem**: Frontend kann Backend nicht erreichen
+```bash
+# Lösung: Server-URL prüfen
+console.log("API Base URL:", import.meta.env.VITE_API_URL);
+```
+
+**Problem**: Datenbank-Verbindung fehlgeschlagen
+```bash
+# Lösung: Umgebungsvariablen prüfen
+echo $DATABASE_URL
+# Oder IndexedDB-Fallback verwenden (automatisch)
+```
+
+**Problem**: Audio funktioniert nicht
+```javascript
+// Lösung: Browser-Autoplay-Richtlinien beachten
+const playAudio = async () => {
+  try {
+    await audio.play();
+  } catch (error) {
+    console.log("Autoplay blocked - User interaction required");
+  }
+};
+```
 
 ### Deployment auf Replit
 
 #### Automatisches Deployment
-- Code-Änderungen werden automatisch deployed
-- Build-Prozess läuft bei jeder Aktualisierung
-- Logs in der Replit-Konsole verfolgen
+- **Git Push**: Änderungen werden automatisch deployed
+- **Hot Reload**: Entwicklungsserver startet automatisch neu
+- **Environment Variables**: Über Replit Secrets verwalten
 
-#### Umgebungsvariablen setzen
-1. Replit Secrets-Tool verwenden
-2. Sensitive Daten (API-Keys) dort speichern
-3. In Code mit `process.env.VARIABLE_NAME` abrufen
+#### Production-Deployment
+```bash
+# Build erstellen
+npm run build
 
-#### Performance-Optimierung
-- Bilder komprimieren vor Upload
-- API-Requests minimieren
-- Cache-Strategien nutzen
+# Production-Server (falls gewünscht)
+NODE_ENV=production npm start
+```
 
-### Best Practices für Weiterentwicklung
+### Nützliche Ressourcen
 
-#### Code-Organisation
-- **Komponenten**: Klein und wiederverwendbar halten
-- **Hooks**: Logik aus Komponenten extrahieren
-- **Typen**: TypeScript für Typsicherheit nutzen
+#### Dokumentation
+- **React**: https://react.dev/
+- **TailwindCSS**: https://tailwindcss.com/docs
+- **Drizzle ORM**: https://orm.drizzle.team/
+- **OpenAI API**: https://platform.openai.com/docs
 
-#### Testing-Strategien
-- Manuelle Tests auf verschiedenen Geräten
-- Automatisierte Tests für kritische Funktionen
-- Benutzertests mit echten Kindern
-
-#### Sicherheitsüberlegungen
-- Eingabe-Validierung auf Client und Server
-- API-Keys sicher speichern
-- Kinderfreundliche Inhalte sicherstellen
+#### Tools
+- **Figma**: UI-Design und Prototyping
+- **Canva**: Grafiken und Icons erstellen
+- **Unsplash**: Lizenzfreie Bilder für Vokabeln
 
 ---
 
-## Zusammenfassung
+## Schlusswort
 
-Mias Englischwelt ist eine vollständige, moderne Web-Anwendung, die spielerisches Englischlernen für Kinder ermöglicht. Die Architektur ist sauber getrennt zwischen Frontend (React) und Backend (Express), mit einer robusten Datenschicht und KI-Integration für verbesserte Lerninhalte.
+Diese Dokumentation soll dir helfen, die App zu verstehen und weiterzuentwickeln. Zögere nicht, Code zu experimentieren und neue Features auszuprobieren. Das Lernen durch Machen ist der beste Weg!
 
-Die App ist bereit für Erweiterungen und kann sowohl pädagogisch als auch technisch weiterentwickelt werden. Die verwendeten Technologien sind aktuell und ermöglichen eine einfache Wartung und Skalierung.
+**Viel Erfolg beim Programmieren! 🚀**
