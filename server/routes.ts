@@ -202,6 +202,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Direkte Unsplash-Suche API
+  app.get('/api/unsplash/search', async (req, res) => {
+    try {
+      const query = req.query.query as string;
+      const perPage = parseInt(req.query.per_page as string) || 10;
+      
+      if (!query) {
+        return res.status(400).json({ error: 'Suchbegriff erforderlich' });
+      }
+      
+      if (!process.env.UNSPLASH_ACCESS_KEY) {
+        return res.status(400).json({ 
+          error: 'Unsplash Access Key nicht gefunden. Bitte API Key einrichten.' 
+        });
+      }
+      
+      const { searchUnsplashDirect } = await import('./imageSearch');
+      const results = await searchUnsplashDirect(query, perPage);
+      
+      res.json({ 
+        results,
+        total: results.length,
+        query 
+      });
+      
+    } catch (error) {
+      console.error('Unsplash-Suche Fehler:', error);
+      res.status(500).json({ 
+        error: 'Unsplash-Suche fehlgeschlagen',
+        message: error instanceof Error ? error.message : 'Unbekannter Fehler'
+      });
+    }
+  });
+
   // Batch-Validierung einer ganzen Kategorie
   app.post('/api/validate-category', async (req, res) => {
     try {
