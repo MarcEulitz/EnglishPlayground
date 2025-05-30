@@ -30,6 +30,24 @@ export const familyImageCache: Record<string, {
   source: string;
 }> = {};
 
+// Funktion zum Leeren des Tier-Caches
+export function clearAnimalImageCache(): void {
+  const animalWords = [
+    'cat', 'dog', 'bird', 'fish', 'elephant', 'tiger', 'rabbit', 'mouse', 'bear', 'monkey',
+    'giraffe', 'zebra', 'sheep', 'cow', 'pig', 'duck', 'horse', 'lion', 'frog', 'chicken',
+    'deer', 'owl', 'butterfly', 'bee', 'snake', 'turtle', 'fox', 'wolf', 'dolphin', 'shark',
+    'penguin', 'goat', 'kangaroo', 'octopus', 'whale', 'katze', 'hund', 'vogel', 'fisch',
+    'elefant', 'tiger', 'hase', 'maus', 'bär', 'affe', 'giraffe', 'zebra', 'schaf', 'kuh',
+    'schwein', 'ente', 'pferd', 'löwe', 'frosch', 'huhn'
+  ];
+  
+  animalWords.forEach(word => {
+    delete familyImageCache[word.toLowerCase()];
+  });
+  
+  console.log(`🗑️ Cache für ${animalWords.length} Tierbegriffe geleert`);
+}
+
 interface ImageCandidate {
   url: string;
   description: string;
@@ -66,7 +84,18 @@ export async function findBestImage(
 
   console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
 
-  // PRIORITÄT 1: ChatGPT-4o Bilderstellung für ALLE Kategorien
+  // BLOCKIERE TIERE-KATEGORIE: Keine Bilder für Animals/Tiere
+  if (category.toLowerCase() === 'animals' || category.toLowerCase() === 'tiere') {
+    console.log(`🚫 Tier-Kategorie blockiert - keine Bilder für "${word}"`);
+    return {
+      bestImageUrl: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPktlaW4gQmlsZCB2ZXJmw7xnYmFyPC90ZXh0Pjwvc3ZnPg==",
+      confidence: 0,
+      reasoning: "Tiere-Kategorie deaktiviert - keine Bilder verfügbar",
+      logicCheck: false
+    };
+  }
+
+  // PRIORITÄT 1: ChatGPT-4o Bilderstellung für ALLE anderen Kategorien
   console.log(`🎯 Kategorie "${category}" erkannt - prüfe Cache für "${word}"`);
 
   // Cache-Hit: Verwende bereits generiertes Bild
@@ -1042,45 +1071,8 @@ function getCuratedFallbackImage(word: string, category: string): string {
     "cousin": "https://images.unsplash.com/photo-1554151228-14d9def656e4?fit=crop&w=600&h=400&q=80"
   };
 
-  // Hochwertige, manuell kuratierte Bilder für alle Kategorien
+  // Hochwertige, manuell kuratierte Bilder für alle Kategorien (TIERE ENTFERNT)
   const curatedImages: Record<string, Record<string, string>> = {
-    animals: {
-      cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
-      katze: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
-      dog: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
-      hund: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
-      bird: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
-      vogel: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
-      fish: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
-      fisch: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
-      elephant: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400&q=80",
-      elefant: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400&q=80",
-      tiger: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?fit=crop&w=600&h=400&q=80",
-      rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
-      hase: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
-      mouse: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
-      maus: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
-      bear: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
-      bär: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
-      monkey: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400&q=80",
-      affe: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400&q=80",
-      giraffe: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
-      zebra: "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400&q=80",
-      sheep: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
-      schaf: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
-      cow: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
-      kuh: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
-      pig: "https://images.unsplash.com/photo-1563281577-b9afd1ad8b8d?fit=crop&w=600&h=400&q=80",
-      schwein: "https://images.unsplash.com/photo-1563281577-b9afd1ad8b8d?fit=crop&w=600&h=400&q=80",
-      duck: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
-      ente: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
-      horse: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
-      pferd: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
-      lion: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
-      löwe: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
-      frog: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400&q=80",
-      frosch: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400&q=80"
-    },
     food: {
       apple: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400&q=80",
       banana: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?fit=crop&w=600&h=400&q=80",
@@ -1173,16 +1165,14 @@ function getCuratedFallbackImage(word: string, category: string): string {
     return categoryImages[word.toLowerCase()];
   }
 
-  // 3. Fallback zu besten Standard-Bildern pro Kategorie
+  // 3. Fallback zu besten Standard-Bildern pro Kategorie (TIERE ENTFERNT)
   const categoryDefaults: Record<string, string> = {
-    animals: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
     food: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400&q=80",
     transport: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400&q=80",
     family: "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
     colors: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
     home: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80",
-    school: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400&q=80",
-    animals: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80"
+    school: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400&q=80"
   };
 
   const fallbackUrl = categoryDefaults[category.toLowerCase()] || categoryDefaults.family;

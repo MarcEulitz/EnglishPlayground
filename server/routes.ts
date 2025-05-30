@@ -476,12 +476,45 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
       return curatedFamilyImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80";
     }
 
-    // KOMPLETTE TIER-BILDGENERIERUNG MIT SOFORTIGEM START
+    // TIER-CACHE LEEREN
+    app.post("/api/clear-animal-cache", async (req, res) => {
+      try {
+        console.log("🗑️ Leere Tier-Cache...");
+        
+        // Importiere die clearAnimalImageCache Funktion
+        const { clearAnimalImageCache } = await import("./imageSearch.js");
+        clearAnimalImageCache();
+        
+        res.json({
+          success: true,
+          message: "Tier-Cache erfolgreich geleert",
+          timestamp: new Date().toISOString()
+        });
+        
+      } catch (error) {
+        console.error("❌ Fehler beim Leeren des Tier-Caches:", error);
+        res.status(500).json({
+          success: false,
+          error: error instanceof Error ? error.message : "Unbekannter Fehler"
+        });
+      }
+    });
+
+    // KOMPLETTE TIER-BILDGENERIERUNG MIT SOFORTIGEM START (DEAKTIVIERT)
     app.post("/api/complete-animals-image-generation", async (req, res) => {
       try {
-        console.log("🐾 Starte SOFORTIGE KOMPLETTE TIER-BILDGENERIERUNG...");
+        console.log("🚫 Tier-Bildgenerierung ist deaktiviert");
         
-        // VOLLSTÄNDIGE Tier-Vokabeln - alle auf einmal generieren
+        res.json({
+          success: false,
+          message: "Tier-Bildgenerierung ist deaktiviert",
+          generatedImages: 0,
+          errors: ["Tiere-Kategorie wurde deaktiviert"],
+          timestamp: new Date().toISOString()
+        });
+        return;
+        
+        // VOLLSTÄNDIGE Tier-Vokabeln - alle auf einmal generieren (DEAKTIVIERT)
         const animalVocabulary = [
           { word: "cat", translation: "Katze" },
           { word: "dog", translation: "Hund" },
