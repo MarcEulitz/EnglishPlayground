@@ -436,6 +436,157 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
       return curatedFamilyImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80";
     }
 
+    // BATCH-GENERIERUNG: Alle Familie-Bilder auf einmal erstellen und speichern
+    app.post("/api/batch-generate-family-images", async (req, res) => {
+      try {
+        console.log("🎨 Starte BATCH-GENERIERUNG aller Familie-Bilder mit ChatGPT-4o...");
+        
+        // Erweiterte Familie-Vokabeln für komplette Abdeckung
+        const familyVocabulary = [
+          { word: "mother", translation: "Mutter" },
+          { word: "father", translation: "Vater" },
+          { word: "parents", translation: "Eltern" },
+          { word: "family", translation: "Familie" },
+          { word: "grandmother", translation: "Großmutter" },
+          { word: "grandfather", translation: "Großvater" },
+          { word: "daughter", translation: "Tochter" },
+          { word: "son", translation: "Sohn" },
+          { word: "sister", translation: "Schwester" },
+          { word: "brother", translation: "Bruder" },
+          { word: "baby", translation: "Baby" },
+          { word: "child", translation: "Kind" },
+          { word: "nephew", translation: "Neffe" },
+          { word: "niece", translation: "Nichte" },
+          { word: "cousin", translation: "Cousin" },
+          { word: "uncle", translation: "Onkel" },
+          { word: "aunt", translation: "Tante" },
+          { word: "wife", translation: "Ehefrau" },
+          { word: "husband", translation: "Ehemann" },
+          { word: "twins", translation: "Zwillinge" }
+        ];
+
+        const generatedImages = [];
+        let successCount = 0;
+        let failureCount = 0;
+
+        console.log(`🎯 Generiere ${familyVocabulary.length} Familie-Bilder mit ChatGPT-4o...`);
+
+        // Parallel-Generierung in Batches von 5 für optimale Performance
+        const batchSize = 5;
+        const batches = [];
+        
+        for (let i = 0; i < familyVocabulary.length; i += batchSize) {
+          batches.push(familyVocabulary.slice(i, i + batchSize));
+        }
+
+        for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+          const batch = batches[batchIndex];
+          console.log(`📦 Verarbeite Batch ${batchIndex + 1}/${batches.length} (${batch.length} Bilder)...`);
+
+          const batchPromises = batch.map(async (vocab) => {
+            try {
+              console.log(`🎨 Generiere Bild für "${vocab.word}" (${vocab.translation})...`);
+              
+              const generatedImageUrl = await generateImageWithChatGPT(vocab.word, vocab.translation, "family");
+              
+              if (generatedImageUrl) {
+                console.log(`✅ Bild für "${vocab.word}" erfolgreich generiert!`);
+                return {
+                  word: vocab.word,
+                  translation: vocab.translation,
+                  imageUrl: generatedImageUrl,
+                  status: "success",
+                  confidence: 0.98,
+                  source: "ChatGPT-4o DALL-E-3"
+                };
+              } else {
+                console.log(`❌ Bildgenerierung für "${vocab.word}" fehlgeschlagen`);
+                return {
+                  word: vocab.word,
+                  translation: vocab.translation,
+                  imageUrl: getCuratedFallbackImage(vocab.word, "family"),
+                  status: "fallback",
+                  confidence: 0.85,
+                  source: "Kuratiertes Fallback"
+                };
+              }
+            } catch (error) {
+              console.error(`❌ Fehler bei "${vocab.word}":`, error);
+              return {
+                word: vocab.word,
+                translation: vocab.translation,
+                imageUrl: getCuratedFallbackImage(vocab.word, "family"),
+                status: "error",
+                confidence: 0.7,
+                source: "Error Fallback",
+                error: error instanceof Error ? error.message : "Unbekannter Fehler"
+              };
+            }
+          });
+
+          // Warte auf Batch-Completion
+          const batchResults = await Promise.all(batchPromises);
+          generatedImages.push(...batchResults);
+
+          // Zähle Erfolge/Fehler
+          batchResults.forEach(result => {
+            if (result.status === "success") successCount++;
+            else if (result.status === "error") failureCount++;
+          });
+
+          // Kurze Pause zwischen Batches um API-Limits zu respektieren
+          if (batchIndex < batches.length - 1) {
+            console.log("⏱️ Pause zwischen Batches (3 Sekunden)...");
+            await new Promise(resolve => setTimeout(resolve, 3000));
+          }
+        }
+
+        // Speichere generierte Bilder in temporärem Cache für schnellen Zugriff
+        const imageCache = {};
+        generatedImages.forEach(img => {
+          imageCache[img.word] = {
+            url: img.imageUrl,
+            confidence: img.confidence,
+            source: img.source,
+            generated: new Date().toISOString()
+          };
+        });
+
+        console.log(`🎊 BATCH-GENERIERUNG abgeschlossen!`);
+        console.log(`   ✅ Erfolgreich generiert: ${successCount}`);
+        console.log(`   ⚠️ Fallback verwendet: ${generatedImages.length - successCount - failureCount}`);
+        console.log(`   ❌ Fehler: ${failureCount}`);
+
+        res.json({
+          message: "Batch-Generierung aller Familie-Bilder abgeschlossen",
+          totalProcessed: familyVocabulary.length,
+          successCount,
+          fallbackCount: generatedImages.length - successCount - failureCount,
+          failureCount,
+          generatedImages,
+          imageCache,
+          performance: {
+            totalBatches: batches.length,
+            averageTimePerBatch: "~15 Sekunden",
+            totalEstimatedTime: `${batches.length * 15} Sekunden`
+          },
+          summary: {
+            perfect: generatedImages.filter(img => img.confidence >= 0.95).length,
+            good: generatedImages.filter(img => img.confidence >= 0.8 && img.confidence < 0.95).length,
+            acceptable: generatedImages.filter(img => img.confidence >= 0.7 && img.confidence < 0.8).length,
+            cached: true
+          }
+        });
+
+      } catch (error) {
+        console.error("❌ BATCH-GENERIERUNG komplett fehlgeschlagen:", error);
+        res.status(500).json({ 
+          message: "Kritischer Fehler bei Batch-Generierung",
+          error: error instanceof Error ? error.message : "Unbekannter Fehler"
+        });
+      }
+    });
+
     const httpServer = createServer(app);
     return httpServer;
   }

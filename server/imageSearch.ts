@@ -22,6 +22,14 @@ console.log("PEXELS_API_KEY vorhanden:", !!PEXELS_API_KEY);
 console.log("PIXABAY_API_KEY vorhanden:", !!PIXABAY_API_KEY);
 console.log("OPENAI_API_KEY vorhanden:", !!OPENAI_API_KEY);
 
+// In-Memory Cache für generierte Familie-Bilder
+const familyImageCache: Record<string, {
+  url: string;
+  confidence: number;
+  generated: string;
+  source: string;
+}> = {};
+
 interface ImageCandidate {
   url: string;
   description: string;
@@ -58,18 +66,43 @@ export async function findBestImage(
 
   console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
 
-  // VERWENDE CHATGPT-4O ZUR BILDERSTELLUNG
+  // PRIORITÄT 1: Cache-Lookup für bereits generierte Familie-Bilder
   if (category.toLowerCase() === "family" || category.toLowerCase() === "familie") {
-    console.log(`🎨 Familie-Kategorie erkannt - verwende ChatGPT-4o Bilderstellung`);
+    console.log(`👨‍👩‍👧‍👦 Familie-Kategorie erkannt - prüfe Cache für "${word}"`);
+    
+    // Cache-Hit: Verwende bereits generiertes Bild
+    const cachedImage = familyImageCache[word.toLowerCase()];
+    if (cachedImage) {
+      console.log(`🚀 CACHE HIT für "${word}" - verwende vorgeneriertes Bild!`);
+      return {
+        bestImageUrl: cachedImage.url,
+        confidence: cachedImage.confidence,
+        reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
+        logicCheck: true
+      };
+    }
+    
+    // Cache-Miss: Generiere neues Bild
+    console.log(`🎨 Cache-Miss für "${word}" - verwende ChatGPT-4o Bilderstellung`);
     
     try {
       const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
       
       if (generatedImageUrl) {
+        // Speichere im Cache für zukünftige Nutzung
+        familyImageCache[word.toLowerCase()] = {
+          url: generatedImageUrl,
+          confidence: 0.98,
+          generated: new Date().toISOString(),
+          source: "ChatGPT-4o DALL-E-3"
+        };
+        
+        console.log(`✅ Neues Bild für "${word}" generiert und gecacht!`);
+        
         return {
           bestImageUrl: generatedImageUrl,
           confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
-          reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt`,
+          reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt und gecacht`,
           logicCheck: true
         };
       }
@@ -80,10 +113,18 @@ export async function findBestImage(
     // Fallback zu kuratierten Bildern
     const perfectImage = getCuratedFallbackImage(word, category);
     
+    // Cache auch Fallback-Bilder
+    familyImageCache[word.toLowerCase()] = {
+      url: perfectImage,
+      confidence: 0.95,
+      generated: new Date().toISOString(),
+      source: "Kuratiertes Fallback"
+    };
+    
     return {
       bestImageUrl: perfectImage,
       confidence: 0.95,
-      reasoning: `Fallback: Kuratiertes Bild für Familie-Kategorie: "${word}"`,
+      reasoning: `Fallback: Kuratiertes Bild für Familie-Kategorie: "${word}" (gecacht)`,
       logicCheck: true
     };
   }
