@@ -926,7 +926,44 @@ SCHWESTER erfordert ZWINGEND:
 - Erkennbare Suppe in Schüssel oder Teller
 - Flüssige Konsistenz mit eventuellen Einlagen
 - NICHT akzeptiert: andere Flüssigkeiten, Getränke, Soßen
-- Suppe muss dominant im Bild sein`
+- Suppe muss dominant im Bild sein`,
+
+    // Tiere-Begriffe
+    "cat": `KATZE erfordert ZWINGEND:
+- EINE Hauskatze mit charakteristischen Katzenmerkmalen
+- Klar erkennbare Katzenohren, Schnurrhaare, Schwanz
+- NICHT akzeptiert: andere Katzenarten (Löwe, Tiger), Hunde
+- Katze muss dominant im Bild sein`,
+
+    "dog": `HUND erfordert ZWINGEND:
+- EINEN Hund mit charakteristischen Hundemerkmalen
+- Klar erkennbare Hundeohren, Nase, Schwanz
+- NICHT akzeptiert: Wölfe, Füchse, andere Tiere
+- Hund muss dominant im Bild sein`,
+
+    "elephant": `ELEFANT erfordert ZWINGEND:
+- EINEN Elefanten mit charakteristischem Rüssel und großen Ohren
+- Klar erkennbare Elefantenmerkmale (Rüssel, Stoßzähne, graue Haut)
+- NICHT akzeptiert: andere große Tiere
+- Elefant muss dominant im Bild sein`,
+
+    "tiger": `TIGER erfordert ZWINGEND:
+- EINEN Tiger mit charakteristischen orange-schwarzen Streifen
+- Klar erkennbare Tigermerkmale (Streifen, Raubkatzengesicht)
+- NICHT akzeptiert: andere Katzen, Löwen ohne Streifen
+- Tiger muss dominant im Bild sein`,
+
+    "rabbit": `HASE erfordert ZWINGEND:
+- EINEN Hasen mit langen, aufgestellten Ohren
+- Klar erkennbare Hasenmerkmale (lange Ohren, Stupsnase)
+- NICHT akzeptiert: andere kleine Tiere, Katzen
+- Hase muss dominant im Bild sein`,
+
+    "bear": `BÄR erfordert ZWINGEND:
+- EINEN Bären mit charakteristischen Bärenmerkmalen
+- Klar erkennbare Bärengestalt (massiger Körper, runde Ohren)
+- NICHT akzeptiert: andere große Tiere
+- Bär muss dominant im Bild sein`
   };
 
   return rules[word.toLowerCase()] || `
@@ -1016,13 +1053,33 @@ function getCuratedFallbackImage(word: string, category: string): string {
       vogel: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
       fish: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
       fisch: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
+      elephant: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400&q=80",
+      elefant: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400&q=80",
+      tiger: "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?fit=crop&w=600&h=400&q=80",
+      rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
+      hase: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
+      mouse: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
+      maus: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
       bear: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
-      horse: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
-      cow: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
+      bär: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
+      monkey: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400&q=80",
+      affe: "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400&q=80",
+      giraffe: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
+      zebra: "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400&q=80",
       sheep: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
+      schaf: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
+      cow: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
+      kuh: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
       pig: "https://images.unsplash.com/photo-1563281577-b9afd1ad8b8d?fit=crop&w=600&h=400&q=80",
+      schwein: "https://images.unsplash.com/photo-1563281577-b9afd1ad8b8d?fit=crop&w=600&h=400&q=80",
       duck: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
-      rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80"
+      ente: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
+      horse: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
+      pferd: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
+      lion: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
+      löwe: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
+      frog: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400&q=80",
+      frosch: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400&q=80"
     },
     food: {
       apple: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400&q=80",
@@ -1095,7 +1152,16 @@ function getCuratedFallbackImage(word: string, category: string): string {
    if (category.toLowerCase() === "food" || category.toLowerCase() === "essen") {
     const perfectImage = perfectFamilyImages[word.toLowerCase()];
     if (perfectImage) {
-      console.log(`👨‍👩‍👧‍👦 Verwende PERFEKTES Food-Bild für "${word}"`);
+      console.log(`🍎 Verwende PERFEKTES Food-Bild für "${word}"`);
+      return perfectImage;
+    }
+  }
+
+  // 1. PRIORITÄT: Animals-spezifische perfekte Bilder
+  if (category.toLowerCase() === "animals" || category.toLowerCase() === "tiere") {
+    const perfectImage = perfectFamilyImages[word.toLowerCase()];
+    if (perfectImage) {
+      console.log(`🐾 Verwende PERFEKTES Tier-Bild für "${word}"`);
       return perfectImage;
     }
   }
@@ -1192,15 +1258,42 @@ async function generateImageWithChatGPT(
       "boat": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "boot": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
 
-      // Tiere-Begriffe
-      "cat": "Eine süße Katze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "katze": "Eine süße Katze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      // Tiere-Begriffe - Erweitert für alle Animals
+      "cat": "Eine süße Hauskatze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "katze": "Eine süße Hauskatze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
       "dog": "Ein freundlicher Hund vor einem hellen, neutralen Hintergrund. Der Hund ist komplett sichtbar und hat ein freundliches Gesicht. Perfekt für deutsche Kinder-Lernmaterialien.",
       "hund": "Ein freundlicher Hund vor einem hellen, neutralen Hintergrund. Der Hund ist komplett sichtbar und hat ein freundliches Gesicht. Perfekt für deutsche Kinder-Lernmaterialien.",
       "bird": "Ein bunter Vogel vor einem hellen, neutralen Hintergrund. Der Vogel ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "vogel": "Ein bunter Vogel vor einem hellen, neutralen Hintergrund. Der Vogel ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "fish": "Ein bunter Fisch vor einem hellen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "fisch": "Ein bunter Fisch vor einem hellen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "elephant": "Ein großer, grauer Elefant vor einem hellen, neutralen Hintergrund. Der Elefant ist komplett sichtbar mit charakteristischen Stoßzähnen und Rüssel. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "elefant": "Ein großer, grauer Elefant vor einem hellen, neutralen Hintergrund. Der Elefant ist komplett sichtbar mit charakteristischen Stoßzähnen und Rüssel. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "tiger": "Ein majestätischer Tiger mit orangefarbenem Fell und schwarzen Streifen vor einem neutralen Hintergrund. Der Tiger ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "rabbit": "Ein süßer, weißer oder brauner Hase vor einem hellen, neutralen Hintergrund. Der Hase sitzt aufrecht mit aufgestellten Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "hase": "Ein süßer, weißer oder brauner Hase vor einem hellen, neutralen Hintergrund. Der Hase sitzt aufrecht mit aufgestellten Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "mouse": "Eine kleine, graue oder braune Maus vor einem hellen, neutralen Hintergrund. Die Maus ist komplett sichtbar mit charakteristischen runden Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "maus": "Eine kleine, graue oder braune Maus vor einem hellen, neutralen Hintergrund. Die Maus ist komplett sichtbar mit charakteristischen runden Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "bear": "Ein brauner Bär vor einem hellen, neutralen Hintergrund. Der Bär ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "bär": "Ein brauner Bär vor einem hellen, neutralen Hintergrund. Der Bär ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "monkey": "Ein süßer Affe vor einem hellen, neutralen Hintergrund. Der Affe sitzt oder steht und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "affe": "Ein süßer Affe vor einem hellen, neutralen Hintergrund. Der Affe sitzt oder steht und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "giraffe": "Eine hohe Giraffe mit charakteristischen Flecken vor einem hellen, neutralen Hintergrund. Die Giraffe ist komplett sichtbar mit ihrem langen Hals. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "zebra": "Ein schwarz-weiß gestreiftes Zebra vor einem hellen, neutralen Hintergrund. Das Zebra ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "sheep": "Ein weißes, wolliges Schaf vor einem hellen, neutralen Hintergrund. Das Schaf ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "schaf": "Ein weißes, wolliges Schaf vor einem hellen, neutralen Hintergrund. Das Schaf ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "cow": "Eine schwarz-weiß gefleckte oder braune Kuh vor einem hellen, neutralen Hintergrund. Die Kuh ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "kuh": "Eine schwarz-weiß gefleckte oder braune Kuh vor einem hellen, neutralen Hintergrund. Die Kuh ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "pig": "Ein rosa Schwein vor einem hellen, neutralen Hintergrund. Das Schwein ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "schwein": "Ein rosa Schwein vor einem hellen, neutralen Hintergrund. Das Schwein ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "duck": "Eine gelbe oder weiße Ente vor einem hellen, neutralen Hintergrund. Die Ente ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "ente": "Eine gelbe oder weiße Ente vor einem hellen, neutralen Hintergrund. Die Ente ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "horse": "Ein braunes oder weißes Pferd vor einem hellen, neutralen Hintergrund. Das Pferd ist komplett sichtbar und elegant dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "pferd": "Ein braunes oder weißes Pferd vor einem hellen, neutralen Hintergrund. Das Pferd ist komplett sichtbar und elegant dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "lion": "Ein majestätischer Löwe mit goldener Mähne vor einem hellen, neutralen Hintergrund. Der Löwe ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "löwe": "Ein majestätischer Löwe mit goldener Mähne vor einem hellen, neutralen Hintergrund. Der Löwe ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "frog": "Ein grüner Frosch vor einem hellen, neutralen Hintergrund. Der Frosch sitzt und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "frosch": "Ein grüner Frosch vor einem hellen, neutralen Hintergrund. Der Frosch sitzt und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
 
       // Farben-Begriffe
       "red": "Ein leuchtend roter Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die rote Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
