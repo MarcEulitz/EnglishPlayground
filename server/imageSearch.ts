@@ -14,9 +14,11 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY }) : null;
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || "";
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY || "";
 
 console.log("Environment Variables geladen:");
 console.log("UNSPLASH_ACCESS_KEY vorhanden:", !!UNSPLASH_ACCESS_KEY);
+console.log("PEXELS_API_KEY vorhanden:", !!PEXELS_API_KEY);
 console.log("OPENAI_API_KEY vorhanden:", !!OPENAI_API_KEY);
 
 interface ImageCandidate {
@@ -113,13 +115,30 @@ async function generateImageCandidates(
 
   for (const query of searchStrategies) {
     try {
-      const strategyCandidates = await searchUnsplashWithFiltering(query);
+      // Erst Unsplash versuchen, dann Pexels als Fallback
+      let strategyCandidates = await searchUnsplashWithFiltering(query);
+      
+      // Falls Unsplash keine Ergebnisse oder Rate Limit, verwende Pexels
+      if (strategyCandidates.length === 0) {
+        console.log(`🔄 Fallback zu Pexels für Query: "${query}"`);
+        strategyCandidates = await searchPexelsWithFiltering(query);
+      }
+      
       allCandidates.push(...strategyCandidates);
       
       // Kurze Pause zwischen Anfragen
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 300));
     } catch (error) {
       console.error(`Fehler bei Suchstrategie "${query}":`, error);
+      
+      // Bei Unsplash-Fehler, versuche Pexels
+      try {
+        console.log(`🔄 Pexels Fallback für fehlerhafte Query: "${query}"`);
+        const pexelsCandidates = await searchPexelsWithFiltering(query);
+        allCandidates.push(...pexelsCandidates);
+      } catch (pexelsError) {
+        console.error(`❌ Auch Pexels fehlgeschlagen für "${query}":`, pexelsError);
+      }
     }
   }
 
@@ -127,24 +146,14 @@ async function generateImageCandidates(
   const uniqueCandidates = removeDuplicatesAndSort(allCandidates);
   
   console.log(`📊 ${uniqueCandidates.length} eindeutige Bildkandidaten für "${word}" gefunden`);
-  return uniqueCandidates.slice(0, 8); // Maximal 8 beste Kandidaten
+  return uniqueCandidates.slice(0, 10); // Erhöht auf 10 beste Kandidaten
 }
 
 async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidate[]> {
   
   if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY.trim() === "" || UNSPLASH_ACCESS_KEY === "your_unsplash_access_key_here") {
-    console.log("⚠️ Keine Unsplash API-Schlüssel konfiguriert, verwende Fallback-Kandidaten");
-    return [
-      {
-        url: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
-        description: "fallback image 1",
-        alt_description: "fallback",
-        downloads: 1000,
-        likes: 50,
-        width: 600,
-        height: 400
-      }
-    ];
+    console.log("⚠️ Keine Unsplash API-Schlüssel konfiguriert, verwende Pexels Fallback");
+    return await searchPexelsWithFiltering(query);
   }
 
   try {
@@ -190,23 +199,120 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
         height: r.height
       }));
 
-    console.log(`✅ ${qualityFiltered.length} qualitätsgefilterte Bilder für "${query}"`);
+    console.log(`✅ ${qualityFiltered.length} qualitätsgefilterte Unsplash-Bilder für "${query}"`);
     return qualityFiltered;
 
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(`❌ Unsplash API Fehler: ${error.response?.status} - ${error.response?.data}`);
       
-      // Bei Rate Limit: längere Pause einbauen
-      if (error.response?.status === 403) {
-        console.log("⏱️ Rate Limit erreicht, warte 2 Sekunden...");
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      // Bei Rate Limit oder anderen Fehlern: Pexels als Fallback
+      if (error.response?.status === 403 || error.response?.status === 429) {
+        console.log("⏱️ Unsplash Rate Limit erreicht, verwende Pexels Fallback");
+        return await searchPexelsWithFiltering(query);
       }
     } else {
       console.error("❌ Unbekannter Fehler bei Unsplash-Suche:", error);
     }
-    return [];
+    
+    // Immer Pexels als Fallback versuchen
+    console.log("🔄 Verwende Pexels als Fallback");
+    return await searchPexelsWithFiltering(query);
   }
+}
+
+async function searchPexelsWithFiltering(query: string): Promise<ImageCandidate[]> {
+  
+  if (!PEXELS_API_KEY || PEXELS_API_KEY.trim() === "" || PEXELS_API_KEY === "your_pexels_api_key_here") {
+    console.log("⚠️ Keine Pexels API-Schlüssel konfiguriert, verwende kuratierte Fallback-Kandidaten");
+    return getCuratedFallbackCandidates(query);
+  }
+
+  try {
+    console.log(`🎨 Pexels-Suche: "${query}"`);
+    
+    const response = await axios.get("https://api.pexels.com/v1/search", {
+      params: {
+        query,
+        per_page: 15,
+        orientation: "landscape",
+        size: "medium"
+      },
+      headers: {
+        Authorization: PEXELS_API_KEY
+      },
+      timeout: 10000 // 10 Sekunden Timeout
+    });
+
+    const results = response.data.photos;
+    
+    if (!results || results.length === 0) {
+      console.log(`⚠️ Keine Pexels-Ergebnisse für "${query}"`);
+      return getCuratedFallbackCandidates(query);
+    }
+
+    // Qualitätsfilterung für Pexels
+    const qualityFiltered = results
+      .filter((r: any) => {
+        return r.width >= 400 &&           // Mindestbreite
+               r.height >= 300 &&          // Mindesthöhe
+               r.src && r.src.medium;      // Gültige URL
+      })
+      .map((r: any) => ({
+        url: r.src.medium,
+        description: r.alt || r.photographer || "",
+        alt_description: r.alt || "",
+        downloads: 500,  // Pexels hat keine Download-Zahlen, verwende Standard
+        likes: 25,       // Pexels hat keine Like-Zahlen, verwende Standard
+        width: r.width,
+        height: r.height
+      }));
+
+    console.log(`✅ ${qualityFiltered.length} qualitätsgefilterte Pexels-Bilder für "${query}"`);
+    return qualityFiltered;
+
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(`❌ Pexels API Fehler: ${error.response?.status} - ${error.response?.data}`);
+      
+      // Bei Rate Limit: längere Pause einbauen
+      if (error.response?.status === 429) {
+        console.log("⏱️ Pexels Rate Limit erreicht, warte 3 Sekunden...");
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+    } else {
+      console.error("❌ Unbekannter Fehler bei Pexels-Suche:", error);
+    }
+    
+    return getCuratedFallbackCandidates(query);
+  }
+}
+
+function getCuratedFallbackCandidates(query: string): ImageCandidate[] {
+  // Kuratierte Fallback-Bilder wenn beide APIs fehlschlagen
+  const fallbackImages = [
+    {
+      url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400",
+      description: `fallback image for ${query}`,
+      alt_description: "fallback",
+      downloads: 1000,
+      likes: 50,
+      width: 600,
+      height: 400
+    },
+    {
+      url: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+      description: `fallback image for ${query}`,
+      alt_description: "fallback",
+      downloads: 1000,
+      likes: 50,
+      width: 600,
+      height: 400
+    }
+  ];
+  
+  console.log(`📚 Verwende kuratierte Fallback-Kandidaten für "${query}"`);
+  return fallbackImages;
 }
 
 function removeDuplicatesAndSort(candidates: ImageCandidate[]): ImageCandidate[] {
