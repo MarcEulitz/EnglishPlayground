@@ -38,14 +38,32 @@ export function clearAnimalImageCache(): void {
     'deer', 'owl', 'butterfly', 'bee', 'snake', 'turtle', 'fox', 'wolf', 'dolphin', 'shark',
     'penguin', 'goat', 'kangaroo', 'octopus', 'whale', 'katze', 'hund', 'vogel', 'fisch',
     'elefant', 'tiger', 'hase', 'maus', 'bär', 'affe', 'giraffe', 'zebra', 'schaf', 'kuh',
-    'schwein', 'ente', 'pferd', 'löwe', 'frosch', 'huhn'
+    'schwein', 'ente', 'pferd', 'löwe', 'frosch', 'huhn', 'tier', 'tiere', 'animal', 'animals'
   ];
   
+  let deletedCount = 0;
   animalWords.forEach(word => {
-    delete familyImageCache[word.toLowerCase()];
+    if (familyImageCache[word.toLowerCase()]) {
+      delete familyImageCache[word.toLowerCase()];
+      deletedCount++;
+    }
   });
   
-  console.log(`🗑️ Cache für ${animalWords.length} Tierbegriffe geleert`);
+  // Zusätzlich alle Cache-Einträge durchsuchen und Tier-bezogene entfernen
+  const allKeys = Object.keys(familyImageCache);
+  allKeys.forEach(key => {
+    const cacheEntry = familyImageCache[key];
+    if (cacheEntry && cacheEntry.source && 
+        (cacheEntry.source.includes('Tier') || 
+         cacheEntry.source.includes('Animal') ||
+         cacheEntry.source.includes('ChatGPT-4o Tier'))) {
+      delete familyImageCache[key];
+      deletedCount++;
+    }
+  });
+  
+  console.log(`🗑️ ALLE TIER-BILDER GELÖSCHT: ${deletedCount} Bilder aus dem Cache entfernt`);
+  console.log(`📊 Verbleibende Cache-Einträge: ${Object.keys(familyImageCache).length}`);
 }
 
 interface ImageCandidate {
