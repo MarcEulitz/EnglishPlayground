@@ -24,7 +24,7 @@ const WelcomePage: React.FC = () => {
     const user = users.find(u => u.id === userId);
     if (user) {
       setCurrentUser(user);
-      navigate('/select-mode');
+      navigate('/home');
     }
   };
 
