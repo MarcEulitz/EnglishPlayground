@@ -712,7 +712,7 @@ async function performLogicCheck(
       reasoning: `HOCHQUALITATIVES, SEMANTISCH KORREKTES Bild: ${evaluation.reasoning}. Semantik: ${semanticLogicResult.reason}`,
       logicCheck: true
     };
-  } else {    console.log(`❌ Bild für "${word}" fällt durch VERSCHÄRFTE Qualitätsprüfung:`);
+  } else {    console.log(`❌ Bild für "${word}" fällt durch VERSCHÄRFE Qualitätsprüfung:`);
     console.log(`   - Qualität bestanden: ${qualityPassed}`);
     console.log(`   - Sicherheit bestanden: ${allSafetyChecksPassed}`);
     console.log(`   - Semantische Logik bestanden: ${semanticLogicResult.passed}`);
@@ -1210,7 +1210,34 @@ async function generateImageWithChatGPT(
       "green": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
       "grün": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
       "yellow": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "gelb": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien."
+      "gelb": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+
+      // Essen-Begriffe
+      "apple": "Ein roter, glänzender Apfel vor einem weißen, neutralen Hintergrund. Der Apfel ist perfekt geformt, klar erkennbar und ideal für deutsche Kinder-Lernmaterialien.",
+      "apfel": "Ein roter, glänzender Apfel vor einem weißen, neutralen Hintergrund. Der Apfel ist perfekt geformt, klar erkennbar und ideal für deutsche Kinder-Lernmaterialien.",
+      "banana": "Eine gelbe, reife Banane vor einem weißen, neutralen Hintergrund. Die Banane ist klar erkennbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
+      "banane": "Eine gelbe, reife Banane vor einem weißen, neutralen Hintergrund. Die Banane ist klar erkennbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
+      "bread": "Ein frisches Brot oder Brotlaib vor einem weißen, neutralen Hintergrund. Das Brot ist klar erkennbar, appetitlich und perfekt für deutsche Kinder-Lernmaterialien.",
+      "brot": "Ein frisches Brot oder Brotlaib vor einem weißen, neutralen Hintergrund. Das Brot ist klar erkennbar, appetitlich und perfekt für deutsche Kinder-Lernmaterialien.",
+      "cheese": "Ein Stück gelber Käse vor einem weißen, neutralen Hintergrund. Der Käse ist klar erkennbar, appetitlich und perfekt für deutsche Kinder-Lernmaterialien.",
+      "käse": "Ein Stück gelber Käse vor einem weißen, neutralen Hintergrund. Der Käse ist klar erkennbar, appetitlich und perfekt für deutsche Kinder-Lernmaterialien.",
+      "egg": "Ein weißes Ei vor einem weißen, neutralen Hintergrund. Das Ei ist klar erkennbar, perfekt oval und ideal für deutsche Kinder-Lernmaterialien.",
+      "ei": "Ein weißes Ei vor einem weißen, neutralen Hintergrund. Das Ei ist klar erkennbar, perfekt oval und ideal für deutsche Kinder-Lernmaterialien.",
+      "orange": "Eine orangefarbene Orange vor einem weißen, neutralen Hintergrund. Die Orange ist klar erkennbar, rund und perfekt für deutsche Kinder-Lernmaterialien.",
+      "apfelsine": "Eine orangefarbene Orange vor einem weißen, neutralen Hintergrund. Die Orange ist klar erkennbar, rund und perfekt für deutsche Kinder-Lernmaterialien.",
+      "milk": "Ein Glas weiße Milch vor einem weißen, neutralen Hintergrund. Die Milch ist klar erkennbar, frisch und perfekt für deutsche Kinder-Lernmaterialien.",
+      "milch": "Ein Glas weiße Milch vor einem weißen, neutralen Hintergrund. Die Milch ist klar erkennbar, frisch und perfekt für deutsche Kinder-Lernmaterialien.",
+      "rice": "Weißer Reis in einer Schüssel vor einem weißen, neutralen Hintergrund. Der Reis ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "reis": "Weißer Reis in einer Schüssel vor einem weißen, neutralen Hintergrund. Der Reis ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "soup": "Eine dampfende Suppe in einer Schüssel vor einem weißen, neutralen Hintergrund. Die Suppe ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "suppe": "Eine dampfende Suppe in einer Schüssel vor einem weißen, neutralen Hintergrund. Die Suppe ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "pizza": "Eine runde Pizza mit Käse und Tomatensoße vor einem weißen, neutralen Hintergrund. Die Pizza ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "chicken": "Ein gebratenes Hühnchen vor einem weißen, neutralen Hintergrund. Das Hühnchen ist appetitlich und perfekt für deutsche Kinder-Lernmaterialien.",
+      "hähnchen": "Ein gebratenes Hühnchen vor einem weißen, neutralen Hintergrund. Das Hühnchen ist appetitlich und perfekt für deutsche Kinder-Lernmaterialien.",
+      "fish": "Ein frischer Fisch vor einem weißen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "fisch": "Ein frischer Fisch vor einem weißen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "water": "Ein Glas klares Wasser vor einem weißen, neutralen Hintergrund. Das Wasser ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "wasser": "Ein Glas klares Wasser vor einem weißen, neutralen Hintergrund. Das Wasser ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
     };
 
     const imagePrompt = imagePrompts[word.toLowerCase()] || 
