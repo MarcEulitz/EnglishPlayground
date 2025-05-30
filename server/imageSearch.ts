@@ -1076,7 +1076,11 @@ function getCuratedFallbackImage(word: string, category: string): string {
   // Kuratierte Tier-Bilder (korrigiert)
   const curatedAnimalImages: Record<string, string> = {
     "giraffe": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400&q=80",
-    "giraffe_de": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400&q=80"
+    "giraffe_de": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400&q=80",
+    "chicken": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
+    "huhn": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
+    "duck": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
+    "ente": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80"
   };
 
   // SPEZIFISCHE PERFEKTE BILDER FÜR FAMILIE-KATEGORIE (nach Ihren Anforderungen)
@@ -1525,6 +1529,8 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
         "schwein": "https://images.unsplash.com/photo-1531004650327-fd7662d57830?fit=crop&w=600&h=400&q=80",
         "duck": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
         "ente": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
+        "chicken": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
+        "huhn": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
         "horse": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
         "pferd": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
         "lion": "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?fit=crop&w=600&h=400&q=80",
