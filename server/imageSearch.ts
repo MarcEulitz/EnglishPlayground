@@ -15,10 +15,12 @@ const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY }) : null;
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || "";
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || "";
+const PIXABAY_API_KEY = process.env.PIXABAY_API_KEY || "";
 
 console.log("Environment Variables geladen:");
 console.log("UNSPLASH_ACCESS_KEY vorhanden:", !!UNSPLASH_ACCESS_KEY);
 console.log("PEXELS_API_KEY vorhanden:", !!PEXELS_API_KEY);
+console.log("PIXABAY_API_KEY vorhanden:", !!PIXABAY_API_KEY);
 console.log("OPENAI_API_KEY vorhanden:", !!OPENAI_API_KEY);
 
 interface ImageCandidate {
@@ -115,10 +117,16 @@ async function generateImageCandidates(
 
   for (const query of searchStrategies) {
     try {
-      // Erst Unsplash versuchen, dann Pexels als Fallback
+      // Cascading Fallback: Unsplash -> Pixabay -> Pexels
       let strategyCandidates = await searchUnsplashWithFiltering(query);
       
-      // Falls Unsplash keine Ergebnisse oder Rate Limit, verwende Pexels
+      // Falls Unsplash keine Ergebnisse, versuche Pixabay
+      if (strategyCandidates.length === 0) {
+        console.log(`🔄 Fallback zu Pixabay für Query: "${query}"`);
+        strategyCandidates = await searchPixabayWithFiltering(query);
+      }
+      
+      // Falls auch Pixabay keine Ergebnisse, verwende Pexels
       if (strategyCandidates.length === 0) {
         console.log(`🔄 Fallback zu Pexels für Query: "${query}"`);
         strategyCandidates = await searchPexelsWithFiltering(query);
@@ -131,13 +139,19 @@ async function generateImageCandidates(
     } catch (error) {
       console.error(`Fehler bei Suchstrategie "${query}":`, error);
       
-      // Bei Unsplash-Fehler, versuche Pexels
+      // Bei Fehlern: Alle Fallback-APIs durchprobieren
       try {
-        console.log(`🔄 Pexels Fallback für fehlerhafte Query: "${query}"`);
-        const pexelsCandidates = await searchPexelsWithFiltering(query);
-        allCandidates.push(...pexelsCandidates);
-      } catch (pexelsError) {
-        console.error(`❌ Auch Pexels fehlgeschlagen für "${query}":`, pexelsError);
+        console.log(`🔄 Pixabay Fallback für fehlerhafte Query: "${query}"`);
+        const pixabayCandidates = await searchPixabayWithFiltering(query);
+        allCandidates.push(...pixabayCandidates);
+      } catch (pixabayError) {
+        try {
+          console.log(`🔄 Pexels Fallback für fehlerhafte Query: "${query}"`);
+          const pexelsCandidates = await searchPexelsWithFiltering(query);
+          allCandidates.push(...pexelsCandidates);
+        } catch (pexelsError) {
+          console.error(`❌ Alle APIs fehlgeschlagen für "${query}"`);
+        }
       }
     }
   }
@@ -146,7 +160,7 @@ async function generateImageCandidates(
   const uniqueCandidates = removeDuplicatesAndSort(allCandidates);
   
   console.log(`📊 ${uniqueCandidates.length} eindeutige Bildkandidaten für "${word}" gefunden`);
-  return uniqueCandidates.slice(0, 10); // Erhöht auf 10 beste Kandidaten
+  return uniqueCandidates.slice(0, 12); // Erhöht auf 12 beste Kandidaten
 }
 
 async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidate[]> {
@@ -215,8 +229,86 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
       console.error("❌ Unbekannter Fehler bei Unsplash-Suche:", error);
     }
     
-    // Immer Pexels als Fallback versuchen
-    console.log("🔄 Verwende Pexels als Fallback");
+    // Zuerst Pixabay, dann Pexels als Fallback versuchen
+    console.log("🔄 Verwende Pixabay als Fallback");
+    try {
+      return await searchPixabayWithFiltering(query);
+    } catch (pixabayError) {
+      console.log("🔄 Verwende Pexels als finaler Fallback");
+      return await searchPexelsWithFiltering(query);
+    }
+  }
+}
+
+async function searchPixabayWithFiltering(query: string): Promise<ImageCandidate[]> {
+  
+  if (!PIXABAY_API_KEY || PIXABAY_API_KEY.trim() === "" || PIXABAY_API_KEY === "your_pixabay_api_key_here") {
+    console.log("⚠️ Keine Pixabay API-Schlüssel konfiguriert, verwende Pexels Fallback");
+    return await searchPexelsWithFiltering(query);
+  }
+
+  try {
+    console.log(`🎯 Pixabay-Suche: "${query}"`);
+    
+    const response = await axios.get("https://pixabay.com/api/", {
+      params: {
+        key: PIXABAY_API_KEY,
+        q: query,
+        image_type: "photo",
+        orientation: "horizontal",
+        category: "backgrounds,fashion,nature,science,education,people,animals,places,business,food",
+        min_width: 400,
+        min_height: 300,
+        safesearch: "true",
+        per_page: 15,
+        order: "popular"
+      },
+      timeout: 10000 // 10 Sekunden Timeout
+    });
+
+    const results = response.data.hits;
+    
+    if (!results || results.length === 0) {
+      console.log(`⚠️ Keine Pixabay-Ergebnisse für "${query}"`);
+      return await searchPexelsWithFiltering(query);
+    }
+
+    // Qualitätsfilterung für Pixabay
+    const qualityFiltered = results
+      .filter((r: any) => {
+        return r.downloads > 1000 &&        // Mindestens 1000 Downloads
+               r.likes > 50 &&              // Mindestens 50 Likes
+               r.webformatWidth >= 400 &&   // Mindestbreite
+               r.webformatHeight >= 300 &&  // Mindesthöhe
+               r.webformatURL;              // Gültige URL
+      })
+      .map((r: any) => ({
+        url: r.webformatURL,
+        description: r.tags || "",
+        alt_description: r.tags || "",
+        downloads: r.downloads,
+        likes: r.likes,
+        width: r.webformatWidth,
+        height: r.webformatHeight
+      }));
+
+    console.log(`✅ ${qualityFiltered.length} qualitätsgefilterte Pixabay-Bilder für "${query}"`);
+    return qualityFiltered;
+
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(`❌ Pixabay API Fehler: ${error.response?.status} - ${error.response?.data}`);
+      
+      // Bei Rate Limit: längere Pause einbauen
+      if (error.response?.status === 429) {
+        console.log("⏱️ Pixabay Rate Limit erreicht, warte 2 Sekunden...");
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    } else {
+      console.error("❌ Unbekannter Fehler bei Pixabay-Suche:", error);
+    }
+    
+    // Pexels als finaler Fallback
     return await searchPexelsWithFiltering(query);
   }
 }
