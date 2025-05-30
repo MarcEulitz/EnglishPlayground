@@ -1178,6 +1178,8 @@ async function generateImageWithChatGPT(
       "kleber": "Ein Klebestift oder eine Klebeflasche vor einem weißen, neutralen Hintergrund. Der Kleber ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "ruler": "Ein Lineal aus Holz oder Plastik vor einem weißen, neutralen Hintergrund. Das Lineal ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "lineal": "Ein Lineal aus Holz oder Plastik vor einem weißen, neutralen Hintergrund. Das Lineal ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "notebook": "Ein einzelnes Schulheft mit spiralförmiger Bindung oder einem einfachen Heft mit Linien vor einem weißen, neutralen Hintergrund. Das Heft ist aufgeschlagen und zeigt leere oder linierte Seiten. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "heft": "Ein einzelnes Schulheft mit spiralförmiger Bindung oder einem einfachen Heft mit Linien vor einem weißen, neutralen Hintergrund. Das Heft ist aufgeschlagen und zeigt leere oder linierte Seiten. Perfekt für deutsche Kinder-Lernmaterialien.",
 
       // Transport-Begriffe  
       "car": "Ein modernes Auto vor einem hellen, neutralen Hintergrund. Das Auto ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
@@ -1289,3 +1291,5 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
 
       return curatedFamilyImages[word.toLowerCase()] || "https://cdn.pixabay.com/photo/2016/11/29/04/19/family-1867100_640.jpg";
     }
+
+This code updates the prompts for generating images of "notebook" and "heft" using the ChatGPT-4o model, aiming for a more accurate representation of a school notebook.
