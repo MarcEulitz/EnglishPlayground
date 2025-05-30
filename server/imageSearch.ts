@@ -448,65 +448,74 @@ async function evaluateWithGPT4o(
   }
 
   const prompt = `
-Du bist ein EXTREM kritischer Bildexperte für deutsche Kinder-Lernmaterialien. Analysiere diese Bilder mit HÖCHSTER PRÄZISION.
+Du bist ein ULTRA-STRENGER semantischer Bildprüfer für deutsche Kinder-Lernmaterialien. VERSCHÄRFTE ANALYSE ERFORDERLICH!
 
-KONTEXT:
+KRITISCHER KONTEXT:
 - Kategorie: "${category}"
-- Englisches Wort: "${word}"
+- Englisches Wort: "${word}" 
 - Deutsche Übersetzung: "${translation}"
-- Zielgruppe: Deutsche Kinder 6-11 Jahre, die Englisch lernen
+- Zielgruppe: Deutsche Kinder 6-11 Jahre
 
-ULTRA-STRENGE BEWERTUNGSKRITERIEN:
+SPEZIELLE SEMANTISCHE REGELN FÜR FAMILIENBEGRIFFE:
+${getSemanticRulesForPrompt(word, translation)}
 
-1. PERFEKTE SEMANTISCHE ÜBEREINSTIMMUNG (40%):
-   - Zeigt das Bild EXAKT "${word}" als HAUPTOBJEKT?
-   - Ist es das BESTE Beispiel für "${word}"?
-   - Keine ähnlichen Objekte akzeptiert (Auto ≠ LKW, Katze ≠ Kätzchen)
+DRASTISCH VERSCHÄRFTE BEWERTUNGSKRITERIEN:
 
-2. PÄDAGOGISCHE EIGNUNG (25%):
-   - Für 6-11-Jährige sofort erkennbar?
-   - Einfacher, ungestörter Hintergrund?
-   - Objekt nimmt mindestens 40% des Bildes ein?
+1. SEMANTISCHE PRÄZISION (60% - ERHÖHT!):
+   - Zeigt das Bild EXAKT "${word}" ohne jede Mehrdeutigkeit?
+   - Bei Familienbegriffen: KORREKTE ANZAHL PERSONEN?
+   - "parents" = ZWEI Personen (Mann + Frau), NICHT eine Person!
+   - "family" = MINDESTENS drei Personen (2 Erwachsene + Kind/er)
+   - KEINE Interpretationsspielräume akzeptiert!
 
-3. BILDQUALITÄT (20%):
-   - Scharfer Fokus auf Hauptobjekt?
-   - Gute Beleuchtung und Kontrast?
-   - Professionelle Bildqualität?
+2. EINDEUTIGKEIT (25%):
+   - Ist das Bild für ein 7-jähriges Kind SOFORT eindeutig?
+   - Keine verwirrenden oder ablenkenden Elemente?
+   - Hauptobjekt nimmt MINDESTENS 50% des Bildes ein?
 
-4. KINDERFREUNDLICHKEIT (15%):
-   - Absolut keine verstörenden Inhalte?
-   - Positive, lernförderliche Darstellung?
-   - Altersgerechte Ästhetik?
+3. BILDQUALITÄT (10%):
+   - Scharfer Fokus, professionelle Qualität
+   - Klare Beleuchtung und Kontraste
 
-KRITISCHE ABLEHNUNGSGRÜNDE:
-- Objekt ist nicht das gesuchte Wort
-- Mehrere Objekte wenn Einzahl gesucht
-- Objekt zu klein oder unklar
-- Hintergrund zu ablenkend
-- Schlechte Bildqualität
-- Ungeeignet für Kinder
+4. KINDERFREUNDLICHKEIT (5%):
+   - Absolut geeignet für Kinder
+   - Positive Darstellung
 
-BILDKANDIDATEN ZUR ANALYSE:
+SOFORTIGE ABLEHNUNG BEI:
+- Falscher Anzahl Personen für Familienbegriffe
+- Mehrdeutigen oder unklaren Darstellungen  
+- Ähnlichen aber nicht exakten Objekten
+- Zu kleinen oder unklaren Hauptobjekten
+- Ablenkenden Hintergründen oder Nebenelementen
+
+BILDKANDIDATEN ZUR ULTRA-STRENGEN ANALYSE:
 ${candidates.map((c, i) => `${i + 1}. URL: ${c.url}
    Beschreibung: "${c.description}"
    Alt-Text: "${c.alt_description}"
    Qualität: ${c.downloads} Downloads, ${c.likes} Likes, ${c.width}x${c.height}px`).join('\n\n')}
 
-STRENGE LOGIKPRÜFUNG ERFORDERLICH:
-- Ist das ausgewählte Bild WIRKLICH das beste für "${word}"?
-- Würde ein 7-jähriges Kind sofort "${word}" erkennen?
-- Gibt es IRGENDWELCHE Zweifel an der Eignung?
+ULTRA-STRENGE LOGIKPRÜFUNG:
+- Ist das Bild 100% semantisch korrekt für "${word}"?
+- Entspricht es EXAKT den definierten Regeln?
+- Würde JEDES deutsche Kind sofort "${word}" erkennen?
+- Gibt es IRGENDEINEN Zweifel? → DANN ABLEHNEN!
+
+CONFIDENCE-RICHTLINIEN:
+- 0.95+ = Perfekte semantische Übereinstimmung
+- 0.9+ = Sehr gute Übereinstimmung  
+- 0.8+ = Gute Übereinstimmung
+- <0.8 = Ungeeignet, ablehnen!
 
 ANTWORTE NUR MIT VALIDEM JSON:
 {
-  "bestImageIndex": number (1-${candidates.length} oder -1 wenn ALLE ungeeignet),
-  "confidence": number (0.0-1.0, sei SEHR konservativ),
-  "reasoning": "Detaillierte deutsche Begründung der Auswahl",
-  "semanticMatch": boolean (true nur bei PERFEKTER Übereinstimmung),
-  "qualityScore": number (0.0-1.0, strenge Bewertung der Bildqualität),
-  "logicCheck": boolean (true nur wenn 100% sicher für Kinder geeignet),
-  "detailedAnalysis": "Kritische Analyse jedes Bildes mit spezifischen Stärken/Schwächen",
-  "criticalIssues": ["Liste aller gefundenen Probleme"]
+  "bestImageIndex": number (1-${candidates.length} oder -1 wenn ALLE semantisch ungeeignet),
+  "confidence": number (0.0-1.0, sei ULTRA-konservativ, nur >0.9 bei perfekter Semantik),
+  "reasoning": "Detaillierte deutsche Begründung mit semantischer Analyse",
+  "semanticMatch": boolean (true NUR bei 100%iger semantischer Korrektheit),
+  "qualityScore": number (0.0-1.0, strenge Bildqualitätsbewertung),
+  "logicCheck": boolean (true NUR wenn semantisch + qualitativ perfekt),
+  "detailedAnalysis": "Semantische Analyse jedes Bildes mit Personenanzahl etc.",
+  "criticalIssues": ["Alle semantischen und qualitativen Probleme auflisten"]
 }`;
 
   try {
@@ -575,7 +584,7 @@ async function performLogicCheck(
   translation: string
 ): Promise<ImageSearchResult> {
 
-  console.log(`🔍 Führe Logikprüfung für "${word}" durch...`);
+  console.log(`🔍 Führe DRASTISCH VERSCHÄRFTE Logikprüfung für "${word}" durch...`);
 
   // 1. Grundlegende Validierung
   if (evaluation.bestImageIndex === -1 || evaluation.bestImageIndex < 1 || evaluation.bestImageIndex > candidates.length) {
@@ -590,49 +599,238 @@ async function performLogicCheck(
 
   const selectedCandidate = candidates[evaluation.bestImageIndex - 1];
 
-  // 2. Strenge Qualitätsprüfung
-  const qualityPassed = 
-    evaluation.confidence >= 0.75 &&        // Mindest-Confidence erhöht
-    evaluation.semanticMatch === true &&     // Perfekte semantische Übereinstimmung
-    evaluation.qualityScore >= 0.7 &&       // Hohe Bildqualität
-    evaluation.logicCheck === true &&       // GPT-4o Logikprüfung bestanden
-    selectedCandidate.downloads >= 1000 &&  // Beliebtes Bild
-    selectedCandidate.likes >= 30;          // Gut bewertetes Bild
+  // 2. VERSCHÄRFTE SEMANTISCHE LOGIKPRÜFUNG
+  const semanticLogicResult = await performSemanticLogicCheck(selectedCandidate.url, word, translation, category);
+  
+  if (!semanticLogicResult.passed) {
+    console.log(`❌ SEMANTISCHE LOGIKPRÜFUNG FEHLGESCHLAGEN für "${word}": ${semanticLogicResult.reason}`);
+    return {
+      bestImageUrl: getCuratedFallbackImage(word, category),
+      confidence: 0.3,
+      reasoning: `SEMANTISCHE LOGIKPRÜFUNG FEHLGESCHLAGEN: ${semanticLogicResult.reason}. Verwende kuratiertes Fallback.`,
+      logicCheck: false
+    };
+  }
 
-  // 3. Zusätzliche Sicherheitsprüfungen
+  // 3. Drastisch verschärfte Qualitätsprüfung (von 0.75 auf 0.9)
+  const qualityPassed = 
+    evaluation.confidence >= 0.9 &&         // DRASTISCH erhöhte Mindest-Confidence
+    evaluation.semanticMatch === true &&     // Perfekte semantische Übereinstimmung
+    evaluation.qualityScore >= 0.8 &&       // ERHÖHTE Bildqualität
+    evaluation.logicCheck === true &&       // GPT-4o Logikprüfung bestanden
+    selectedCandidate.downloads >= 2000 &&  // ERHÖHTE Mindest-Downloads
+    selectedCandidate.likes >= 50;          // ERHÖHTE Mindest-Likes
+
+  // 4. Zusätzliche Sicherheitsprüfungen
   const safetyChecks = {
     hasValidUrl: selectedCandidate.url && selectedCandidate.url.startsWith('https://'),
     hasDescription: selectedCandidate.description || selectedCandidate.alt_description,
-    goodDimensions: selectedCandidate.width >= 400 && selectedCandidate.height >= 300,
-    noCriticalIssues: evaluation.criticalIssues.length === 0
+    goodDimensions: selectedCandidate.width >= 500 && selectedCandidate.height >= 400, // ERHÖHTE Mindestauflösung
+    noCriticalIssues: evaluation.criticalIssues.length === 0,
+    semanticLogicPassed: semanticLogicResult.passed
   };
 
   const allSafetyChecksPassed = Object.values(safetyChecks).every(check => check);
 
-  // 4. Finale Entscheidung
-  if (qualityPassed && allSafetyChecksPassed) {
-    console.log(`✅ Bild für "${word}" besteht alle Prüfungen - Confidence: ${evaluation.confidence}`);
-    console.log(`📊 Detaillierte Analyse: ${evaluation.detailedAnalysis}`);
+  // 5. Finale Entscheidung mit verschärften Kriterien
+  if (qualityPassed && allSafetyChecksPassed && semanticLogicResult.passed) {
+    console.log(`✅ Bild für "${word}" besteht ALLE VERSCHÄRFTEN Prüfungen - Confidence: ${evaluation.confidence}`);
+    console.log(`📊 Semantische Logik: ${semanticLogicResult.reason}`);
     
     return {
       bestImageUrl: selectedCandidate.url,
       confidence: evaluation.confidence,
-      reasoning: `Hochwertiges Bild ausgewählt: ${evaluation.reasoning}`,
+      reasoning: `HOCHQUALITATIVES, SEMANTISCH KORREKTES Bild: ${evaluation.reasoning}. Semantik: ${semanticLogicResult.reason}`,
       logicCheck: true
     };
   } else {
-    console.log(`❌ Bild für "${word}" fällt durch Qualitätsprüfung:`);
+    console.log(`❌ Bild für "${word}" fällt durch VERSCHÄRFTE Qualitätsprüfung:`);
     console.log(`   - Qualität bestanden: ${qualityPassed}`);
     console.log(`   - Sicherheit bestanden: ${allSafetyChecksPassed}`);
+    console.log(`   - Semantische Logik bestanden: ${semanticLogicResult.passed}`);
     console.log(`   - Kritische Probleme: ${evaluation.criticalIssues.join(', ')}`);
     
     return {
       bestImageUrl: getCuratedFallbackImage(word, category),
-      confidence: 0.6,
-      reasoning: `Automatische Suche unzureichend (Confidence: ${evaluation.confidence}, Logik: ${evaluation.logicCheck}). Verwende kuratiertes Bild. Probleme: ${evaluation.criticalIssues.join(', ')}`,
+      confidence: 0.4,
+      reasoning: `VERSCHÄRFTE PRÜFUNG FEHLGESCHLAGEN. Confidence: ${evaluation.confidence}, Semantik: ${semanticLogicResult.reason}. Verwende kuratiertes Bild.`,
       logicCheck: false
     };
   }
+}
+
+/**
+ * NEUE DRASTISCH VERSCHÄRFTE SEMANTISCHE LOGIKPRÜFUNG
+ */
+async function performSemanticLogicCheck(
+  imageUrl: string,
+  word: string,
+  translation: string,
+  category: string
+): Promise<{ passed: boolean; reason: string; confidence: number }> {
+
+  if (!openai || !OPENAI_API_KEY) {
+    return {
+      passed: false,
+      reason: "Keine OpenAI API verfügbar für semantische Prüfung",
+      confidence: 0
+    };
+  }
+
+  // Spezifische semantische Regeln für kritische Wörter
+  const semanticRules = getSemanticRules(word, translation);
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: `Du bist ein ULTRA-STRENGER semantischer Prüfer für deutsche Kinder-Lernmaterialien.
+
+DEINE AUFGABE: Prüfe ob das Bild EXAKT die semantischen Anforderungen für "${word}" (deutsch: "${translation}") erfüllt.
+
+KRITISCHE SEMANTISCHE REGELN:
+${semanticRules}
+
+ABSOLUT STRENGE BEWERTUNG:
+- NUR bei 100%iger semantischer Korrektheit: bestanden
+- Bei JEDEM Zweifel: durchgefallen
+- Bei mehreren möglichen Interpretationen: durchgefallen
+- Bei unklaren oder mehrdeutigen Darstellungen: durchgefallen
+
+ANTWORT NUR MIT JSON:
+{
+  "passed": boolean (true NUR bei 100%iger Korrektheit),
+  "reason": "Deutsche Begründung der semantischen Analyse",
+  "confidence": number (0.0-1.0)
+}`
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `SEMANTISCHE PRÜFUNG: Zeigt dieses Bild EXAKT "${word}" (${translation}) gemäß den definierten Regeln?`
+            },
+            {
+              type: "image_url",
+              image_url: { url: imageUrl }
+            }
+          ]
+        }
+      ],
+      response_format: { type: "json_object" },
+      max_tokens: 400,
+      temperature: 0.1
+    });
+
+    const content = response.choices[0].message.content;
+    if (!content) {
+      throw new Error("Keine Antwort von semantischer Prüfung");
+    }
+
+    const result = JSON.parse(content);
+    
+    return {
+      passed: Boolean(result.passed),
+      reason: result.reason || "Keine Begründung verfügbar",
+      confidence: Math.max(0, Math.min(1, result.confidence || 0))
+    };
+
+  } catch (error) {
+    console.error("❌ Semantische Logikprüfung fehlgeschlagen:", error);
+    return {
+      passed: false,
+      reason: `Technischer Fehler bei semantischer Prüfung: ${error instanceof Error ? error.message : "Unbekannt"}`,
+      confidence: 0
+    };
+  }
+}
+
+/**
+ * Definiert spezifische semantische Regeln für kritische Wörter
+ */
+function getSemanticRules(word: string, translation: string): string {
+  const rules: Record<string, string> = {
+    "parents": `
+ELTERN erfordern ZWINGEND:
+- GENAU ZWEI Personen (ein Mann UND eine Frau)
+- Beide müssen als Erwachsene erkennbar sein
+- NICHT akzeptiert: nur eine Person, nur Frauen, nur Männer
+- NICHT akzeptiert: Kinder oder Jugendliche
+- KLAR erkennbare Eltern-Rolle (z.B. mit Kindern zusammen)`,
+
+    "family": `
+FAMILIE erfordert ZWINGEND:
+- MINDESTENS DREI Personen: zwei Erwachsene (Eltern) + mindestens ein Kind
+- Klar erkennbare Familienstruktur
+- NICHT akzeptiert: nur Erwachsene, nur Kinder, nur zwei Personen
+- Alle Familienmitglieder müssen im Bild sichtbar sein`,
+
+    "mother": `
+MUTTER erfordert ZWINGEND:
+- EINE erwachsene Frau
+- Klar erkennbar als Mutter (idealerweise mit Kind/Kindern)
+- NICHT akzeptiert: junge Mädchen, männliche Personen
+- Mütterliche Rolle oder Kontext erkennbar`,
+
+    "father": `
+VATER erfordert ZWINGEND:
+- EINEN erwachsenen Mann
+- Klar erkennbar als Vater (idealerweise mit Kind/Kindern)
+- NICHT akzeptiert: junge Jungen, weibliche Personen
+- Väterliche Rolle oder Kontext erkennbar`,
+
+    "grandmother": `
+GROSSMUTTER erfordert ZWINGEND:
+- EINE ältere, erwachsene Frau
+- Erkennbar älteres Alter (Großmutter-Generation)
+- NICHT akzeptiert: junge Frauen, Männer
+- Großmütterliche Erscheinung oder Kontext`,
+
+    "grandfather": `
+GROSSVATER erfordert ZWINGEND:
+- EINEN älteren, erwachsenen Mann
+- Erkennbar älteres Alter (Großvater-Generation)
+- NICHT akzeptiert: junge Männer, Frauen
+- Großväterliche Erscheinung oder Kontext`,
+
+    "son": `
+SOHN erfordert ZWINGEND:
+- EINEN männlichen Nachkommen (Junge oder junger Mann)
+- Klar als männlich erkennbar
+- NICHT akzeptiert: erwachsene Männer ohne Sohn-Kontext, Mädchen
+- Sohn-Beziehung oder -Kontext erkennbar`,
+
+    "daughter": `
+TOCHTER erfordert ZWINGEND:
+- EINE weibliche Nachkommin (Mädchen oder junge Frau)
+- Klar als weiblich erkennbar
+- NICHT akzeptiert: erwachsene Frauen ohne Tochter-Kontext, Jungen
+- Tochter-Beziehung oder -Kontext erkennbar`,
+
+    "brother": `
+BRUDER erfordert ZWINGEND:
+- EINEN männlichen Bruder (Junge oder junger Mann)
+- Klar als Bruder erkennbar (idealerweise mit Geschwistern)
+- NICHT akzeptiert: einzelne Männer ohne Bruder-Kontext, Schwestern
+- Geschwister-Kontext erkennbar`,
+
+    "sister": `
+SCHWESTER erfordert ZWINGEND:
+- EINE weibliche Schwester (Mädchen oder junge Frau)
+- Klar als Schwester erkennbar (idealerweise mit Geschwistern)
+- NICHT akzeptiert: einzelne Frauen ohne Schwester-Kontext, Brüder
+- Geschwister-Kontext erkennbar`
+  };
+
+  return rules[word.toLowerCase()] || `
+ALLGEMEINE REGEL für "${word}" (${translation}):
+- Das Bild muss EXAKT das gesuchte Konzept zeigen
+- Keine ähnlichen oder verwandten Objekte
+- Klar und eindeutig für deutsche Kinder erkennbar
+- Hauptobjekt muss dominant im Bild sein`;
 }
 
 function getCuratedFallbackImage(word: string, category: string): string {
@@ -709,4 +907,24 @@ function getCuratedFallbackImage(word: string, category: string): string {
   const fallbackUrl = categoryDefaults[category.toLowerCase()] || categoryDefaults.animals;
   console.log(`📚 Verwende Kategorie-Fallback für "${word}" in "${category}"`);
   return fallbackUrl;
+}
+
+/**
+ * Liefert semantische Regeln für den GPT-4o Prompt
+ */
+function getSemanticRulesForPrompt(word: string, translation: string): string {
+  const rules: Record<string, string> = {
+    "parents": "ELTERN = EXAKT ZWEI Erwachsene (1 Mann + 1 Frau). NIEMALS nur eine Person!",
+    "family": "FAMILIE = MINDESTENS DREI Personen (2 Erwachsene + mindestens 1 Kind)",
+    "mother": "MUTTER = EINE erwachsene Frau in mütterlicher Rolle",
+    "father": "VATER = EIN erwachsener Mann in väterlicher Rolle", 
+    "grandmother": "GROSSMUTTER = EINE ältere Frau (Großmutter-Generation)",
+    "grandfather": "GROSSVATER = EIN älterer Mann (Großvater-Generation)",
+    "son": "SOHN = EIN männlicher Nachkomme (Junge/junger Mann)",
+    "daughter": "TOCHTER = EINE weibliche Nachkommin (Mädchen/junge Frau)",
+    "brother": "BRUDER = EIN männlicher Bruder (idealerweise mit Geschwistern)",
+    "sister": "SCHWESTER = EINE weibliche Schwester (idealerweise mit Geschwistern)"
+  };
+
+  return rules[word.toLowerCase()] || `${word.toUpperCase()} muss exakt dargestellt werden - keine Interpretationen!`;
 }
