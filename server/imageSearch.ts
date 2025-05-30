@@ -6,6 +6,7 @@ dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY }) : null;
+
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || "";
 
 interface ImageCandidate {
@@ -50,6 +51,7 @@ async function generateImageCandidates(
 }
 
 async function searchUnsplash(query: string): Promise<string[]> {
+
   // Return fallback images if no API key is configured
   if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY.trim() === "") {
     console.log("Keine Unsplash API-Schlüssel konfiguriert, verwende Fallback-Bilder");
@@ -72,16 +74,19 @@ async function searchUnsplash(query: string): Promise<string[]> {
       }
     });
 
+
     const results = response.data.results;
     return results.map((r: any) => r.urls.small);
   } catch (error) {
     console.error("Fehler bei der Unsplash-Suche:", error);
+
     // Return fallback images on error
     return [
       "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
       "https://images.unsplash.com/photo-1543466835-00a7907e9de1?fit=crop&w=600&h=400",
       "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400"
     ];
+
   }
 }
 
@@ -92,6 +97,7 @@ async function evaluateImageCandidates(
   translation: string
 ): Promise<ImageSearchResult> {
 
+
   // Handle empty candidates array
   if (!candidates || candidates.length === 0) {
     return {
@@ -100,6 +106,7 @@ async function evaluateImageCandidates(
       reasoning: "No candidates available, using fallback image"
     };
   }
+
 
   const prompt = `
   You are evaluating images for a children's English learning app. 
@@ -129,6 +136,7 @@ async function evaluateImageCandidates(
   `;
 
   try {
+
     // If no OpenAI API key is available, use the first candidate or fallback
     if (!openai || !OPENAI_API_KEY) {
       console.log("Keine OpenAI API-Schlüssel konfiguriert, verwende ersten Kandidaten");
@@ -149,6 +157,7 @@ async function evaluateImageCandidates(
       };
     }
 
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
@@ -161,6 +170,7 @@ async function evaluateImageCandidates(
     const bestIndex = (evaluation.bestImageIndex || 1) - 1;
     const bestCandidate = candidates[bestIndex] || candidates[0];
 
+
     if (!bestCandidate || !bestCandidate.url) {
       return {
         bestImageUrl: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
@@ -168,6 +178,7 @@ async function evaluateImageCandidates(
         reasoning: "Invalid candidate selected, using fallback image"
       };
     }
+
 
     return {
       bestImageUrl: bestCandidate.url,
@@ -178,10 +189,12 @@ async function evaluateImageCandidates(
   } catch (error) {
     console.error("Fehler bei der Bewertung:", error);
 
+
     // Safely access the first candidate
     const fallbackUrl = (candidates[0] && candidates[0].url) 
       ? candidates[0].url 
       : "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400";
+
 
     return {
       bestImageUrl: fallbackUrl,

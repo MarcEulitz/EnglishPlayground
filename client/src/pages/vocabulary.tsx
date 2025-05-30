@@ -41,25 +41,26 @@ const VocabularyPage: React.FC = () => {
 
   const saveProgress = async () => {
     if (!currentUser) return;
-    
+
     // Calculate duration in seconds
     const duration = Math.floor((Date.now() - startTime) / 1000);
-    
+
     try {
       await addLearningStat({
         userId: currentUser.id,
-        topic: params.topic || 'unknown',
+        topic: params.topic || "unknown",
         score,
-        duration
+        duration,
       });
     } catch (error) {
-      console.error('Failed to save learning stat', error);
+      console.error("Failed to save learning stat", error);
     }
   };
 
   useEffect(() => {
     const fetchQuestions = async () => {
       const topic = params.topic || "animals";
+
       const topicData = vocabularyData[topic] || generateTopicData(topic);
       const itemCount = Math.min(topicData.length, 5);
       const selectedVocab = getRandomItems(topicData, itemCount);
