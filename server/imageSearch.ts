@@ -69,7 +69,7 @@ export async function findBestImage(
   // PRIORITÄT 1: Cache-Lookup für bereits generierte Familie-Bilder
   if (category.toLowerCase() === "family" || category.toLowerCase() === "familie") {
     console.log(`👨‍👩‍👧‍👦 Familie-Kategorie erkannt - prüfe Cache für "${word}"`);
-    
+
     // Cache-Hit: Verwende bereits generiertes Bild
     const cachedImage = familyImageCache[word.toLowerCase()];
     if (cachedImage) {
@@ -81,13 +81,13 @@ export async function findBestImage(
         logicCheck: true
       };
     }
-    
+
     // Cache-Miss: Generiere neues Bild
     console.log(`🎨 Cache-Miss für "${word}" - verwende ChatGPT-4o Bilderstellung`);
-    
+
     try {
       const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
-      
+
       if (generatedImageUrl) {
         // Speichere im Cache für zukünftige Nutzung
         familyImageCache[word.toLowerCase()] = {
@@ -96,9 +96,9 @@ export async function findBestImage(
           generated: new Date().toISOString(),
           source: "ChatGPT-4o DALL-E-3"
         };
-        
+
         console.log(`✅ Neues Bild für "${word}" generiert und gecacht!`);
-        
+
         return {
           bestImageUrl: generatedImageUrl,
           confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
@@ -109,10 +109,10 @@ export async function findBestImage(
     } catch (error) {
       console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
     }
-    
+
     // Fallback zu kuratierten Bildern
     const perfectImage = getCuratedFallbackImage(word, category);
-    
+
     // Cache auch Fallback-Bilder
     familyImageCache[word.toLowerCase()] = {
       url: perfectImage,
@@ -120,7 +120,7 @@ export async function findBestImage(
       generated: new Date().toISOString(),
       source: "Kuratiertes Fallback"
     };
-    
+
     return {
       bestImageUrl: perfectImage,
       confidence: 0.95,
@@ -128,6 +128,69 @@ export async function findBestImage(
       logicCheck: true
     };
   }
+
+    // PRIORITÄT 1: Cache-Lookup für bereits generierte Food-Bilder
+    if (category.toLowerCase() === "food" || category.toLowerCase() === "essen") {
+      console.log(`🍔 Food-Kategorie erkannt - prüfe Cache für "${word}"`);
+  
+      // Cache-Hit: Verwende bereits generiertes Bild
+      const cachedImage = familyImageCache[word.toLowerCase()];
+      if (cachedImage) {
+        console.log(`🚀 CACHE HIT für "${word}" - verwende vorgeneriertes Bild!`);
+        return {
+          bestImageUrl: cachedImage.url,
+          confidence: cachedImage.confidence,
+          reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
+          logicCheck: true
+        };
+      }
+  
+      // Cache-Miss: Generiere neues Bild
+      console.log(`🎨 Cache-Miss für "${word}" - verwende ChatGPT-4o Bilderstellung`);
+  
+      try {
+        const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
+  
+        if (generatedImageUrl) {
+          // Speichere im Cache für zukünftige Nutzung
+          familyImageCache[word.toLowerCase()] = {
+            url: generatedImageUrl,
+            confidence: 0.98,
+            generated: new Date().toISOString(),
+            source: "ChatGPT-4o DALL-E-3"
+          };
+  
+          console.log(`✅ Neues Bild für "${word}" generiert und gecacht!`);
+  
+          return {
+            bestImageUrl: generatedImageUrl,
+            confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
+            reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt und gecacht`,
+            logicCheck: true
+          };
+        }
+      } catch (error) {
+        console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
+      }
+  
+      // Fallback zu kuratierten Bildern
+      const perfectImage = getCuratedFallbackImage(word, category);
+  
+      // Cache auch Fallback-Bilder
+      familyImageCache[word.toLowerCase()] = {
+        url: perfectImage,
+        confidence: 0.95,
+        generated: new Date().toISOString(),
+        source: "Kuratiertes Fallback"
+      };
+  
+      return {
+        bestImageUrl: perfectImage,
+        confidence: 0.95,
+        reasoning: `Fallback: Kuratiertes Bild für Food-Kategorie: "${word}" (gecacht)`,
+        logicCheck: true
+      };
+    }
 
   try {
     // Für andere Kategorien: normale intelligente Bildsuche
@@ -714,8 +777,7 @@ async function performLogicCheck(
       reasoning: `HOCHQUALITATIVES, SEMANTISCH KORREKTES Bild: ${evaluation.reasoning}. Semantik: ${semanticLogicResult.reason}`,
       logicCheck: true
     };
-  } else {
-    console.log(`❌ Bild für "${word}" fällt durch VERSCHÄRFTE Qualitätsprüfung:`);
+  } else {    console.log(`❌ Bild für "${word}" fällt durch VERSCHÄRFTE Qualitätsprüfung:`);
     console.log(`   - Qualität bestanden: ${qualityPassed}`);
     console.log(`   - Sicherheit bestanden: ${allSafetyChecksPassed}`);
     console.log(`   - Semantische Logik bestanden: ${semanticLogicResult.passed}`);
@@ -893,7 +955,43 @@ SCHWESTER erfordert ZWINGEND:
 - EINE weibliche Schwester (Mädchen oder junge Frau)
 - Klar als Schwester erkennbar (idealerweise mit Geschwistern)
 - NICHT akzeptiert: einzelne Frauen ohne Schwester-Kontext, Brüder
-- Geschwister-Kontext erkennbar`
+- Geschwister-Kontext erkennbar`,
+
+    "pizza": `PIZZA erfordert ZWINGEND:
+- EINE ganze, runde Pizza oder Pizzastück
+- Klar erkennbar mit Käse und Tomatensauce
+- NICHT akzeptiert: andere italienische Gerichte, Brot, Kuchen
+- Pizza muss dominant im Bild sein`,
+
+    "banana": `BANANE erfordert ZWINGEND:
+- EINE oder mehrere gelbe, reife Bananen
+- Klar erkennbare Bananenform
+- NICHT akzeptiert: andere gelbe Früchte, unreife grüne Bananen
+- Banane muss dominant im Bild sein`,
+
+    "bread": `BROT erfordert ZWINGEND:
+- Erkennbares Brot (Laib, Scheiben oder Brötchen)
+- Typische Brotstruktur und -farbe
+- NICHT akzeptiert: Kuchen, Kekse, andere Backwaren
+- Brot muss dominant im Bild sein`,
+
+    "milk": `MILCH erfordert ZWINGEND:
+- Sichtbare weiße Milch (Glas, Flasche oder Krug)
+- Klar als Milch erkennbare weiße Flüssigkeit
+- NICHT akzeptiert: andere weiße Getränke, Joghurt, Sahne
+- Milch muss dominant im Bild sein`,
+
+    "rice": `REIS erfordert ZWINGEND:
+- Erkennbare Reiskörner (gekocht oder ungekocht)
+- Typische weiße oder braune Reisstruktur
+- NICHT akzeptiert: andere Getreide, Nudeln, kleine weiße Objekte
+- Reis muss dominant im Bild sein`,
+
+    "soup": `SUPPE erfordert ZWINGEND:
+- Erkennbare Suppe in Schüssel oder Teller
+- Flüssige Konsistenz mit eventuellen Einlagen
+- NICHT akzeptiert: andere Flüssigkeiten, Getränke, Soßen
+- Suppe muss dominant im Bild sein`
   };
 
   return rules[word.toLowerCase()] || `
@@ -910,65 +1008,65 @@ function getCuratedFallbackImage(word: string, category: string): string {
     // Eltern: Mann, Frau und Kind zusammen
     "parents": "https://images.unsplash.com/photo-1609220136736-443140cffec6?fit=crop&w=600&h=400&q=80",
     "eltern": "https://images.unsplash.com/photo-1609220136736-443140cffec6?fit=crop&w=600&h=400&q=80",
-    
+
     // Familie: Mehrere Familienmitglieder
     "family": "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
     "familie": "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
-    
+
     // Mutter: Frau mittleren Alters
     "mother": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400&q=80",
     "mutter": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400&q=80",
-    
+
     // Vater: Mann mittleren Alters  
     "father": "https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=600&h=400&q=80",
     "vater": "https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=600&h=400&q=80",
-    
+
     // Tochter: Jüngeres Mädchen
     "daughter": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
     "tochter": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
-    
+
     // Sohn: Jüngerer Junge
     "son": "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?fit=crop&w=600&h=400&q=80",
     "sohn": "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?fit=crop&w=600&h=400&q=80",
-    
+
     // Bruder: Jüngerer Junge
     "brother": "https://images.unsplash.com/photo-1632179560465-39f9c18de454?fit=crop&w=600&h=400&q=80",
     "bruder": "https://images.unsplash.com/photo-1632179560465-39f9c18de454?fit=crop&w=600&h=400&q=80",
-    
+
     // Schwester: Jüngeres Mädchen
     "sister": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?fit=crop&w=600&h=400&q=80",
     "schwester": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?fit=crop&w=600&h=400&q=80",
-    
+
     // Großmutter: Ältere Frau
     "grandmother": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
     "großmutter": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
     "grossmutter": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
-    
+
     // Großvater: Älterer Mann
     "grandfather": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
     "großvater": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
     "grossvater": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
-    
+
     // Baby: Kleinkind
     "baby": "https://images.unsplash.com/photo-1566004100631-35d015d6a491?fit=crop&w=600&h=400&q=80",
-    
+
     // Kind: Allgemeines Kind
     "child": "https://images.unsplash.com/photo-1509062522246-3755977927d7?fit=crop&w=600&h=400&q=80",
     "kind": "https://images.unsplash.com/photo-1509062522246-3755977927d7?fit=crop&w=600&h=400&q=80",
-    
+
     // Weitere Familienmitglieder
     "uncle": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400&q=80",
     "onkel": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400&q=80",
-    
+
     "aunt": "https://images.unsplash.com/photo-1494790108755-2616c96d5e82?fit=crop&w=600&h=400&q=80",
     "tante": "https://images.unsplash.com/photo-1494790108755-2616c96d5e82?fit=crop&w=600&h=400&q=80",
-    
+
     "nephew": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fit=crop&w=600&h=400&q=80",
     "neffe": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fit=crop&w=600&h=400&q=80",
-    
+
     "niece": "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?fit=crop&w=600&h=400&q=80",
     "nichte": "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?fit=crop&w=600&h=400&q=80",
-    
+
     "cousin": "https://images.unsplash.com/photo-1554151228-14d9def656e4?fit=crop&w=600&h=400&q=80"
   };
 
@@ -1027,6 +1125,15 @@ function getCuratedFallbackImage(word: string, category: string): string {
     }
   }
 
+   // 1. PRIORITÄT: Food-spezifische perfekte Bilder
+   if (category.toLowerCase() === "food" || category.toLowerCase() === "essen") {
+    const perfectImage = perfectFamilyImages[word.toLowerCase()];
+    if (perfectImage) {
+      console.log(`👨‍👩‍👧‍👦 Verwende PERFEKTES Food-Bild für "${word}"`);
+      return perfectImage;
+    }
+  }
+
   // 2. Spezifisches Bild für das Wort in anderen Kategorien suchen
   const categoryImages = curatedImages[category.toLowerCase()];
   if (categoryImages && categoryImages[word.toLowerCase()]) {
@@ -1069,43 +1176,43 @@ async function generateImageWithChatGPT(
     // Spezifische Prompts für Familie-Begriffe
     const imagePrompts: Record<string, string> = {
       "parents": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "eltern": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "family": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "familie": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "mother": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "mutter": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "father": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "vater": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "daughter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "tochter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "son": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "sohn": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
-      "brother": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
+      "brother": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendiche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+
       "bruder": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "sister": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "schwester": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      
+
       "grandmother": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "großmutter": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "grandfather": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      
+
       "großvater": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien."
     };
 
