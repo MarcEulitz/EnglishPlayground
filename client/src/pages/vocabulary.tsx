@@ -62,10 +62,14 @@ const VocabularyPage: React.FC = () => {
               word: vocab.word,
               translation: vocab.translation,
             });
-            imageUrl = response.data.bestImageUrl;
-            console.log("Bild erfolgreich geladen:", imageUrl);
+            if (response.data && response.data.bestImageUrl) {
+              imageUrl = response.data.bestImageUrl;
+              console.log("Bild erfolgreich geladen:", imageUrl);
+            }
           } catch (error) {
             console.error("Fehler beim Abrufen des Bildes:", error);
+            // Verwende das Standard-Bild aus den Vokabeldaten
+            console.log("Verwende Standard-Bild:", imageUrl);
           }
 
           return {
@@ -136,7 +140,7 @@ const VocabularyPage: React.FC = () => {
       if (currentQuestionIndex + 1 < questions.length) {
         setCurrentQuestionIndex((prev) => prev + 1);
       } else {
-        navigate("/success");
+        navigate(`/success/${params.topic}`);
       }
     }, 2000);
   };

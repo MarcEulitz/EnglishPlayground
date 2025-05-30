@@ -1,4 +1,4 @@
-  import type { Express } from "express";
+import type { Express } from "express";
   import { createServer, type Server } from "http";
   import { storage } from "./storage";
   import {
@@ -9,6 +9,7 @@
   } from "@shared/schema";
   import { z } from "zod";
   import { findBestImage } from "./imageSearch";
+import { validateImage, validateAllImagesInCategory } from "./imageValidator";
 
   export async function registerRoutes(app: Express): Promise<Server> {
     // User routes
@@ -176,3 +177,21 @@
     const httpServer = createServer(app);
     return httpServer;
   }
+
+// Image search endpoint
+// I am adding the api route here because it was missing
+router.post("/api/find-best-image", async (req, res) => {
+  try {
+    const { category, word, translation } = req.body;
+
+    if (!category || !word || !translation) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const result = await findBestImage(category, word, translation);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in find-best-image:", error);
+    res.status(500).json({ error: "Failed to find best image" });
+  }
+});
