@@ -48,12 +48,16 @@ async function generateImageCandidates(
   word: string,
   translation: string
 ): Promise<ImageCandidate[]> {
+  // Hochgradig spezifische Suchbegriffe, die den Begriff in den Mittelpunkt stellen
   const searchQueries = [
-    `${word} children educational clear simple`,
-    `${word} ${category} kids learning`,
-    `${translation} Kinder einfach klar`,
-    `${word} for children illustration`,
-    `${category} ${word} child friendly`
+    `single ${word} close up clear background educational`, // Einzelnes Objekt, Nahaufnahme
+    `${word} isolated white background children learning`, // Isoliert auf weißem Hintergrund
+    `one ${word} center focus sharp clear simple`, // Ein Objekt im Zentrum, scharf
+    `${word} main subject large prominent visible`, // Hauptobjekt groß und prominent
+    `${word} kindergarten preschool educational material`, // Kindergarten-Bildungsmaterial
+    `${translation} einzeln klar Hintergrund Kinder`, // Deutsche Suche für bessere Ergebnisse
+    `${word} perfect example clear definition`, // Perfektes Beispiel, klare Definition
+    `${category} ${word} primary focus unambiguous` // Kategorie mit eindeutigem Fokus
   ];
 
   let allCandidates: ImageCandidate[] = [];
@@ -124,15 +128,32 @@ async function searchUnsplash(query: string): Promise<string[]> {
       ];
     }
     
-    // Filtere Bilder mit hoher Qualität (Downloads als Qualitätsindikator)
-    const qualityFiltered = results
-      .filter((r: any) => r.downloads > 1000) // Nur beliebte Bilder
-      .sort((a: any, b: any) => b.likes - a.likes) // Nach Likes sortieren
-      .slice(0, 6); // Maximal 6 Bilder
+    // Hochqualitative Filterung für Bildungsbilder
+    const educationalFiltered = results
+      .filter((r: any) => {
+        // Strenge Qualitätskriterien
+        return r.downloads > 2000 && // Mindestens 2000 Downloads (sehr beliebt)
+               r.likes > 50 &&        // Mindestens 50 Likes (gute Qualität)
+               r.width >= 400 &&      // Mindestbreite für Klarheit
+               r.height >= 300 &&     // Mindesthöhe für Klarheit
+               !r.description?.toLowerCase().includes('multiple') && // Keine Mehrfachobjekte
+               !r.description?.toLowerCase().includes('group'); // Keine Gruppenbilder
+      })
+      .sort((a: any, b: any) => {
+        // Gewichtete Sortierung: Downloads (60%) + Likes (40%)
+        const scoreA = (a.downloads * 0.6) + (a.likes * 0.4);
+        const scoreB = (b.downloads * 0.6) + (b.likes * 0.4);
+        return scoreB - scoreA;
+      })
+      .slice(0, 4); // Maximal 4 hochqualitative Bilder
 
-    const imageUrls = qualityFiltered.length > 0 
-      ? qualityFiltered.map((r: any) => r.urls.small)
-      : results.slice(0, 3).map((r: any) => r.urls.small);
+    // Falls keine hochwertigen Bilder gefunden, nimm die besten verfügbaren
+    const imageUrls = educationalFiltered.length > 0 
+      ? educationalFiltered.map((r: any) => r.urls.regular) // Höhere Auflösung für bessere Qualität
+      : results
+          .sort((a: any, b: any) => b.likes - a.likes)
+          .slice(0, 3)
+          .map((r: any) => r.urls.regular);
     
     console.log(`Qualitätsgefilterte Bild-URLs (${imageUrls.length}):`, imageUrls);
     return imageUrls;
@@ -172,7 +193,7 @@ async function evaluateImageCandidates(
 
 
   const prompt = `
-  You are an expert evaluator for children's English learning materials. 
+  You are a CRITICAL image evaluator for children's English learning materials. BE EXTREMELY STRICT!
   
   CONTEXT:
   - Category: "${category}" 
@@ -180,35 +201,69 @@ async function evaluateImageCandidates(
   - German translation: "${translation}"
   - Target: German children aged 6-11 learning English
 
-  STRICT EVALUATION CRITERIA:
-  1. SEMANTIC ACCURACY (40%): Does the image show EXACTLY "${word}"? Not similar objects.
-  2. CLARITY (25%): Is the main object large, clear, unambiguous?
-  3. CHILD-FRIENDLY (20%): Age-appropriate, no scary/violent content?
-  4. EDUCATIONAL VALUE (15%): Simple background, good for learning?
+  ULTRA-STRICT EVALUATION CRITERIA:
+  1. PERFECT SEMANTIC MATCH (50%): Does the image show EXACTLY "${word}" as the MAIN, CENTRAL subject?
+     - The object must be clearly identifiable as "${word}"
+     - Must be the PRIMARY focus of the image (not background element)
+     - Must take up significant portion of the image (minimum 30% of frame)
+     - NO similar objects accepted (cat ≠ kitten, car ≠ vehicle, etc.)
+     
+  2. VISUAL CLARITY (30%): Is the object crystal clear and unambiguous?
+     - Sharp focus on the main object
+     - Good lighting and contrast
+     - No visual obstructions or blur
+     - Object clearly distinguishable from background
+     
+  3. CHILD-FRIENDLY CONTENT (15%): Age-appropriate for 6-11 years?
+     - No scary, violent, or inappropriate content
+     - Positive, educational context
+     - Colors and style appealing to children
+     
+  4. EDUCATIONAL VALUE (5%): Optimal for learning?
+     - Simple, uncluttered background
+     - Single clear subject (unless word is plural)
+     - Easy to understand at first glance
 
-  LOGIC CHECKS:
-  - If word is "cat", image must show a cat, not dog/tiger/lion
-  - If word is "car", image must show a car, not truck/bus/bicycle
-  - If word is "apple", image must show an apple, not orange/fruit mix
-  - Reject images with multiple objects unless word is plural
-  - Reject images where main object is too small or unclear
+  CRITICAL REJECTION CRITERIA:
+  - Multiple objects when word is singular
+  - Object is too small or unclear
+  - Wrong object entirely (even if similar)
+  - Busy background that distracts from main object
+  - Poor image quality (blurry, dark, etc.)
+  - Object partially hidden or cut off
+  - Stylized/cartoon when real object needed (or vice versa)
 
-  QUALITY THRESHOLDS:
-  - Confidence must be ≥0.7 to be acceptable
-  - Semantic match must be perfect (not "close enough")
-  - Child-appropriateness is mandatory
+  QUALITY THRESHOLDS (BE HARSH):
+  - Confidence must be ≥0.8 to be acceptable (raised from 0.7)
+  - Semantic match must be PERFECT (100% match only)
+  - Object visibility must be excellent
+  - Educational suitability mandatory
+
+  CRITICAL ANALYSIS REQUIRED:
+  For EACH image, ask yourself:
+  1. "Is this EXACTLY a ${word} and nothing else?"
+  2. "Would a 6-year-old immediately recognize this as ${word}?"
+  3. "Is the ${word} the MAIN subject, not just present in the image?"
+  4. "Is this the BEST possible representation of ${word} for learning?"
 
   IMAGE URLS TO EVALUATE:
   ${candidates.map((c, i) => `${i + 1}. ${c.url}`).join('\n')}
 
-  Respond with JSON in this EXACT format:
+  RESPOND with JSON in this EXACT format:
   {
-    "bestImageIndex": number,
-    "confidence": number,
-    "reasoning": "Detailed explanation in German",
-    "semanticMatch": boolean,
-    "qualityScore": number,
-    "rejectedImages": [array of rejected indices with reasons]
+    "bestImageIndex": number (ONLY if a truly excellent image exists, otherwise -1),
+    "confidence": number (0-1, be conservative),
+    "reasoning": "Detailed critical analysis in German explaining why this image is the best OR why all images are rejected",
+    "semanticMatch": boolean (true only if PERFECT match),
+    "qualityScore": number (0-1, rate overall image quality),
+    "detailedAnalysis": "Critical examination of each image's strengths and weaknesses",
+    "rejectedImages": [
+      {
+        "index": number,
+        "reason": "Specific reason why this image was rejected"
+      }
+    ],
+    "improvementSuggestions": "What would make a better image for this word"
   }
   `;
 
@@ -244,64 +299,132 @@ async function evaluateImageCandidates(
 
     const evaluation = JSON.parse(response.choices[0].message.content || "{}");
 
-    const bestIndex = (evaluation.bestImageIndex || 1) - 1;
-    const bestCandidate = candidates[bestIndex] || candidates[0];
+    console.log(`🔍 Detaillierte Bildanalyse für "${word}":`, evaluation.detailedAnalysis);
+    console.log(`📊 Abgelehnte Bilder:`, evaluation.rejectedImages);
+    console.log(`💡 Verbesserungsvorschläge:`, evaluation.improvementSuggestions);
 
-    // Logikprüfung: Ist die Bewertung akzeptabel?
+    // Prüfung ob überhaupt ein gültiges Bild gefunden wurde
+    if (evaluation.bestImageIndex === -1 || evaluation.bestImageIndex === null || evaluation.bestImageIndex === undefined) {
+      console.log(`❌ ALLE Bilder für "${word}" wurden abgelehnt: ${evaluation.reasoning}`);
+      const fallbackUrl = getCuratedFallbackImage(word, category);
+      return {
+        bestImageUrl: fallbackUrl,
+        confidence: 0.6,
+        reasoning: `Alle gefundenen Bilder ungeeignet. ${evaluation.reasoning}. Verwende kuratiertes Fallback-Bild. Verbesserungsvorschläge: ${evaluation.improvementSuggestions}`
+      };
+    }
+
+    const bestIndex = evaluation.bestImageIndex - 1;
+    const bestCandidate = candidates[bestIndex];
+
+    // Verschärfte Logikprüfung: Ist die Bewertung wirklich akzeptabel?
     const isAcceptable = 
-      evaluation.confidence >= 0.7 && 
+      evaluation.confidence >= 0.8 &&  // Erhöht von 0.7
       evaluation.semanticMatch === true && 
-      evaluation.qualityScore >= 0.6;
+      evaluation.qualityScore >= 0.7 &&  // Erhöht von 0.6
+      bestCandidate &&
+      bestCandidate.url;
 
     if (!isAcceptable) {
-      console.log(`❌ Bildqualität für "${word}" nicht ausreichend:`, evaluation.reasoning);
+      console.log(`❌ Strenge Bildqualitätsprüfung für "${word}" nicht bestanden:`);
+      console.log(`   - Confidence: ${evaluation.confidence} (min. 0.8 erforderlich)`);
+      console.log(`   - Semantic Match: ${evaluation.semanticMatch}`);
+      console.log(`   - Quality Score: ${evaluation.qualityScore} (min. 0.7 erforderlich)`);
+      console.log(`   - Reasoning: ${evaluation.reasoning}`);
       
       // Fallback zu kuratierten Bildern
       const fallbackUrl = getCuratedFallbackImage(word, category);
 
 
-// Kuratierte, hochwertige Fallback-Bilder nach Kategorien organisiert
+// Kuratierte, hochwertige Fallback-Bilder mit strengster Qualitätsprüfung
 function getCuratedFallbackImage(word: string, category: string): string {
+  // Nur die allerbesten, kindgerechten Bilder mit perfekter Klarheit
   const curatedImages: Record<string, Record<string, string>> = {
     animals: {
-      cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400",
-      dog: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400",
-      bird: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400",
-      fish: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400",
-      bear: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400",
-      duck: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400",
-      sheep: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
-      horse: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400",
-      cow: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400",
-      pig: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400"
+      cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400", // Perfekt zentrierte Katze
+      dog: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400", // Klarer Golden Retriever
+      bird: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400", // Einzelner bunter Vogel
+      fish: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400", // Klarer einzelner Fisch
+      bear: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400", // Braunbär im Fokus
+      duck: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400", // Einzelne Ente, klar erkennbar
+      sheep: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400", // Weißes Schaf im Mittelpunkt
+      horse: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400", // Braunes Pferd, Nahaufnahme
+      cow: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400", // Schwarz-weiße Kuh zentral
+      pig: "https://images.unsplash.com/photo-1563281577-b9afd1ad8b8d?fit=crop&w=600&h=400", // Rosa Schwein, klar sichtbar
+      elephant: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400", // Elefant im Fokus
+      lion: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?fit=crop&w=600&h=400", // Löwe, Kopf im Mittelpunkt
+      zebra: "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400", // Zebra mit klaren Streifen
+      giraffe: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400", // Giraffe, Kopf und Hals sichtbar
+      rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400", // Weißes Kaninchen zentral
+      frog: "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400" // Grüner Frosch klar erkennbar
     },
     food: {
-      apple: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400",
-      banana: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?fit=crop&w=600&h=400",
-      bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?fit=crop&w=600&h=400",
-      milk: "https://images.unsplash.com/photo-1550583724-b2692b85b150?fit=crop&w=600&h=400",
-      cheese: "https://images.unsplash.com/photo-1552767059-ce182ead6c1b?fit=crop&w=600&h=400",
-      egg: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?fit=crop&w=600&h=400"
+      apple: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400", // Roter Apfel, einzeln
+      banana: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?fit=crop&w=600&h=400", // Gelbe Banane im Fokus
+      bread: "https://images.unsplash.com/photo-1509440159596-0249088772ff?fit=crop&w=600&h=400", // Brotlaib, klar erkennbar
+      milk: "https://images.unsplash.com/photo-1550583724-b2692b85b150?fit=crop&w=600&h=400", // Milchglas zentral
+      cheese: "https://images.unsplash.com/photo-1552767059-ce182ead6c1b?fit=crop&w=600&h=400", // Käsescheiben klar
+      egg: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?fit=crop&w=600&h=400", // Weiße Eier im Fokus
+      orange: "https://images.unsplash.com/photo-1547514701-42782101795e?fit=crop&w=600&h=400", // Orange Frucht einzeln
+      carrot: "https://images.unsplash.com/photo-1447175008436-054170c2e979?fit=crop&w=600&h=400", // Orange Karotte klar
+      pizza: "https://images.unsplash.com/photo-1513104890138-7c749659a591?fit=crop&w=600&h=400", // Pizza deutlich erkennbar
+      cake: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?fit=crop&w=600&h=400" // Torte im Mittelpunkt
     },
     transport: {
-      car: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400",
-      bus: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?fit=crop&w=600&h=400",
-      train: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?fit=crop&w=600&h=400",
-      bike: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fit=crop&w=600&h=400",
-      boat: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400"
+      car: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400", // Rotes Auto klar sichtbar
+      bus: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?fit=crop&w=600&h=400", // Schulbus deutlich
+      train: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?fit=crop&w=600&h=400", // Zug im Fokus
+      bike: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fit=crop&w=600&h=400", // Fahrrad zentral
+      boat: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400", // Boot auf Wasser
+      plane: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400", // Flugzeug am Himmel
+      truck: "https://images.unsplash.com/photo-1558726262-80ad1c28de7a?fit=crop&w=600&h=400", // LKW klar erkennbar
+      motorcycle: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fit=crop&w=600&h=400", // Motorrad deutlich
+      ship: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400" // Schiff auf See
     },
     family: {
-      mother: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400",
-      father: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400",
-      baby: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?fit=crop&w=600&h=400",
-      grandmother: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400",
-      grandfather: "https://images.unsplash.com/photo-1619734086067-24bf8889ea7d?fit=crop&w=600&h=400"
+      mother: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400", // Mutter mit Kind
+      father: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400", // Vater Portrait
+      baby: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?fit=crop&w=600&h=400", // Baby im Mittelpunkt
+      grandmother: "https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?fit=crop&w=600&h=400", // Oma klar erkennbar
+      grandfather: "https://images.unsplash.com/photo-1619734086067-24bf8889ea7d?fit=crop&w=600&h=400", // Opa deutlich
+      family: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400", // Familie zusammen
+      son: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400", // Junge im Fokus
+      daughter: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400", // Mädchen zentral
+      sister: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400", // Schwester erkennbar
+      brother: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400" // Bruder deutlich
     },
     colors: {
-      red: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400",
-      blue: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400",
-      green: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400",
-      yellow: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400"
+      red: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400", // Rote Objekte klar
+      blue: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400", // Blaue Töne deutlich
+      green: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400", // Grün in Natur
+      yellow: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400", // Gelbe Sonnenblume
+      black: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400", // Schwarze Objekte
+      white: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400", // Weiße Gegenstände
+      pink: "https://images.unsplash.com/photo-1518709594023-6eab9bab7eb3?fit=crop&w=600&h=400", // Rosa Blüten
+      purple: "https://images.unsplash.com/photo-1518709594023-6eab9bab7eb3?fit=crop&w=600&h=400" // Lila Farbtöne
+    },
+    shapes: {
+      circle: "https://images.unsplash.com/photo-1509909756405-be0199881695?fit=crop&w=600&h=400", // Kreis klar erkennbar
+      square: "https://images.unsplash.com/photo-1509909756405-be0199881695?fit=crop&w=600&h=400", // Quadrat deutlich
+      triangle: "https://images.unsplash.com/photo-1509909756405-be0199881695?fit=crop&w=600&h=400", // Dreieck im Fokus
+      rectangle: "https://images.unsplash.com/photo-1509909756405-be0199881695?fit=crop&w=600&h=400", // Rechteck sichtbar
+      star: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?fit=crop&w=600&h=400" // Stern am Himmel
+    },
+    home: {
+      house: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400", // Haus klar sichtbar
+      door: "https://images.unsplash.com/photo-1505682634904-d7c8d95cdc50?fit=crop&w=600&h=400", // Tür im Mittelpunkt
+      window: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400", // Fenster erkennbar
+      bed: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400", // Bett zentral
+      chair: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400", // Stuhl deutlich
+      table: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400" // Tisch im Fokus
+    },
+    clothes: {
+      shirt: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?fit=crop&w=600&h=400", // Hemd klar
+      pants: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?fit=crop&w=600&h=400", // Hose deutlich
+      dress: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?fit=crop&w=600&h=400", // Kleid sichtbar
+      shoes: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?fit=crop&w=600&h=400", // Schuhe zentral
+      hat: "https://images.unsplash.com/photo-1521369909029-2afed882baee?fit=crop&w=600&h=400", // Hut im Fokus
+      socks: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?fit=crop&w=600&h=400" // Socken erkennbar
     }
   };
 
