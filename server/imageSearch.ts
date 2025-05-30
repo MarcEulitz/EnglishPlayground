@@ -1196,7 +1196,8 @@ function getCuratedFallbackImage(word: string, category: string): string {
 async function generateImageWithChatGPT(
   word: string,
   translation: string,
-  category: string
+  category: string,
+  strategy: string = "detailed"
 ): Promise<string | null> {
 
   if (!openai || !OPENAI_API_KEY) {
@@ -1207,8 +1208,60 @@ async function generateImageWithChatGPT(
   try {
     console.log(`🎨 Erstelle Bild mit ChatGPT-4o für "${word}" (${translation})`);
 
-    // Verbesserte, kindersichere Prompts für alle Kategorien
-    const imagePrompts: Record<string, string> = {
+    // Mehrere Prompt-Strategien für höhere Erfolgsrate
+    const getImagePrompt = (strategy: string): Record<string, string> => {
+      if (strategy === "simple") {
+        return {
+          // Einfache, sichere Prompts
+          "cat": "A cartoon cat, colorful and friendly, white background",
+          "dog": "A cartoon dog, happy and cute, white background", 
+          "bird": "A colorful cartoon bird, simple style, white background",
+          "fish": "A cartoon fish, bright colors, white background",
+          "elephant": "A cartoon elephant, gray and friendly, white background",
+          "tiger": "A cartoon tiger, orange with stripes, white background",
+          "rabbit": "A cartoon bunny, white and cute, white background",
+          "mouse": "A cartoon mouse, small and gray, white background",
+          "bear": "A cartoon teddy bear, brown and friendly, white background",
+          "monkey": "A cartoon monkey, brown and playful, white background",
+          "giraffe": "A cartoon giraffe, tall with spots, white background",
+          "zebra": "A cartoon zebra, black and white stripes, white background",
+          "sheep": "A cartoon sheep, fluffy and white, white background",
+          "cow": "A cartoon cow, black and white spots, white background",
+          "pig": "A cartoon pig, pink and round, white background",
+          "duck": "A cartoon duck, yellow and cute, white background",
+          "horse": "A cartoon horse, brown and elegant, white background",
+          "lion": "A cartoon lion, golden with mane, white background",
+          "frog": "A cartoon frog, green and friendly, white background",
+          "chicken": "A cartoon chicken, red and white, white background"
+        };
+      } else if (strategy === "educational") {
+        return {
+          // Bildungskontext-Prompts
+          "cat": "Educational illustration of a house cat for children's learning book",
+          "dog": "Educational illustration of a friendly dog for children's learning book",
+          "bird": "Educational illustration of a songbird for children's learning book",
+          "fish": "Educational illustration of a goldfish for children's learning book",
+          "elephant": "Educational illustration of an elephant for children's learning book",
+          "tiger": "Educational illustration of a tiger for children's learning book",
+          "rabbit": "Educational illustration of a rabbit for children's learning book",
+          "mouse": "Educational illustration of a mouse for children's learning book",
+          "bear": "Educational illustration of a bear for children's learning book",
+          "monkey": "Educational illustration of a monkey for children's learning book",
+          "giraffe": "Educational illustration of a giraffe for children's learning book",
+          "zebra": "Educational illustration of a zebra for children's learning book",
+          "sheep": "Educational illustration of a sheep for children's learning book",
+          "cow": "Educational illustration of a cow for children's learning book",
+          "pig": "Educational illustration of a pig for children's learning book",
+          "duck": "Educational illustration of a duck for children's learning book",
+          "horse": "Educational illustration of a horse for children's learning book",
+          "lion": "Educational illustration of a lion for children's learning book",
+          "frog": "Educational illustration of a frog for children's learning book",
+          "chicken": "Educational illustration of a chicken for children's learning book"
+        };
+      }
+      
+      // Standard "detailed" strategy
+      return {
       // Familie-Begriffe
       "parents": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
       "eltern": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
@@ -1306,7 +1359,10 @@ async function generateImageWithChatGPT(
       "grün": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
       "yellow": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
       "gelb": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien."
+      };
     };
+
+    const imagePrompts = getImagePrompt(strategy);
 
     const imagePrompt = imagePrompts[word.toLowerCase()] || 
       `Ein professionelles, kinderfreundliches Foto das "${word}" (${translation}) perfekt für deutsche Kinder-Lernmaterialien darstellt. Heller, neutraler Hintergrund, hohe Bildqualität.`;
