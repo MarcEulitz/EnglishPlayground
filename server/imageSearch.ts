@@ -84,14 +84,66 @@ export async function findBestImage(
 
   console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
 
-  // BLOCKIERE TIERE-KATEGORIE: Keine Bilder für Animals/Tiere
+  // AKTIVIERE TIERE-KATEGORIE: ChatGPT-4o Bildgenerierung für Animals/Tiere
   if (category.toLowerCase() === 'animals' || category.toLowerCase() === 'tiere') {
-    console.log(`🚫 Tier-Kategorie blockiert - keine Bilder für "${word}"`);
+    console.log(`🐾 Tier-Kategorie erkannt - aktiviere ChatGPT-4o Bildgenerierung für "${word}"`);
+    
+    // Cache-Hit: Verwende bereits generiertes Tierbild
+    const cachedImage = familyImageCache[word.toLowerCase()];
+    if (cachedImage) {
+      console.log(`🚀 CACHE HIT für Tier "${word}" - verwende vorgeneriertes Bild!`);
+      return {
+        bestImageUrl: cachedImage.url,
+        confidence: cachedImage.confidence,
+        reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Tier-Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
+        logicCheck: true
+      };
+    }
+
+    // Cache-Miss: Generiere neues Tierbild mit ChatGPT-4o
+    console.log(`🎨 Cache-Miss für Tier "${word}" - starte ChatGPT-4o Bildgenerierung`);
+
+    try {
+      const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
+
+      if (generatedImageUrl) {
+        // Speichere generiertes Tierbild im Cache
+        familyImageCache[word.toLowerCase()] = {
+          url: generatedImageUrl,
+          confidence: 0.98,
+          generated: new Date().toISOString(),
+          source: "ChatGPT-4o DALL-E-3 Tier"
+        };
+
+        console.log(`✅ Neues Tier-Bild für "${word}" generiert und gespeichert!`);
+
+        return {
+          bestImageUrl: generatedImageUrl,
+          confidence: 0.98,
+          reasoning: `ChatGPT-4o hat ein perfektes Tier-Bild für "${word}" (${translation}) erstellt und gespeichert`,
+          logicCheck: true
+        };
+      }
+    } catch (error) {
+      console.error(`❌ ChatGPT-4o Tier-Bildgenerierung fehlgeschlagen für "${word}":`, error);
+    }
+
+    // Fallback zu kuratierten Tier-Bildern
+    const curatedAnimalImage = getCuratedAnimalImage(word);
+    
+    // Cache auch kuratierte Tier-Bilder
+    familyImageCache[word.toLowerCase()] = {
+      url: curatedAnimalImage,
+      confidence: 0.95,
+      generated: new Date().toISOString(),
+      source: "Kuratiertes Tier-Fallback"
+    };
+
     return {
-      bestImageUrl: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPktlaW4gQmlsZCB2ZXJmw7xnYmFyPC90ZXh0Pjwvc3ZnPg==",
-      confidence: 0,
-      reasoning: "Tiere-Kategorie deaktiviert - keine Bilder verfügbar",
-      logicCheck: false
+      bestImageUrl: curatedAnimalImage,
+      confidence: 0.95,
+      reasoning: `Fallback: Kuratiertes Tier-Bild für "${word}" (gespeichert)`,
+      logicCheck: true
     };
   }
 
@@ -1238,6 +1290,27 @@ export async function generateImageWithChatGPT(
         "octopus": "purple octopus, cartoon style, white background",
         "whale": "blue whale, cartoon style, white background",
 
+      // TIERE-BEGRIFFE - OPTIMIERT FÜR KINDER-LERNEN
+      "cat": "Ein süßer, freundlicher Katzenkopf im Cartoon-Stil, orange und weiß gestreift, große freundliche Augen, weißer Hintergrund, perfekt für deutsche Kinder-Lernmaterialien",
+      "katze": "Ein süßer, freundlicher Katzenkopf im Cartoon-Stil, orange und weiß gestreift, große freundliche Augen, weißer Hintergrund, perfekt für deutsche Kinder-Lernmaterialien",
+      "dog": "Ein freundlicher Golden Retriever Welpe, sitzend, weicher Cartoon-Stil, braun-goldenes Fell, weißer Hintergrund, ideal für Kinder-Vokabular",
+      "hund": "Ein freundlicher Golden Retriever Welpe, sitzend, weicher Cartoon-Stil, braun-goldenes Fell, weißer Hintergrund, ideal für Kinder-Vokabular",
+      "bird": "Ein kleiner, bunter Vogel im Cartoon-Stil, blau und gelb, sitzend auf einem Ast, weißer Hintergrund, kinderfreundlich",
+      "vogel": "Ein kleiner, bunter Vogel im Cartoon-Stil, blau und gelb, sitzend auf einem Ast, weißer Hintergrund, kinderfreundlich",
+      "fish": "Ein fröhlicher orange-roter Fisch im Cartoon-Stil, schwimmend, mit Blasen, weißer Hintergrund, kindgerecht",
+      "fisch": "Ein fröhlicher orange-roter Fisch im Cartoon-Stil, schwimmend, mit Blasen, weißer Hintergrund, kindgerecht",
+      "elephant": "Ein freundlicher grauer Elefant im Cartoon-Stil, großer Rüssel, große Ohren, stehend, weißer Hintergrund, für Kinder-Lernmaterial",
+      "elefant": "Ein freundlicher grauer Elefant im Cartoon-Stil, großer Rüssel, große Ohren, stehend, weißer Hintergrund, für Kinder-Lernmaterial",
+      "tiger": "Ein freundlicher Tiger im Cartoon-Stil, orange mit schwarzen Streifen, sitzend, große Augen, weißer Hintergrund, kinderfreundlich",
+      "rabbit": "Ein süßer weißer Hase im Cartoon-Stil, lange Ohren, rosa Nase, sitzend, weißer Hintergrund, ideal für Kinder",
+      "hase": "Ein süßer weißer Hase im Cartoon-Stil, lange Ohren, rosa Nase, sitzend, weißer Hintergrund, ideal für Kinder",
+      "mouse": "Eine süße kleine graue Maus im Cartoon-Stil, große runde Ohren, lange Schwanz, weißer Hintergrund, kinderfreundlich",
+      "maus": "Eine süße kleine graue Maus im Cartoon-Stil, große runde Ohren, lange Schwanz, weißer Hintergrund, kinderfreundlich",
+      "bear": "Ein freundlicher brauner Teddybär im Cartoon-Stil, sitzend, weiche Erscheinung, weißer Hintergrund, perfekt für Kinder",
+      "bär": "Ein freundlicher brauner Teddybär im Cartoon-Stil, sitzend, weiche Erscheinung, weißer Hintergrund, perfekt für Kinder",
+      "monkey": "Ein verspielter brauner Affe im Cartoon-Stil, sitzend, große Augen, lächelnd, weißer Hintergrund, kinderfreundlich",
+      "affe": "Ein verspielter brauner Affe im Cartoon-Stil, sitzend, große Augen, lächelnd, weißer Hintergrund, kinderfreundlich",
+
       // Familie-Begriffe - VEREINFACHT
       "parents": "two adults standing together, cartoon style, white background",
       "eltern": "two adults standing together, cartoon style, white background",
@@ -1335,4 +1408,31 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
       };
 
       return curatedFamilyImages[word.toLowerCase()] || "https://cdn.pixabay.com/photo/2016/11/29/04/19/family-1867100_640.jpg";
+    }
+
+    function getCuratedAnimalImage(word: string): string {
+      const curatedAnimalImages: Record<string, string> = {
+        // Hochwertige, kinderfreundliche Tier-Bilder
+        "cat": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
+        "katze": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
+        "dog": "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
+        "hund": "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
+        "bird": "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
+        "vogel": "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
+        "fish": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
+        "fisch": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
+        "elephant": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
+        "elefant": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
+        "tiger": "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400&q=80",
+        "rabbit": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
+        "hase": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
+        "mouse": "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
+        "maus": "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
+        "bear": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
+        "bär": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
+        "monkey": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
+        "affe": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80"
+      };
+
+      return curatedAnimalImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80";
     }
