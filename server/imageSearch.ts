@@ -1,4 +1,3 @@
-
 import OpenAI from "openai";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -62,7 +61,7 @@ export async function findBestImage(
   try {
     // 1. Mehrere Bildkandidaten sammeln
     const candidates = await generateImageCandidates(category, word, translation);
-    
+
     if (candidates.length === 0) {
       console.log(`❌ Keine Bildkandidaten gefunden für "${word}"`);
       return {
@@ -75,10 +74,10 @@ export async function findBestImage(
 
     // 2. GPT-4o Bildanalyse und -auswahl
     const evaluation = await evaluateWithGPT4o(candidates, category, word, translation);
-    
+
     // 3. Strenge Logikprüfung
     const finalResult = await performLogicCheck(evaluation, candidates, category, word, translation);
-    
+
     console.log(`✅ Bildauswahl abgeschlossen für "${word}": Confidence ${finalResult.confidence}, Logic Check: ${finalResult.logicCheck}`);
     return finalResult;
 
@@ -98,7 +97,7 @@ async function generateImageCandidates(
   word: string,
   translation: string
 ): Promise<ImageCandidate[]> {
-  
+
   // Strategische Suchbegriffe für optimale Bildqualität
   const searchStrategies = [
     // Strategie 1: Einzelobjekt-Fokus
@@ -119,26 +118,26 @@ async function generateImageCandidates(
     try {
       // Cascading Fallback: Unsplash -> Pixabay -> Pexels
       let strategyCandidates = await searchUnsplashWithFiltering(query);
-      
+
       // Falls Unsplash keine Ergebnisse, versuche Pixabay
       if (strategyCandidates.length === 0) {
         console.log(`🔄 Fallback zu Pixabay für Query: "${query}"`);
         strategyCandidates = await searchPixabayWithFiltering(query);
       }
-      
+
       // Falls auch Pixabay keine Ergebnisse, verwende Pexels
       if (strategyCandidates.length === 0) {
         console.log(`🔄 Fallback zu Pexels für Query: "${query}"`);
         strategyCandidates = await searchPexelsWithFiltering(query);
       }
-      
+
       allCandidates.push(...strategyCandidates);
-      
+
       // Kurze Pause zwischen Anfragen
       await new Promise(resolve => setTimeout(resolve, 300));
     } catch (error) {
       console.error(`Fehler bei Suchstrategie "${query}":`, error);
-      
+
       // Bei Fehlern: Alle Fallback-APIs durchprobieren
       try {
         console.log(`🔄 Pixabay Fallback für fehlerhafte Query: "${query}"`);
@@ -158,13 +157,13 @@ async function generateImageCandidates(
 
   // Duplikate entfernen und nach Qualität sortieren
   const uniqueCandidates = removeDuplicatesAndSort(allCandidates);
-  
+
   console.log(`📊 ${uniqueCandidates.length} eindeutige Bildkandidaten für "${word}" gefunden`);
   return uniqueCandidates.slice(0, 12); // Erhöht auf 12 beste Kandidaten
 }
 
 async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidate[]> {
-  
+
   if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY.trim() === "" || UNSPLASH_ACCESS_KEY === "your_unsplash_access_key_here") {
     console.log("⚠️ Keine Unsplash API-Schlüssel konfiguriert, verwende Pexels Fallback");
     return await searchPexelsWithFiltering(query);
@@ -172,7 +171,7 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
 
   try {
     console.log(`🔎 Unsplash-Suche: "${query}"`);
-    
+
     const response = await axios.get("https://api.unsplash.com/search/photos", {
       params: {
         query,
@@ -188,7 +187,7 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
     });
 
     const results = response.data.results;
-    
+
     if (!results || results.length === 0) {
       console.log(`⚠️ Keine Unsplash-Ergebnisse für "${query}"`);
       return [];
@@ -219,7 +218,7 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(`❌ Unsplash API Fehler: ${error.response?.status} - ${error.response?.data}`);
-      
+
       // Bei Rate Limit oder anderen Fehlern: Pexels als Fallback
       if (error.response?.status === 403 || error.response?.status === 429) {
         console.log("⏱️ Unsplash Rate Limit erreicht, verwende Pexels Fallback");
@@ -228,7 +227,7 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
     } else {
       console.error("❌ Unbekannter Fehler bei Unsplash-Suche:", error);
     }
-    
+
     // Zuerst Pixabay, dann Pexels als Fallback versuchen
     console.log("🔄 Verwende Pixabay als Fallback");
     try {
@@ -241,7 +240,7 @@ async function searchUnsplashWithFiltering(query: string): Promise<ImageCandidat
 }
 
 async function searchPixabayWithFiltering(query: string): Promise<ImageCandidate[]> {
-  
+
   if (!PIXABAY_API_KEY || PIXABAY_API_KEY.trim() === "" || PIXABAY_API_KEY === "your_pixabay_api_key_here") {
     console.log("⚠️ Keine Pixabay API-Schlüssel konfiguriert, verwende Pexels Fallback");
     return await searchPexelsWithFiltering(query);
@@ -249,7 +248,7 @@ async function searchPixabayWithFiltering(query: string): Promise<ImageCandidate
 
   try {
     console.log(`🎯 Pixabay-Suche: "${query}"`);
-    
+
     const response = await axios.get("https://pixabay.com/api/", {
       params: {
         key: PIXABAY_API_KEY,
@@ -267,7 +266,7 @@ async function searchPixabayWithFiltering(query: string): Promise<ImageCandidate
     });
 
     const results = response.data.hits;
-    
+
     if (!results || results.length === 0) {
       console.log(`⚠️ Keine Pixabay-Ergebnisse für "${query}"`);
       return await searchPexelsWithFiltering(query);
@@ -298,7 +297,7 @@ async function searchPixabayWithFiltering(query: string): Promise<ImageCandidate
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(`❌ Pixabay API Fehler: ${error.response?.status} - ${error.response?.data}`);
-      
+
       // Bei Rate Limit: längere Pause einbauen
       if (error.response?.status === 429) {
         console.log("⏱️ Pixabay Rate Limit erreicht, warte 2 Sekunden...");
@@ -307,14 +306,14 @@ async function searchPixabayWithFiltering(query: string): Promise<ImageCandidate
     } else {
       console.error("❌ Unbekannter Fehler bei Pixabay-Suche:", error);
     }
-    
+
     // Pexels als finaler Fallback
     return await searchPexelsWithFiltering(query);
   }
 }
 
 async function searchPexelsWithFiltering(query: string): Promise<ImageCandidate[]> {
-  
+
   if (!PEXELS_API_KEY || PEXELS_API_KEY.trim() === "" || PEXELS_API_KEY === "your_pexels_api_key_here") {
     console.log("⚠️ Keine Pexels API-Schlüssel konfiguriert, verwende kuratierte Fallback-Kandidaten");
     return getCuratedFallbackCandidates(query);
@@ -322,7 +321,7 @@ async function searchPexelsWithFiltering(query: string): Promise<ImageCandidate[
 
   try {
     console.log(`🎨 Pexels-Suche: "${query}"`);
-    
+
     const response = await axios.get("https://api.pexels.com/v1/search", {
       params: {
         query,
@@ -337,7 +336,7 @@ async function searchPexelsWithFiltering(query: string): Promise<ImageCandidate[
     });
 
     const results = response.data.photos;
-    
+
     if (!results || results.length === 0) {
       console.log(`⚠️ Keine Pexels-Ergebnisse für "${query}"`);
       return getCuratedFallbackCandidates(query);
@@ -366,7 +365,7 @@ async function searchPexelsWithFiltering(query: string): Promise<ImageCandidate[
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(`❌ Pexels API Fehler: ${error.response?.status} - ${error.response?.data}`);
-      
+
       // Bei Rate Limit: längere Pause einbauen
       if (error.response?.status === 429) {
         console.log("⏱️ Pexels Rate Limit erreicht, warte 3 Sekunden...");
@@ -375,7 +374,7 @@ async function searchPexelsWithFiltering(query: string): Promise<ImageCandidate[
     } else {
       console.error("❌ Unbekannter Fehler bei Pexels-Suche:", error);
     }
-    
+
     return getCuratedFallbackCandidates(query);
   }
 }
@@ -402,7 +401,7 @@ function getCuratedFallbackCandidates(query: string): ImageCandidate[] {
       height: 400
     }
   ];
-  
+
   console.log(`📚 Verwende kuratierte Fallback-Kandidaten für "${query}"`);
   return fallbackImages;
 }
@@ -520,7 +519,7 @@ ANTWORTE NUR MIT VALIDEM JSON:
 
   try {
     console.log("🤖 Starte GPT-4o Bildanalyse...");
-    
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ 
@@ -601,7 +600,7 @@ async function performLogicCheck(
 
   // 2. VERSCHÄRFTE SEMANTISCHE LOGIKPRÜFUNG
   const semanticLogicResult = await performSemanticLogicCheck(selectedCandidate.url, word, translation, category);
-  
+
   if (!semanticLogicResult.passed) {
     console.log(`❌ SEMANTISCHE LOGIKPRÜFUNG FEHLGESCHLAGEN für "${word}": ${semanticLogicResult.reason}`);
     return {
@@ -636,7 +635,7 @@ async function performLogicCheck(
   if (qualityPassed && allSafetyChecksPassed && semanticLogicResult.passed) {
     console.log(`✅ Bild für "${word}" besteht ALLE VERSCHÄRFTEN Prüfungen - Confidence: ${evaluation.confidence}`);
     console.log(`📊 Semantische Logik: ${semanticLogicResult.reason}`);
-    
+
     return {
       bestImageUrl: selectedCandidate.url,
       confidence: evaluation.confidence,
@@ -649,7 +648,7 @@ async function performLogicCheck(
     console.log(`   - Sicherheit bestanden: ${allSafetyChecksPassed}`);
     console.log(`   - Semantische Logik bestanden: ${semanticLogicResult.passed}`);
     console.log(`   - Kritische Probleme: ${evaluation.criticalIssues.join(', ')}`);
-    
+
     return {
       bestImageUrl: getCuratedFallbackImage(word, category),
       confidence: 0.4,
@@ -731,7 +730,7 @@ ANTWORT NUR MIT JSON:
     }
 
     const result = JSON.parse(content);
-    
+
     return {
       passed: Boolean(result.passed),
       reason: result.reason || "Keine Begründung verfügbar",
@@ -928,3 +927,30 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
 
   return rules[word.toLowerCase()] || `${word.toUpperCase()} muss exakt dargestellt werden - keine Interpretationen!`;
 }
+
+    function getCuratedFamilyImage(word: string): string {
+      const curatedFamilyImages: Record<string, string> = {
+        // Verbesserte Familie-Bilder mit mehr Vielfalt
+        "mother": "https://cdn.pixabay.com/photo/2017/01/31/17/09/mother-2025208_640.jpg",
+        "father": "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1868750_640.jpg", 
+        "parents": "https://cdn.pixabay.com/photo/2016/11/29/04/19/family-1867100_640.jpg",
+        "family": "https://cdn.pixabay.com/photo/2017/01/08/13/58/cube-1963036_640.jpg",
+        "grandmother": "https://cdn.pixabay.com/photo/2017/03/15/17/48/woman-2146811_640.jpg",
+        "grandfather": "https://cdn.pixabay.com/photo/2016/11/21/14/53/man-1845814_640.jpg",
+        "daughter": "https://cdn.pixabay.com/photo/2017/09/25/13/12/dog-2780522_640.jpg",
+        "son": "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1868750_640.jpg",
+        "sister": "https://cdn.pixabay.com/photo/2017/08/06/12/06/people-2591874_640.jpg",
+        "brother": "https://cdn.pixabay.com/photo/2016/11/14/04/14/brothers-1822621_640.jpg",
+        "baby": "https://cdn.pixabay.com/photo/2017/11/05/13/50/family-2916980_640.jpg",
+        "child": "https://cdn.pixabay.com/photo/2017/10/27/11/31/playground-2891991_640.jpg",
+        "nephew": "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1868750_640.jpg",
+        "niece": "https://cdn.pixabay.com/photo/2017/08/06/12/06/people-2591874_640.jpg",
+        "cousin": "https://cdn.pixabay.com/photo/2017/08/06/12/06/people-2591874_640.jpg",
+        "uncle": "https://cdn.pixabay.com/photo/2016/11/21/14/53/man-1845814_640.jpg",
+        "aunt": "https://cdn.pixabay.com/photo/2017/03/15/17/48/woman-2146811_640.jpg",
+        "wife": "https://cdn.pixabay.com/photo/2017/03/15/17/48/woman-2146811_640.jpg",
+        "husband": "https://cdn.pixabay.com/photo/2016/11/21/14/53/man-1845814_640.jpg"
+      };
+
+      return curatedFamilyImages[word.toLowerCase()] || "https://cdn.pixabay.com/photo/2016/11/29/04/19/family-1867100_640.jpg";
+    }
