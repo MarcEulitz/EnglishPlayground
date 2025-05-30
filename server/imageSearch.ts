@@ -104,22 +104,22 @@ export async function findBestImage(
 
   // 🎨 TIER-KATEGORIE: ChatGPT-4o Bildgenerierung aktiviert
   if (category.toLowerCase() === 'animals' || category.toLowerCase() === 'tiere') {
-    console.log(`🎨 Tier-Kategorie "${category}" für "${word}" - verwende ChatGPT-4o Generierung`);
+    console.log(`🎯 Tier-Kategorie "${category}" für "${word}" - verwende ChatGPT-4o Bildgenerierung`);
     
     // Cache-Hit: Verwende bereits generiertes Tier-Bild
     const cachedAnimalImage = familyImageCache[word.toLowerCase()];
-    if (cachedAnimalImage && cachedAnimalImage.source === "ChatGPT-4o DALL-E-3") {
-      console.log(`🚀 TIER CACHE HIT für "${word}" - verwende vorgeneriertes Bild!`);
+    if (cachedAnimalImage && cachedAnimalImage.source === "ChatGPT-4o Tier-Generator") {
+      console.log(`🚀 CACHE HIT für Tier "${word}" - verwende vorgeneriertes Bild!`);
       return {
         bestImageUrl: cachedAnimalImage.url,
         confidence: cachedAnimalImage.confidence,
-        reasoning: `TIER CACHE: Bereits generiertes ${cachedAnimalImage.source} Bild für "${word}" - Erstellt: ${cachedAnimalImage.generated}`,
+        reasoning: `CACHE: Bereits generiertes Tier-Bild für "${word}" - Erstellt: ${cachedAnimalImage.generated}`,
         logicCheck: true
       };
     }
 
     // Cache-Miss: Generiere neues Tier-Bild mit ChatGPT-4o
-    console.log(`🦁 Cache-Miss für Tier "${word}" - verwende ChatGPT-4o Bilderstellung`);
+    console.log(`🎨 Cache-Miss für Tier "${word}" - starte ChatGPT-4o Bildgenerierung`);
 
     try {
       const generatedAnimalImageUrl = await generateImageWithChatGPT(word, translation, "animals");
@@ -130,36 +130,36 @@ export async function findBestImage(
           url: generatedAnimalImageUrl,
           confidence: 0.98,
           generated: new Date().toISOString(),
-          source: "ChatGPT-4o DALL-E-3"
+          source: "ChatGPT-4o Tier-Generator"
         };
 
-        console.log(`✅ Neues TIER-Bild für "${word}" generiert und gecacht!`);
+        console.log(`✅ Neues Tier-Bild für "${word}" generiert und gecacht!`);
 
         return {
           bestImageUrl: generatedAnimalImageUrl,
           confidence: 0.98,
-          reasoning: `ChatGPT-4o hat ein perfektes Tier-Bild für "${word}" erstellt und gecacht`,
+          reasoning: `ChatGPT-4o hat ein perfektes Tier-Bild für "${word}" (${translation}) erstellt`,
           logicCheck: true
         };
       }
     } catch (error) {
-      console.error(`❌ ChatGPT-4o Tier-Bilderstellung fehlgeschlagen für "${word}":`, error);
+      console.error(`❌ ChatGPT-4o Tier-Bildgenerierung fehlgeschlagen für "${word}":`, error);
     }
 
-    // Fallback zu kuratierten Tier-Bildern
-    const curatedAnimalImage = getCuratedAnimalFallbackImage(word);
+    // Fallback zu kuratiertem Tier-Bild
+    const curatedAnimalImage = getCuratedAnimalImage(word);
     
     familyImageCache[word.toLowerCase()] = {
       url: curatedAnimalImage,
-      confidence: 0.85,
+      confidence: 0.95,
       generated: new Date().toISOString(),
       source: "Kuratiertes Tier-Fallback"
     };
 
     return {
       bestImageUrl: curatedAnimalImage,
-      confidence: 0.85,
-      reasoning: `Fallback: Kuratiertes Tier-Bild für "${word}" (gecacht)`,
+      confidence: 0.95,
+      reasoning: `Fallback: Kuratiertes Tier-Bild für "${word}" (${translation})`,
       logicCheck: true
     };
   }
@@ -1325,40 +1325,53 @@ export async function generateImageWithChatGPT(
       "monkey": "Ein verspielter brauner Affe im Cartoon-Stil, sitzend, große Augen, lächelnd, weißer Hintergrund, kinderfreundlich",
       "affe": "Ein verspielter brauner Affe im Cartoon-Stil, sitzend, große Augen, lächelnd, weißer Hintergrund, kinderfreundlich",
       "giraffe": "Eine freundliche Giraffe im Cartoon-Stil, langer Hals, gelb mit braunen Flecken, stehend, weißer Hintergrund, kinderfreundlich",
-      "zebra": "Ein freundliches Zebra im Cartoon-Stil, schwarz-weiße Streifen, stehend, große Augen, weißer Hintergrund, für Kinder",
-      "sheep": "Ein flauschiges weißes Schaf im Cartoon-Stil, lockiges Fell, süßes Gesicht, weißer Hintergrund, kinderfreundlich",
-      "schaf": "Ein flauschiges weißes Schaf im Cartoon-Stil, lockiges Fell, süßes Gesicht, weißer Hintergrund, kinderfreundlich",
-      "cow": "Eine freundliche Kuh im Cartoon-Stil, schwarz-weiße Flecken, große Augen, stehend, weißer Hintergrund, für Kinder",
-      "kuh": "Eine freundliche Kuh im Cartoon-Stil, schwarz-weiße Flecken, große Augen, stehend, weißer Hintergrund, für Kinder",
-      "pig": "Ein süßes rosa Schwein im Cartoon-Stil, rundliche Form, Ringelschwanz, weißer Hintergrund, kinderfreundlich",
-      "schwein": "Ein süßes rosa Schwein im Cartoon-Stil, rundliche Form, Ringelschwanz, weißer Hintergrund, kinderfreundlich",
-      "duck": "Eine gelbe Ente im Cartoon-Stil, schwimmend, orange Schnabel, freundliche Augen, weißer Hintergrund, für Kinder",
-      "ente": "Eine gelbe Ente im Cartoon-Stil, schwimmend, orange Schnabel, freundliche Augen, weißer Hintergrund, für Kinder",
-      "horse": "Ein braunes Pferd im Cartoon-Stil, schöne Mähne, große Augen, stehend, weißer Hintergrund, kinderfreundlich",
-      "pferd": "Ein braunes Pferd im Cartoon-Stil, schöne Mähne, große Augen, stehend, weißer Hintergrund, kinderfreundlich",
-      "lion": "Ein freundlicher Löwe im Cartoon-Stil, goldene Mähne, große Augen, sitzend, weißer Hintergrund, für Kinder",
-      "löwe": "Ein freundlicher Löwe im Cartoon-Stil, goldene Mähne, große Augen, sitzend, weißer Hintergrund, für Kinder",
-      "frog": "Ein grüner Frosch im Cartoon-Stil, große Augen, sitzend auf einem Blatt, weißer Hintergrund, kinderfreundlich",
-      "frosch": "Ein grüner Frosch im Cartoon-Stil, große Augen, sitzend auf einem Blatt, weißer Hintergrund, kinderfreundlich",
-      "chicken": "Ein weißes Huhn im Cartoon-Stil, orange Schnabel, kleine Flügel, stehend, weißer Hintergrund, für Kinder",
-      "huhn": "Ein weißes Huhn im Cartoon-Stil, orange Schnabel, kleine Flügel, stehend, weißer Hintergrund, für Kinder",
-      "deer": "Ein braunes Reh im Cartoon-Stil, große Augen, kleine Geweih, stehend, weißer Hintergrund, kinderfreundlich",
-      "owl": "Eine braune Eule im Cartoon-Stil, große runde Augen, auf einem Ast sitzend, weißer Hintergrund, für Kinder",
-      "butterfly": "Ein bunter Schmetterling im Cartoon-Stil, große Flügel, fliegend, weißer Hintergrund, kinderfreundlich",
-      "bee": "Eine gelb-schwarze Biene im Cartoon-Stil, kleine Flügel, fliegend, weißer Hintergrund, für Kinder",
-      "snake": "Eine grüne Schlange im Cartoon-Stil, freundliches Gesicht, gewunden, weißer Hintergrund, kinderfreundlich",
-      "turtle": "Eine grüne Schildkröte im Cartoon-Stil, brauner Panzer, freundliche Augen, weißer Hintergrund, für Kinder",
-      "fox": "Ein roter Fuchs im Cartoon-Stil, buschiger Schwanz, spitze Ohren, sitzend, weißer Hintergrund, kinderfreundlich",
-      "wolf": "Ein grauer Wolf im Cartoon-Stil, freundliche Augen, sitzend, weißer Hintergrund, für Kinder",
-      "dolphin": "Ein grauer Delfin im Cartoon-Stil, springend aus dem Wasser, lächelnd, weißer Hintergrund, kinderfreundlich",
-      "shark": "Ein grauer Hai im Cartoon-Stil, freundliches Gesicht, schwimmend, weißer Hintergrund, für Kinder",
-      "penguin": "Ein schwarz-weißer Pinguin im Cartoon-Stil, orange Schnabel, stehend, weißer Hintergrund, kinderfreundlich",
-      "goat": "Eine weiße Ziege im Cartoon-Stil, kleine Hörner, freundliche Augen, stehend, weißer Hintergrund, für Kinder",
-      "kangaroo": "Ein braunes Känguru im Cartoon-Stil, großer Schwanz, springend, weißer Hintergrund, kinderfreundlich",
-      "octopus": "Ein lila Oktopus im Cartoon-Stil, acht Tentakel, große Augen, schwimmend, weißer Hintergrund, für Kinder",
-      "krake": "Ein lila Oktopus im Cartoon-Stil, acht Tentakel, große Augen, schwimmend, weißer Hintergrund, für Kinder",
-      "whale": "Ein blauer Wal im Cartoon-Stil, groß und freundlich, schwimmend, weißer Hintergrund, kinderfreundlich",
-      "wal": "Ein blauer Wal im Cartoon-Stil, groß und freundlich, schwimmend, weißer Hintergrund, kinderfreundlich",
+      "zebra": "Ein freundliches Zebra im Cartoon-Stil, schwarz-weiße Streifen, seitlich stehend, weißer Hintergrund, ideal für Kinder",
+      "sheep": "Ein flauschiges weißes Schaf im Cartoon-Stil, lockiges Fell, schwarze Beine, stehend, weißer Hintergrund, kinderfreundlich",
+      "schaf": "Ein flauschiges weißes Schaf im Cartoon-Stil, lockiges Fell, schwarze Beine, stehend, weißer Hintergrund, kinderfreundlich",
+      "cow": "Eine freundliche Kuh im Cartoon-Stil, schwarz-weiße Flecken, stehend, weißer Hintergrund, ideal für Kinder-Lernmaterial",
+      "kuh": "Eine freundliche Kuh im Cartoon-Stil, schwarz-weiße Flecken, stehend, weißer Hintergrund, ideal für Kinder-Lernmaterial",
+      "pig": "Ein rosiges Schwein im Cartoon-Stil, runde Form, Ringelschwanz, stehend, weißer Hintergrund, kinderfreundlich",
+      "schwein": "Ein rosiges Schwein im Cartoon-Stil, runde Form, Ringelschwanz, stehend, weißer Hintergrund, kinderfreundlich",
+      "duck": "Eine gelbe Ente im Cartoon-Stil, schwimmend oder stehend, oranger Schnabel, weißer Hintergrund, ideal für Kinder",
+      "ente": "Eine gelbe Ente im Cartoon-Stil, schwimmend oder stehend, oranger Schnabel, weißer Hintergrund, ideal für Kinder",
+      "horse": "Ein freundliches braunes Pferd im Cartoon-Stil, stehend, Mähne im Wind, weißer Hintergrund, kinderfreundlich",
+      "pferd": "Ein freundliches braunes Pferd im Cartoon-Stil, stehend, Mähne im Wind, weißer Hintergrund, kinderfreundlich",
+      "lion": "Ein freundlicher Löwe im Cartoon-Stil, goldenes Fell, große Mähne, sitzend, weißer Hintergrund, kinderfreundlich",
+      "löwe": "Ein freundlicher Löwe im Cartoon-Stil, goldenes Fell, große Mähne, sitzend, weißer Hintergrund, kinderfreundlich",
+      "frog": "Ein grüner Frosch im Cartoon-Stil, große Augen, sitzend auf einem Seerosenblatt, weißer Hintergrund, kinderfreundlich",
+      "frosch": "Ein grüner Frosch im Cartoon-Stil, große Augen, sitzend auf einem Seerosenblatt, weißer Hintergrund, kinderfreundlich",
+      "chicken": "Ein weißes Huhn im Cartoon-Stil, rote Krone, stehend, weißer Hintergrund, ideal für Kinder-Lernmaterial",
+      "huhn": "Ein weißes Huhn im Cartoon-Stil, rote Krone, stehend, weißer Hintergrund, ideal für Kinder-Lernmaterial",
+      "deer": "Ein braunes Reh im Cartoon-Stil, mit kleinen Hörnern, stehend, weißer Hintergrund, kinderfreundlich",
+      "reh": "Ein braunes Reh im Cartoon-Stil, mit kleinen Hörnern, stehend, weißer Hintergrund, kinderfreundlich",
+      "owl": "Eine braune Eule im Cartoon-Stil, große runde Augen, auf einem Ast sitzend, weißer Hintergrund, kinderfreundlich",
+      "eule": "Eine braune Eule im Cartoon-Stil, große runde Augen, auf einem Ast sitzend, weißer Hintergrund, kinderfreundlich",
+      "butterfly": "Ein bunter Schmetterling im Cartoon-Stil, geöffnete Flügel, fliegend, weißer Hintergrund, kinderfreundlich",
+      "schmetterling": "Ein bunter Schmetterling im Cartoon-Stil, geöffnete Flügel, fliegend, weißer Hintergrund, kinderfreundlich",
+      "bee": "Eine gelb-schwarze Biene im Cartoon-Stil, fliegend, transparente Flügel, weißer Hintergrund, kinderfreundlich",
+      "biene": "Eine gelb-schwarze Biene im Cartoon-Stil, fliegend, transparente Flügel, weißer Hintergrund, kinderfreundlich",
+      "snake": "Eine freundliche grüne Schlange im Cartoon-Stil, S-Form, lächelnd, weißer Hintergrund, kinderfreundlich",
+      "schlange": "Eine freundliche grüne Schlange im Cartoon-Stil, S-Form, lächelnd, weißer Hintergrund, kinderfreundlich",
+      "turtle": "Eine grüne Schildkröte im Cartoon-Stil, mit gemustertem Panzer, stehend, weißer Hintergrund, kinderfreundlich",
+      "schildkröte": "Eine grüne Schildkröte im Cartoon-Stil, mit gemustertem Panzer, stehend, weißer Hintergrund, kinderfreundlich",
+      "fox": "Ein oranger Fuchs im Cartoon-Stil, buschiger Schwanz, sitzend, weißer Hintergrund, kinderfreundlich",
+      "fuchs": "Ein oranger Fuchs im Cartoon-Stil, buschiger Schwanz, sitzend, weißer Hintergrund, kinderfreundlich",
+      "wolf": "Ein grauer Wolf im Cartoon-Stil, freundlich aussehend, stehend, weißer Hintergrund, kinderfreundlich",
+      "wolf": "Ein grauer Wolf im Cartoon-Stil, freundlich aussehend, stehend, weißer Hintergrund, kinderfreundlich",
+      "dolphin": "Ein grauer Delfin im Cartoon-Stil, springend aus dem Wasser, weißer Hintergrund, kinderfreundlich",
+      "delfin": "Ein grauer Delfin im Cartoon-Stil, springend aus dem Wasser, weißer Hintergrund, kinderfreundlich",
+      "shark": "Ein freundlicher grauer Hai im Cartoon-Stil, lächelnd, schwimmend, weißer Hintergrund, kinderfreundlich",
+      "hai": "Ein freundlicher grauer Hai im Cartoon-Stil, lächelnd, schwimmend, weißer Hintergrund, kinderfreundlich",
+      "penguin": "Ein schwarz-weißer Pinguin im Cartoon-Stil, stehend, oranger Schnabel, weißer Hintergrund, kinderfreundlich",
+      "pinguin": "Ein schwarz-weißer Pinguin im Cartoon-Stil, stehend, oranger Schnabel, weißer Hintergrund, kinderfreundlich",
+      "goat": "Eine weiße Ziege im Cartoon-Stil, mit kleinen Hörnern, stehend, weißer Hintergrund, kinderfreundlich",
+      "ziege": "Eine weiße Ziege im Cartoon-Stil, mit kleinen Hörnern, stehend, weißer Hintergrund, kinderfreundlich",
+      "kangaroo": "Ein braunes Känguru im Cartoon-Stil, stehend, mit Baby im Beutel, weißer Hintergrund, kinderfreundlich",
+      "känguru": "Ein braunes Känguru im Cartoon-Stil, stehend, mit Baby im Beutel, weißer Hintergrund, kinderfreundlich",
+      "octopus": "Ein lila Oktopus im Cartoon-Stil, acht Tentakel, schwimmend, weißer Hintergrund, kinderfreundlich",
+      "oktopus": "Ein lila Oktopus im Cartoon-Stil, acht Tentakel, schwimmend, weißer Hintergrund, kinderfreundlich",
+      "whale": "Ein blauer Wal im Cartoon-Stil, groß und freundlich, Wasserfontäne, weißer Hintergrund, kinderfreundlich",
+      "wal": "Ein blauer Wal im Cartoon-Stil, groß und freundlich, Wasserfontäne, weißer Hintergrund, kinderfreundlich",
 
       // Familie-Begriffe - VEREINFACHT
       "parents": "two adults standing together, cartoon style, white background",
@@ -1432,6 +1445,9 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
   return rules[word.toLowerCase()] || `${word.toUpperCase()} muss exakt dargestellt werden - keine Interpretationen!`;
 }
 
+    /**
+     * Kuratierte Familie-Fallback-Bilder
+     */
     function getCuratedFamilyImage(word: string): string {
       const curatedFamilyImages: Record<string, string> = {
         // Verbesserte Familie-Bilder mit mehr Vielfalt
@@ -1460,10 +1476,11 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
     }
 
     /**
-     * Kuratierte Fallback-Bilder für Tiere
+     * Kuratierte Tier-Fallback-Bilder
      */
-    function getCuratedAnimalFallbackImage(word: string): string {
+    function getCuratedAnimalImage(word: string): string {
       const curatedAnimalImages: Record<string, string> = {
+        // Hochwertige kuratierte Tier-Bilder für Fallback
         "cat": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
         "katze": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
         "dog": "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
@@ -1472,35 +1489,37 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
         "vogel": "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
         "fish": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
         "fisch": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
-        "elephant": "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400&q=80",
-        "elefant": "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?fit=crop&w=600&h=400&q=80",
-        "tiger": "https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?fit=crop&w=600&h=400&q=80",
-        "rabbit": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
-        "hase": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
+        "elephant": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
+        "elefant": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
+        "tiger": "https://images.unsplash.com/photo-1561731216-c3a4d99437d5?fit=crop&w=600&h=400&q=80",
+        "rabbit": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?fit=crop&w=600&h=400&q=80",
+        "hase": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?fit=crop&w=600&h=400&q=80",
         "mouse": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
         "maus": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
         "bear": "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
         "bär": "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
-        "monkey": "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400&q=80",
-        "affe": "https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?fit=crop&w=600&h=400&q=80",
+        "monkey": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
+        "affe": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
         "giraffe": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
         "zebra": "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400&q=80",
         "sheep": "https://images.unsplash.com/photo-1533318087102-b9ad633d9b4d?fit=crop&w=600&h=400&q=80",
         "schaf": "https://images.unsplash.com/photo-1533318087102-b9ad633d9b4d?fit=crop&w=600&h=400&q=80",
-        "cow": "https://images.unsplash.com/photo-1546445317-29f4545e9d53?fit=crop&w=600&h=400&q=80",
-        "kuh": "https://images.unsplash.com/photo-1546445317-29f4545e9d53?fit=crop&w=600&h=400&q=80",
-        "pig": "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
-        "schwein": "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
+        "cow": "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
+        "kuh": "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
+        "pig": "https://images.unsplash.com/photo-1531004650327-fd7662d57830?fit=crop&w=600&h=400&q=80",
+        "schwein": "https://images.unsplash.com/photo-1531004650327-fd7662d57830?fit=crop&w=600&h=400&q=80",
         "duck": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
         "ente": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
         "horse": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
         "pferd": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400&q=80",
-        "lion": "https://images.unsplash.com/photo-1546182990-dffeafbe841d?fit=crop&w=600&h=400&q=80",
-        "löwe": "https://images.unsplash.com/photo-1546182990-dffeafbe841d?fit=crop&w=600&h=400&q=80",
-        "frog": "https://images.unsplash.com/photo-1496070242169-b672c576566b?fit=crop&w=600&h=400&q=80",
-        "frosch": "https://images.unsplash.com/photo-1496070242169-b672c576566b?fit=crop&w=600&h=400&q=80",
-        "chicken": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
-        "huhn": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80"
+        "lion": "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?fit=crop&w=600&h=400&q=80",
+        "löwe": "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?fit=crop&w=600&h=400&q=80",
+        "frog": "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400&q=80",
+        "frosch": "https://images.unsplash.com/photo-1539632346654-dd4c3cffad8c?fit=crop&w=600&h=400&q=80",
+        "chicken": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
+        "huhn": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
+        "whale": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400&q=80",
+        "wal": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400&q=80"
       };
 
       return curatedAnimalImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80";

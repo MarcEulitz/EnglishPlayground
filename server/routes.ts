@@ -1,4 +1,3 @@
-
 import type { Express } from "express";
   import { createServer, type Server } from "http";
   import { storage } from "./storage";
@@ -53,31 +52,31 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     app.get("/api/test-animals-generation", async (req, res) => {
       try {
         console.log("🚀 Starte Test der Animals-Bildgenerierung...");
-        
+
         // Rufe die Batch-Generierung intern auf
         const testAnimals = ["cat", "dog", "bird"];
         const results = [];
-        
+
         for (const animal of testAnimals) {
           console.log(`🧪 Teste Bildgenerierung für "${animal}"...`);
-          
+
           const result = await findBestImage("animals", animal, animal);
           results.push({
             word: animal,
             result: result
           });
-          
+
           // Kurze Pause zwischen Tests
           await new Promise(resolve => setTimeout(resolve, 2000));
         }
-        
+
         res.json({
           success: true,
           message: "Animals-Bildgenerierung Test abgeschlossen",
           results: results,
           cacheSize: Object.keys(familyImageCache).length
         });
-        
+
       } catch (error) {
         console.error("❌ Fehler beim Animals-Test:", error);
         res.status(500).json({
@@ -219,7 +218,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     app.post("/api/validate-family-category", async (req, res) => {
       try {
         console.log("🔍 Starte umfassende Familie-Kategorie Validierung...");
-        
+
         // Familie-Vokabular aus data.ts laden
         const familyVocabulary = [
           { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80" },
@@ -239,18 +238,18 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         ];
 
         const validationResults = await validateAllImagesInCategory(familyVocabulary, "family");
-        
+
         // Verbesserte Bilder für failed validations suchen
         const improvedResults = [];
-        
+
         for (const result of validationResults) {
           if (!result.validation.isValid || !result.validation.childFriendly || result.validation.confidence < 0.8) {
             console.log(`🔄 Suche besseres Bild für "${result.word}"...`);
-            
+
             try {
               const improvedImage = await findBestImage("family", result.word, 
                 familyVocabulary.find(v => v.word === result.word)?.translation || result.word);
-              
+
               improvedResults.push({
                 word: result.word,
                 originalValidation: result.validation,
@@ -280,7 +279,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         }
 
         console.log("🎯 Familie-Kategorie Validierung abgeschlossen");
-        
+
         res.json({
           totalWords: familyVocabulary.length,
           validationResults: improvedResults,
@@ -304,7 +303,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     app.post("/api/replace-all-family-images", async (req, res) => {
       try {
         console.log("🔄 Starte VOLLSTÄNDIGEN Austausch aller Familie-Bilder...");
-        
+
         // Alle Familie-Vokabeln definieren
         const familyVocabulary = [
           { word: "mother", translation: "Mutter" },
@@ -336,7 +335,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         for (const vocab of familyVocabulary) {
           try {
             console.log(`🔍 Suche NEUES logikgeprüftes Bild für "${vocab.word}" (${vocab.translation})...`);
-            
+
             // Mehrere Versuche mit verschiedenen Suchstrategien
             let bestResult = null;
             const searchStrategies = [
@@ -353,9 +352,9 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
             for (let attempt = 0; attempt < searchStrategies.length && !bestResult; attempt++) {
               try {
                 console.log(`   🔄 Versuch ${attempt + 1}: "${searchStrategies[attempt]}"`);
-                
+
                 const result = await findBestImage("family", vocab.word, vocab.translation);
-                
+
                 // Nur akzeptieren wenn Logikprüfung bestanden UND hohe Confidence
                 if (result.logicCheck && result.confidence >= 0.8) {
                   bestResult = result;
@@ -368,10 +367,10 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                 } else {
                   console.log(`   ❌ Bild ungeeignet. Confidence: ${result.confidence}, Logic: ${result.logicCheck}`);
                 }
-                
+
                 // Kurze Pause zwischen Versuchen
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                
+
               } catch (attemptError) {
                 console.error(`   ❌ Versuch ${attempt + 1} fehlgeschlagen:`, attemptError);
                 continue;
@@ -472,7 +471,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         "uncle": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400&q=80",
         "aunt": "https://images.unsplash.com/photo-1494790108755-2616c96d5e82?fit=crop&w=600&h=400&q=80"
       };
-      
+
       return curatedFamilyImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80";
     }
 
@@ -480,17 +479,17 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     app.post("/api/clear-animal-cache", async (req, res) => {
       try {
         console.log("🗑️ Leere Tier-Cache...");
-        
+
         // Importiere die clearAnimalImageCache Funktion
         const { clearAnimalImageCache } = await import("./imageSearch.js");
         clearAnimalImageCache();
-        
+
         res.json({
           success: true,
           message: "Tier-Cache erfolgreich geleert",
           timestamp: new Date().toISOString()
         });
-        
+
       } catch (error) {
         console.error("❌ Fehler beim Leeren des Tier-Caches:", error);
         res.status(500).json({
@@ -500,20 +499,14 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
       }
     });
 
-    // KOMPLETTE TIER-BILDGENERIERUNG MIT SOFORTIGEM START (AKTIVIERT)
+    // KOMPLETTE TIER-BILDGENERIERUNG MIT CHATGPT-4O (AKTIVIERT)
     app.post("/api/complete-animals-image-generation", async (req, res) => {
       try {
-        console.log("🦁 Starte VOLLSTÄNDIGE Tier-Bildgenerierung mit ChatGPT-4o...");
-        
-        // Sende sofortige Antwort, dass Generation gestartet wurde
-        res.json({
-          success: true,
-          message: "Tier-Bildgenerierung mit ChatGPT-4o wurde gestartet",
-          status: "in_progress",
-          timestamp: new Date().toISOString()
-        });
-        
-        // VOLLSTÄNDIGE Tier-Vokabeln - alle auf einmal generieren (DEAKTIVIERT)
+        console.log("🎨 Starte KOMPLETTE Tier-Bildgenerierung mit ChatGPT-4o...");
+
+        const startTime = Date.now();
+
+        // VOLLSTÄNDIGE Tier-Vokabeln - alle auf einmal mit ChatGPT-4o generieren
         const animalVocabulary = [
           { word: "cat", translation: "Katze" },
           { word: "dog", translation: "Hund" },
@@ -563,7 +556,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         // PARALLELE VERARBEITUNG IN KLEINEREN BATCHES
         const batchSize = 3; // Kleinere Batches für bessere Performance
         const batches = [];
-        
+
         for (let i = 0; i < animalVocabulary.length; i += batchSize) {
           batches.push(animalVocabulary.slice(i, i + batchSize));
         }
@@ -571,16 +564,16 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
           const batch = batches[batchIndex];
           const batchProgress = `Batch ${batchIndex + 1}/${batches.length}`;
-          
+
           console.log(`📦 ${batchProgress}: Verarbeite ${batch.length} Tiere...`);
 
           // Parallele Verarbeitung innerhalb des Batches
           const batchPromises = batch.map(async (vocab) => {
             const progress = `${animalVocabulary.indexOf(vocab) + 1}/${animalVocabulary.length}`;
-            
+
             try {
               console.log(`🎨 [${progress}] Generiere "${vocab.word}" (${vocab.translation})`);
-              
+
               // Cache prüfen
               const existingCache = familyImageCache[vocab.word.toLowerCase()];
               if (existingCache && existingCache.source === "ChatGPT-4o DALL-E-3") {
@@ -594,16 +587,16 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                   source: existingCache.source
                 };
               }
-              
+
               // SOFORTIGE GENERIERUNG mit mehreren Strategien
               let generatedImageUrl = null;
               const strategies = ["simple", "educational", "detailed"];
-              
+
               for (const strategy of strategies) {
                 try {
                   console.log(`   🔄 [${progress}] ${strategy}-Strategie für "${vocab.word}"`);
                   generatedImageUrl = await generateImageWithChatGPT(vocab.word, vocab.translation, "animals", strategy);
-                  
+
                   if (generatedImageUrl) {
                     console.log(`   ✅ [${progress}] ${strategy} erfolgreich!`);
                     break;
@@ -613,7 +606,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                   continue;
                 }
               }
-              
+
               if (generatedImageUrl) {
                 // ERFOLG - Speichere im Cache
                 familyImageCache[vocab.word.toLowerCase()] = {
@@ -622,9 +615,9 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                   generated: new Date().toISOString(),
                   source: "ChatGPT-4o DALL-E-3"
                 };
-                
+
                 console.log(`✅ [${progress}] "${vocab.word}" ERFOLGREICH generiert!`);
-                
+
                 return {
                   word: vocab.word,
                   translation: vocab.translation,
@@ -637,14 +630,14 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                 // FALLBACK
                 console.log(`📚 [${progress}] Fallback für "${vocab.word}"`);
                 const fallbackUrl = getCuratedFallbackImage(vocab.word, "animals");
-                
+
                 familyImageCache[vocab.word.toLowerCase()] = {
                   url: fallbackUrl,
                   confidence: 0.90,
                   generated: new Date().toISOString(),
                   source: "Kuratiertes Premium-Fallback"
                 };
-                
+
                 return {
                   word: vocab.word,
                   translation: vocab.translation,
@@ -654,11 +647,11 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                   source: "Kuratiertes Premium-Fallback"
                 };
               }
-              
+
             } catch (error) {
               console.error(`❌ [${progress}] Fehler bei "${vocab.word}":`, error);
               const emergencyFallback = getCuratedFallbackImage(vocab.word, "animals");
-              
+
               return {
                 word: vocab.word,
                 translation: vocab.translation,
@@ -753,7 +746,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     app.post("/api/start-animals-generation-now", async (req, res) => {
       try {
         console.log("🚀 SOFORT-START: Tier-Bildgenerierung wird eingeleitet...");
-        
+
         // Starte die Generierung im Hintergrund
         fetch("http://localhost:5000/api/complete-animals-image-generation", {
           method: "POST",
@@ -761,7 +754,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         }).catch(error => {
           console.error("Hintergrund-Generierung Fehler:", error);
         });
-        
+
         res.json({
           success: true,
           message: "Tier-Bildgenerierung wurde gestartet und läuft im Hintergrund",
@@ -769,7 +762,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
           estimatedTime: "3-5 Minuten für alle Tiere",
           progress: "Wird in den Server-Logs angezeigt"
         });
-        
+
       } catch (error) {
         console.error("❌ Fehler beim Starten der Tier-Generierung:", error);
         res.status(500).json({
@@ -783,7 +776,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     app.post("/api/batch-generate-family-images", async (req, res) => {
       try {
         console.log("🎨 Starte BATCH-GENERIERUNG aller Familie-Bilder mit ChatGPT-4o...");
-        
+
         // Erweiterte Familie-Vokabeln für komplette Abdeckung
         const familyVocabulary = [
           { word: "mother", translation: "Mutter" },
@@ -813,12 +806,12 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         let failureCount = 0;
 
         console.log(`🎯 Generiere ${familyVocabulary.length} Familie-Bilder mit ChatGPT-4o...`);
-        
+
         // NEUE API-Route für TIER-BATCH-GENERIERUNG
         app.post("/api/batch-generate-animal-images", async (req, res) => {
           try {
             console.log("🦁 Starte BATCH-GENERIERUNG aller Tier-Bilder mit ChatGPT-4o...");
-            
+
             // Vollständige Tier-Vokabeln für komplette Abdeckung
             const animalVocabulary = [
               { word: "cat", translation: "Katze" },
@@ -868,7 +861,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
             // PARALLELE VERARBEITUNG IN KLEINEREN BATCHES
             const batchSize = 3; // Kleinere Batches für bessere Performance
             const batches = [];
-            
+
             for (let i = 0; i < animalVocabulary.length; i += batchSize) {
               batches.push(animalVocabulary.slice(i, i + batchSize));
             }
@@ -876,16 +869,16 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
             for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
               const batch = batches[batchIndex];
               const batchProgress = `Batch ${batchIndex + 1}/${batches.length}`;
-              
+
               console.log(`📦 ${batchProgress}: Verarbeite ${batch.length} Tiere...`);
 
               // Parallele Verarbeitung innerhalb des Batches
               const batchPromises = batch.map(async (vocab) => {
                 const progress = `${animalVocabulary.indexOf(vocab) + 1}/${animalVocabulary.length}`;
-                
+
                 try {
                   console.log(`🎨 [${progress}] Generiere Tier "${vocab.word}" (${vocab.translation})`);
-                  
+
                   // Cache prüfen
                   const existingCache = familyImageCache[vocab.word.toLowerCase()];
                   if (existingCache && existingCache.source === "ChatGPT-4o DALL-E-3") {
@@ -899,16 +892,16 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                       source: existingCache.source
                     };
                   }
-                  
+
                   // SOFORTIGE GENERIERUNG mit mehreren Strategien
                   let generatedImageUrl = null;
                   const strategies = ["simple", "educational", "detailed"];
-                  
+
                   for (const strategy of strategies) {
                     try {
                       console.log(`   🔄 [${progress}] ${strategy}-Strategie für Tier "${vocab.word}"`);
                       generatedImageUrl = await generateImageWithChatGPT(vocab.word, vocab.translation, "animals", strategy);
-                      
+
                       if (generatedImageUrl) {
                         console.log(`   ✅ [${progress}] ${strategy} für Tier erfolgreich!`);
                         break;
@@ -918,7 +911,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                       continue;
                     }
                   }
-                  
+
                   if (generatedImageUrl) {
                     // ERFOLG - Speichere Tier-Bild im Cache
                     familyImageCache[vocab.word.toLowerCase()] = {
@@ -927,9 +920,9 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                       generated: new Date().toISOString(),
                       source: "ChatGPT-4o DALL-E-3"
                     };
-                    
+
                     console.log(`✅ [${progress}] Tier "${vocab.word}" ERFOLGREICH generiert!`);
-                    
+
                     return {
                       word: vocab.word,
                       translation: vocab.translation,
@@ -942,14 +935,14 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                     // FALLBACK für Tiere
                     console.log(`📚 [${progress}] Fallback für Tier "${vocab.word}"`);
                     const fallbackUrl = getCuratedFallbackImage(vocab.word, "animals");
-                    
+
                     familyImageCache[vocab.word.toLowerCase()] = {
                       url: fallbackUrl,
                       confidence: 0.85,
                       generated: new Date().toISOString(),
                       source: "Kuratiertes Tier-Fallback"
                     };
-                    
+
                     return {
                       word: vocab.word,
                       translation: vocab.translation,
@@ -959,10 +952,10 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
                       source: "Kuratiertes Tier-Fallback"
                     };
                   }
-                  
+
                 } catch (error) {
                   console.error(`❌ [${progress}] Fehler bei Tier "${vocab.word}":`, error);
-                  
+
                   return {
                     word: vocab.word,
                     translation: vocab.translation,
@@ -987,7 +980,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
               });
 
               console.log(`✅ ${batchProgress} abgeschlossen: ${batchResults.length} Tiere verarbeitet`);
-              
+
               // Kurze Pause zwischen Batches
               if (batchIndex < batches.length - 1) {
                 await new Promise(resolve => setTimeout(resolve, 2000));
@@ -1024,7 +1017,7 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         // Parallel-Generierung in Batches von 5 für optimale Performance
         const batchSize = 5;
         const batches = [];
-        
+
         for (let i = 0; i < familyVocabulary.length; i += batchSize) {
           batches.push(familyVocabulary.slice(i, i + batchSize));
         }
@@ -1036,9 +1029,9 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
           const batchPromises = batch.map(async (vocab) => {
             try {
               console.log(`🎨 Generiere Bild für "${vocab.word}" (${vocab.translation})...`);
-              
+
               const generatedImageUrl = await generateImageWithChatGPT(vocab.word, vocab.translation, "family");
-              
+
               if (generatedImageUrl) {
                 console.log(`✅ Bild für "${vocab.word}" erfolgreich generiert!`);
                 return {
@@ -1140,4 +1133,3 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     const httpServer = createServer(app);
     return httpServer;
   }
-
