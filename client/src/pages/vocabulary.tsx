@@ -20,7 +20,7 @@ interface VocabularyQuestion {
 const VocabularyPage: React.FC = () => {
   const params = useParams<{ topic: string }>();
   const [, navigate] = useLocation();
-  const { currentUser } = useUserContext();
+  const { currentUser, addLearningStat } = useUserContext();
   const { playAudio, playWord, playCharacterPhrase, audioEnabled } = useAudio();
 
   const [lives, setLives] = useState(3);
@@ -38,6 +38,24 @@ const VocabularyPage: React.FC = () => {
   );
 
   const timerRef = useRef<number | null>(null);
+
+  const saveProgress = async () => {
+    if (!currentUser) return;
+    
+    // Calculate duration in seconds
+    const duration = Math.floor((Date.now() - startTime) / 1000);
+    
+    try {
+      await addLearningStat({
+        userId: currentUser.id,
+        topic: params.topic || 'unknown',
+        score,
+        duration
+      });
+    } catch (error) {
+      console.error('Failed to save learning stat', error);
+    }
+  };
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -140,6 +158,8 @@ const VocabularyPage: React.FC = () => {
       if (currentQuestionIndex + 1 < questions.length) {
         setCurrentQuestionIndex((prev) => prev + 1);
       } else {
+        // Save progress before navigating to success page
+        saveProgress();
         navigate(`/success/${params.topic}`);
       }
     }, 2000);

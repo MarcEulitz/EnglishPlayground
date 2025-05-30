@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY }) : null;
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || "";
 
 interface ImageCandidate {
@@ -128,6 +129,26 @@ async function evaluateImageCandidates(
   `;
 
   try {
+    // If no OpenAI API key is available, use the first candidate or fallback
+    if (!openai || !OPENAI_API_KEY) {
+      console.log("Keine OpenAI API-Schlüssel konfiguriert, verwende ersten Kandidaten");
+      const bestCandidate = candidates[0];
+      
+      if (!bestCandidate || !bestCandidate.url) {
+        return {
+          bestImageUrl: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+          confidence: 0.5,
+          reasoning: "No OpenAI API key and no candidates available, using fallback image"
+        };
+      }
+
+      return {
+        bestImageUrl: bestCandidate.url,
+        confidence: 0.7,
+        reasoning: "Selected first candidate (no OpenAI evaluation available)"
+      };
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
