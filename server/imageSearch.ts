@@ -1075,8 +1075,8 @@ ALLGEMEINE REGEL für "${word}" (${translation}):
 function getCuratedFallbackImage(word: string, category: string): string {
   // Kuratierte Tier-Bilder (korrigiert)
   const curatedAnimalImages: Record<string, string> = {
-    "giraffe": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400&q=80",
-    "giraffe_de": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400&q=80",
+    "giraffe": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
+    "giraffe_de": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
     "chicken": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
     "huhn": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?fit=crop&w=600&h=400&q=80",
     "duck": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
@@ -1519,7 +1519,7 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
         "bär": "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
         "monkey": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
         "affe": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
-        "giraffe": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?fit=crop&w=600&h=400&q=80",
+        "giraffe": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
         "zebra": "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400&q=80",
         "sheep": "https://images.unsplash.com/photo-1533318087102-b9ad633d9b4d?fit=crop&w=600&h=400&q=80",
         "schaf": "https://images.unsplash.com/photo-1533318087102-b9ad633d9b4d?fit=crop&w=600&h=400&q=80",
