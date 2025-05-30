@@ -549,7 +549,6 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         let successCount = 0;
         let fallbackCount = 0;
         let errorCount = 0;
-        const startTime = Date.now();
 
         console.log(`🚀 STARTE SOFORTIGE GENERATION von ${animalVocabulary.length} Tier-Bildern...`);
 
