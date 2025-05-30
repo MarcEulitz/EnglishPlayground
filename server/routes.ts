@@ -178,20 +178,3 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
     return httpServer;
   }
 
-// Image search endpoint
-// I am adding the api route here because it was missing
-router.post("/api/find-best-image", async (req, res) => {
-  try {
-    const { category, word, translation } = req.body;
-
-    if (!category || !word || !translation) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
-
-    const result = await findBestImage(category, word, translation);
-    res.json(result);
-  } catch (error) {
-    console.error("Error in find-best-image:", error);
-    res.status(500).json({ error: "Failed to find best image" });
-  }
-});
