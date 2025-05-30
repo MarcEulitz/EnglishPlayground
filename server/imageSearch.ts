@@ -1246,145 +1246,22 @@ export async function generateImageWithChatGPT(
         "goat": "white goat, cartoon style, white background",
         "kangaroo": "brown kangaroo, cartoon style, white background",
         "octopus": "purple octopus, cartoon style, white background",
-        "whale": "blue whale, cartoon style, white background"
-      };
+        "whale": "blue whale, cartoon style, white background",
 
-      return basePrompts;
       // Familie-Begriffe - VEREINFACHT
       "parents": "two adults standing together, cartoon style, white background",
       "eltern": "two adults standing together, cartoon style, white background",
       "family": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
       "familie": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
       "mother": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "mutter": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "father": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "vater": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "daughter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "tochter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "son": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "sohn": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "brother": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendiche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "bruder": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "sister": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "schwester": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "grandmother": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "großmutter": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "grandfather": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-      "großvater": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
-      // Schule-Begriffe
-      "backpack": "Ein hochwertiger, neuer Schulrucksack vor einem weißen, neutralen Hintergrund. Der Rucksack ist klar erkennbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien geeignet.",
-      "rucksack": "Ein hochwertiger, neuer Schulrucksack vor einem weißen, neutralen Hintergrund. Der Rucksack ist klar erkennbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien geeignet.",
-      "book": "Ein einzelnes, offenes Buch mit sichtbaren Seiten vor einem hellen, neutralen Hintergrund. Das Buch nimmt den größten Teil des Bildes ein und ist perfekt für deutsche Kinder-Lernmaterialien.",
-      "buch": "Ein einzelnes, offenes Buch mit sichtbaren Seiten vor einem hellen, neutralen Hintergrund. Das Buch nimmt den größten Teil des Bildes ein und ist perfekt für deutsche Kinder-Lernmaterialien.",
-      "pencil": "Ein einzelner, neuer Bleistift mit scharfer Spitze vor einem weißen, neutralen Hintergrund. Der Bleistift ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "bleistift": "Ein einzelner, neuer Bleistift mit scharfer Spitze vor einem weißen, neutralen Hintergrund. Der Bleistift ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "scissors": "Eine neue, saubere Schere vor einem weißen, neutralen Hintergrund. Die Schere ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "schere": "Eine neue, saubere Schere vor einem weißen, neutralen Hintergrund. Die Schere ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "glue": "Ein Klebestift oder eine Klebeflasche vor einem weißen, neutralen Hintergrund. Der Kleber ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "kleber": "Ein Klebestift oder eine Klebeflasche vor einem weißen, neutralen Hintergrund. Der Kleber ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "ruler": "Ein Lineal aus Holz oder Plastik vor einem weißen, neutralen Hintergrund. Das Lineal ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "lineal": "Ein Lineal aus Holz oder Plastik vor einem weißen, neutralen Hintergrund. Das Lineal ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-
-      // Transport-Begriffe  
-      "car": "Ein modernes Auto vor einem hellen, neutralen Hintergrund. Das Auto ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
-      "auto": "Ein modernes Auto vor einem hellen, neutralen Hintergrund. Das Auto ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
-      "bus": "Ein gelber Schulbus oder öffentlicher Bus vor einem hellen, neutralen Hintergrund. Der Bus ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "bicycle": "Ein Fahrrad vor einem hellen, neutralen Hintergrund. Das Fahrrad ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
-      "fahrrad": "Ein Fahrrad vor einem hellen, neutralen Hintergrund. Das Fahrrad ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
-      "plane": "Ein Passagierflugzeug vor einem hellen, neutralen Hintergrund. Das Flugzeug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "flugzeug": "Ein Passagierflugzeug vor einem hellen, neutralen Hintergrund. Das Flugzeug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "train": "Ein Zug vor einem hellen, neutralen Hintergrund. Der Zug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "zug": "Ein Zug vor einem hellen, neutralen Hintergrund. Der Zug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "boat": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "boot": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-
-      // OPTIMIERTE TIER-PROMPTS für ChatGPT-4o - VERBESSERTE ERFOLGSRATE
-      "cat": "A cute friendly house cat sitting peacefully, simple cartoon style, clean white background, perfect for children's educational materials",
-      "katze": "A cute friendly house cat sitting peacefully, simple cartoon style, clean white background, perfect for children's educational materials",
-      "dog": "A friendly golden retriever dog sitting with a happy expression, simple cartoon style, clean white background, perfect for children's educational materials",
-      "hund": "A friendly golden retriever dog sitting with a happy expression, simple cartoon style, clean white background, perfect for children's educational materials",
-      "bird": "A colorful small songbird perched on a branch, simple cartoon style, clean white background, perfect for children's educational materials",
-      "vogel": "A colorful small songbird perched on a branch, simple cartoon style, clean white background, perfect for children's educational materials",
-      "fish": "A bright orange goldfish swimming, simple cartoon style, clean white background, perfect for children's educational materials",
-      "fisch": "A bright orange goldfish swimming, simple cartoon style, clean white background, perfect for children's educational materials",
-      "elephant": "A gentle gray elephant with big ears and trunk, simple cartoon style, clean white background, perfect for children's educational materials",
-      "elefant": "A gentle gray elephant with big ears and trunk, simple cartoon style, clean white background, perfect for children's educational materials",
-      "tiger": "A beautiful orange tiger with black stripes in a peaceful pose, simple cartoon style, clean white background, perfect for children's educational materials",
-      "rabbit": "A cute white bunny with long ears sitting upright, simple cartoon style, clean white background, perfect for children's educational materials",
-      "hase": "A cute white bunny with long ears sitting upright, simple cartoon style, clean white background, perfect for children's educational materials",
-      "mouse": "A small gray mouse with round ears and a long tail, simple cartoon style, clean white background, perfect for children's educational materials",
-      "maus": "A small gray mouse with round ears and a long tail, simple cartoon style, clean white background, perfect for children's educational materials",
-      "bear": "A friendly brown teddy bear in a sitting position, simple cartoon style, clean white background, perfect for children's educational materials",
-      "bär": "A friendly brown teddy bear in a sitting position, simple cartoon style, clean white background, perfect for children's educational materials",
-      "monkey": "A cute brown monkey sitting with a friendly smile, simple cartoon style, clean white background, perfect for children's educational materials",
-      "affe": "A cute brown monkey sitting with a friendly smile, simple cartoon style, clean white background, perfect for children's educational materials",
-      "giraffe": "A tall yellow giraffe with brown spots and a long neck, simple cartoon style, clean white background, perfect for children's educational materials",
-      "zebra": "A black and white striped zebra standing gracefully, simple cartoon style, clean white background, perfect for children's educational materials",
-      "sheep": "A fluffy white sheep with woolly coat, simple cartoon style, clean white background, perfect for children's educational materials",
-      "schaf": "A fluffy white sheep with woolly coat, simple cartoon style, clean white background, perfect for children's educational materials",
-      "cow": "A black and white spotted dairy cow, simple cartoon style, clean white background, perfect for children's educational materials",
-      "kuh": "A black and white spotted dairy cow, simple cartoon style, clean white background, perfect for children's educational materials",
-      "pig": "A pink pig with a curly tail, simple cartoon style, clean white background, perfect for children's educational materials",
-      "schwein": "A pink pig with a curly tail, simple cartoon style, clean white background, perfect for children's educational materials",
-      "duck": "A yellow duck with orange beak and feet, simple cartoon style, clean white background, perfect for children's educational materials",
-      "ente": "A yellow duck with orange beak and feet, simple cartoon style, clean white background, perfect for children's educational materials",
-      "horse": "A brown horse standing proudly, simple cartoon style, clean white background, perfect for children's educational materials",
-      "pferd": "A brown horse standing proudly, simple cartoon style, clean white background, perfect for children's educational materials",
-      "lion": "A friendly golden lion with a fluffy mane, simple cartoon style, clean white background, perfect for children's educational materials",
-      "löwe": "A friendly golden lion with a fluffy mane, simple cartoon style, clean white background, perfect for children's educational materials",
-      "frog": "A green frog sitting on a lily pad, simple cartoon style, clean white background, perfect for children's educational materials",
-      "frosch": "A green frog sitting on a lily pad, simple cartoon style, clean white background, perfect for children's educational materials",
-      "chicken": "A red and white hen with a red comb, simple cartoon style, clean white background, perfect for children's educational materials",
-      "huhn": "A red and white hen with a red comb, simple cartoon style, clean white background, perfect for children's educational materials",
-      
-      // ERWEITERTE TIER-VOKABELN
-      "deer": "A gentle brown deer standing in nature, simple cartoon style, clean white background, perfect for children's educational materials",
-      "reh": "A gentle brown deer standing in nature, simple cartoon style, clean white background, perfect for children's educational materials",
-      "owl": "A wise brown owl with big eyes perched on a branch, simple cartoon style, clean white background, perfect for children's educational materials",
-      "eule": "A wise brown owl with big eyes perched on a branch, simple cartoon style, clean white background, perfect for children's educational materials",
-      "butterfly": "A colorful butterfly with spread wings, simple cartoon style, clean white background, perfect for children's educational materials",
-      "schmetterling": "A colorful butterfly with spread wings, simple cartoon style, clean white background, perfect for children's educational materials",
-      "bee": "A yellow and black striped bee with wings, simple cartoon style, clean white background, perfect for children's educational materials",
-      "biene": "A yellow and black striped bee with wings, simple cartoon style, clean white background, perfect for children's educational materials",
-      "snake": "A friendly green snake coiled up, simple cartoon style, clean white background, perfect for children's educational materials",
-      "schlange": "A friendly green snake coiled up, simple cartoon style, clean white background, perfect for children's educational materials",
-      "turtle": "A green turtle with patterned shell, simple cartoon style, clean white background, perfect for children's educational materials",
-      "schildkröte": "A green turtle with patterned shell, simple cartoon style, clean white background, perfect for children's educational materials",
-      "fox": "A red fox with a bushy tail sitting, simple cartoon style, clean white background, perfect for children's educational materials",
-      "fuchs": "A red fox with a bushy tail sitting, simple cartoon style, clean white background, perfect for children's educational materials",
-      "wolf": "A gray wolf sitting peacefully, simple cartoon style, clean white background, perfect for children's educational materials",
-      "dolphin": "A gray dolphin jumping out of water, simple cartoon style, clean white background, perfect for children's educational materials",
-      "delfin": "A gray dolphin jumping out of water, simple cartoon style, clean white background, perfect for children's educational materials",
-      "shark": "A gray shark swimming, simple cartoon style, clean white background, perfect for children's educational materials",
-      "hai": "A gray shark swimming, simple cartoon style, clean white background, perfect for children's educational materials",
-      "penguin": "A black and white penguin standing upright, simple cartoon style, clean white background, perfect for children's educational materials",
-      "pinguin": "A black and white penguin standing upright, simple cartoon style, clean white background, perfect for children's educational materials",
-      "goat": "A white goat with horns, simple cartoon style, clean white background, perfect for children's educational materials",
-      "ziege": "A white goat with horns, simple cartoon style, clean white background, perfect for children's educational materials",
-      "kangaroo": "A brown kangaroo with a pouch, simple cartoon style, clean white background, perfect for children's educational materials",
-      "känguru": "A brown kangaroo with a pouch, simple cartoon style, clean white background, perfect for children's educational materials",
-      "octopus": "A purple octopus with eight tentacles, simple cartoon style, clean white background, perfect for children's educational materials",
-      "krake": "A purple octopus with eight tentacles, simple cartoon style, clean white background, perfect for children's educational materials",
-      "whale": "A large blue whale in the ocean, simple cartoon style, clean white background, perfect for children's educational materials",
-      "wal": "A large blue whale in the ocean, simple cartoon style, clean white background, perfect for children's educational materials",
-
-      // Farben-Begriffe
-      "red": "Ein leuchtend roter Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die rote Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "rot": "Ein leuchtend roter Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die rote Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "blue": "Ein leuchtend blauer Gegenstand (Ball oder Block) vor einem weißen, neutralen Hintergrund. Die blaue Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "blau": "Ein leuchtend blauer Gegenstand (Ball oder Block) vor einem weißen, neutralen Hintergrund. Die blaue Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "green": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "grün": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "yellow": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
-      "gelb": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien."
-      };
+      "mutter": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien."
     };
 
+    return basePrompts;
     };
 
     const imagePrompts = getImagePrompt(strategy);
-    
+
     // Fallback zu sehr einfachem Prompt
     const imagePrompt = imagePrompts[word.toLowerCase()] || 
       `simple ${word} drawing, cartoon style, white background`;
@@ -1411,7 +1288,7 @@ export async function generateImageWithChatGPT(
         console.log(`❌ Keine Bild-URL von ChatGPT-4o erhalten für "${word}"`);
         return null;
       }
-      
+
     } catch (error: any) {
       console.log(`⚠️ DALL-E Generation fehlgeschlagen für "${word}": ${error.message}`);
       return null;
