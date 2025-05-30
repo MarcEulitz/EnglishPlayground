@@ -1207,7 +1207,7 @@ async function generateImageWithChatGPT(
   try {
     console.log(`🎨 Erstelle Bild mit ChatGPT-4o für "${word}" (${translation})`);
 
-    // Spezifische Prompts für alle Kategorien
+    // Verbesserte, kindersichere Prompts für alle Kategorien
     const imagePrompts: Record<string, string> = {
       // Familie-Begriffe
       "parents": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
@@ -1258,42 +1258,44 @@ async function generateImageWithChatGPT(
       "boat": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
       "boot": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
 
-      // Tiere-Begriffe - Erweitert für alle Animals
-      "cat": "Eine süße Hauskatze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "katze": "Eine süße Hauskatze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "dog": "Ein freundlicher Hund vor einem hellen, neutralen Hintergrund. Der Hund ist komplett sichtbar und hat ein freundliches Gesicht. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "hund": "Ein freundlicher Hund vor einem hellen, neutralen Hintergrund. Der Hund ist komplett sichtbar und hat ein freundliches Gesicht. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "bird": "Ein bunter Vogel vor einem hellen, neutralen Hintergrund. Der Vogel ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "vogel": "Ein bunter Vogel vor einem hellen, neutralen Hintergrund. Der Vogel ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "fish": "Ein bunter Fisch vor einem hellen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "fisch": "Ein bunter Fisch vor einem hellen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "elephant": "Ein großer, grauer Elefant vor einem hellen, neutralen Hintergrund. Der Elefant ist komplett sichtbar mit charakteristischen Stoßzähnen und Rüssel. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "elefant": "Ein großer, grauer Elefant vor einem hellen, neutralen Hintergrund. Der Elefant ist komplett sichtbar mit charakteristischen Stoßzähnen und Rüssel. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "tiger": "Ein majestätischer Tiger mit orangefarbenem Fell und schwarzen Streifen vor einem neutralen Hintergrund. Der Tiger ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "rabbit": "Ein süßer, weißer oder brauner Hase vor einem hellen, neutralen Hintergrund. Der Hase sitzt aufrecht mit aufgestellten Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "hase": "Ein süßer, weißer oder brauner Hase vor einem hellen, neutralen Hintergrund. Der Hase sitzt aufrecht mit aufgestellten Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "mouse": "Eine kleine, graue oder braune Maus vor einem hellen, neutralen Hintergrund. Die Maus ist komplett sichtbar mit charakteristischen runden Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "maus": "Eine kleine, graue oder braune Maus vor einem hellen, neutralen Hintergrund. Die Maus ist komplett sichtbar mit charakteristischen runden Ohren. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "bear": "Ein brauner Bär vor einem hellen, neutralen Hintergrund. Der Bär ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "bär": "Ein brauner Bär vor einem hellen, neutralen Hintergrund. Der Bär ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "monkey": "Ein süßer Affe vor einem hellen, neutralen Hintergrund. Der Affe sitzt oder steht und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "affe": "Ein süßer Affe vor einem hellen, neutralen Hintergrund. Der Affe sitzt oder steht und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "giraffe": "Eine hohe Giraffe mit charakteristischen Flecken vor einem hellen, neutralen Hintergrund. Die Giraffe ist komplett sichtbar mit ihrem langen Hals. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "zebra": "Ein schwarz-weiß gestreiftes Zebra vor einem hellen, neutralen Hintergrund. Das Zebra ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
-      "sheep": "Ein weißes, wolliges Schaf vor einem hellen, neutralen Hintergrund. Das Schaf ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "schaf": "Ein weißes, wolliges Schaf vor einem hellen, neutralen Hintergrund. Das Schaf ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "cow": "Eine schwarz-weiß gefleckte oder braune Kuh vor einem hellen, neutralen Hintergrund. Die Kuh ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "kuh": "Eine schwarz-weiß gefleckte oder braune Kuh vor einem hellen, neutralen Hintergrund. Die Kuh ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "pig": "Ein rosa Schwein vor einem hellen, neutralen Hintergrund. Das Schwein ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "schwein": "Ein rosa Schwein vor einem hellen, neutralen Hintergrund. Das Schwein ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "duck": "Eine gelbe oder weiße Ente vor einem hellen, neutralen Hintergrund. Die Ente ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "ente": "Eine gelbe oder weiße Ente vor einem hellen, neutralen Hintergrund. Die Ente ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "horse": "Ein braunes oder weißes Pferd vor einem hellen, neutralen Hintergrund. Das Pferd ist komplett sichtbar und elegant dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "pferd": "Ein braunes oder weißes Pferd vor einem hellen, neutralen Hintergrund. Das Pferd ist komplett sichtbar und elegant dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "lion": "Ein majestätischer Löwe mit goldener Mähne vor einem hellen, neutralen Hintergrund. Der Löwe ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "löwe": "Ein majestätischer Löwe mit goldener Mähne vor einem hellen, neutralen Hintergrund. Der Löwe ist komplett sichtbar und freundlich dargestellt. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "frog": "Ein grüner Frosch vor einem hellen, neutralen Hintergrund. Der Frosch sitzt und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "frosch": "Ein grüner Frosch vor einem hellen, neutralen Hintergrund. Der Frosch sitzt und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      // Tiere-Begriffe - Optimiert für ChatGPT-4o mit kindersicheren Prompts
+      "cat": "A cute friendly house cat sitting peacefully, simple illustration style, clean white background, perfect for children's educational materials",
+      "katze": "A cute friendly house cat sitting peacefully, simple illustration style, clean white background, perfect for children's educational materials",
+      "dog": "A friendly golden retriever dog sitting with a happy expression, simple illustration style, clean white background, perfect for children's educational materials",
+      "hund": "A friendly golden retriever dog sitting with a happy expression, simple illustration style, clean white background, perfect for children's educational materials",
+      "bird": "A colorful small songbird perched on a branch, simple illustration style, clean white background, perfect for children's educational materials",
+      "vogel": "A colorful small songbird perched on a branch, simple illustration style, clean white background, perfect for children's educational materials",
+      "fish": "A bright orange goldfish swimming, simple illustration style, clean white background, perfect for children's educational materials",
+      "fisch": "A bright orange goldfish swimming, simple illustration style, clean white background, perfect for children's educational materials",
+      "elephant": "A gentle gray elephant with big ears and trunk, simple illustration style, clean white background, perfect for children's educational materials",
+      "elefant": "A gentle gray elephant with big ears and trunk, simple illustration style, clean white background, perfect for children's educational materials",
+      "tiger": "A beautiful orange tiger with black stripes in a peaceful pose, simple illustration style, clean white background, perfect for children's educational materials",
+      "rabbit": "A cute white bunny with long ears sitting upright, simple illustration style, clean white background, perfect for children's educational materials",
+      "hase": "A cute white bunny with long ears sitting upright, simple illustration style, clean white background, perfect for children's educational materials",
+      "mouse": "A small gray mouse with round ears and a long tail, simple illustration style, clean white background, perfect for children's educational materials",
+      "maus": "A small gray mouse with round ears and a long tail, simple illustration style, clean white background, perfect for children's educational materials",
+      "bear": "A friendly brown teddy bear in a sitting position, simple illustration style, clean white background, perfect for children's educational materials",
+      "bär": "A friendly brown teddy bear in a sitting position, simple illustration style, clean white background, perfect for children's educational materials",
+      "monkey": "A cute brown monkey sitting with a friendly smile, simple illustration style, clean white background, perfect for children's educational materials",
+      "affe": "A cute brown monkey sitting with a friendly smile, simple illustration style, clean white background, perfect for children's educational materials",
+      "giraffe": "A tall yellow giraffe with brown spots and a long neck, simple illustration style, clean white background, perfect for children's educational materials",
+      "zebra": "A black and white striped zebra standing gracefully, simple illustration style, clean white background, perfect for children's educational materials",
+      "sheep": "A fluffy white sheep with woolly coat, simple illustration style, clean white background, perfect for children's educational materials",
+      "schaf": "A fluffy white sheep with woolly coat, simple illustration style, clean white background, perfect for children's educational materials",
+      "cow": "A black and white spotted dairy cow, simple illustration style, clean white background, perfect for children's educational materials",
+      "kuh": "A black and white spotted dairy cow, simple illustration style, clean white background, perfect for children's educational materials",
+      "pig": "A pink pig with a curly tail, simple illustration style, clean white background, perfect for children's educational materials",
+      "schwein": "A pink pig with a curly tail, simple illustration style, clean white background, perfect for children's educational materials",
+      "duck": "A yellow duck with orange beak and feet, simple illustration style, clean white background, perfect for children's educational materials",
+      "ente": "A yellow duck with orange beak and feet, simple illustration style, clean white background, perfect for children's educational materials",
+      "horse": "A brown horse standing proudly, simple illustration style, clean white background, perfect for children's educational materials",
+      "pferd": "A brown horse standing proudly, simple illustration style, clean white background, perfect for children's educational materials",
+      "lion": "A friendly golden lion with a fluffy mane, simple illustration style, clean white background, perfect for children's educational materials",
+      "löwe": "A friendly golden lion with a fluffy mane, simple illustration style, clean white background, perfect for children's educational materials",
+      "frog": "A green frog sitting on a lily pad, simple illustration style, clean white background, perfect for children's educational materials",
+      "frosch": "A green frog sitting on a lily pad, simple illustration style, clean white background, perfect for children's educational materials",
+      "chicken": "A red and white hen with a red comb, simple illustration style, clean white background, perfect for children's educational materials",
+      "huhn": "A red and white hen with a red comb, simple illustration style, clean white background, perfect for children's educational materials",
 
       // Farben-Begriffe
       "red": "Ein leuchtend roter Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die rote Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
@@ -1311,24 +1313,73 @@ async function generateImageWithChatGPT(
 
     console.log(`🎨 Erstelle Bild mit Prompt: "${imagePrompt.substring(0, 100)}..."`);
 
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: imagePrompt,
-      n: 1,
-      size: "1024x1024",
-      quality: "hd",
-      style: "natural"
-    });
+    // Retry-Mechanismus für Rate Limits
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      try {
+        const response = await openai.images.generate({
+          model: "dall-e-3",
+          prompt: imagePrompt,
+          n: 1,
+          size: "1024x1024",
+          quality: "standard", // Verwende standard statt hd für bessere Rate Limits
+          style: "natural"
+        });
 
-    const imageUrl = response.data[0]?.url;
+        const imageUrl = response.data[0]?.url;
 
-    if (imageUrl) {
-      console.log(`✅ ChatGPT-4o Bild erfolgreich erstellt für "${word}"`);
-      return imageUrl;
-    } else {
-      console.log(`❌ Keine Bild-URL von ChatGPT-4o erhalten für "${word}"`);
-      return null;
+        if (imageUrl) {
+          console.log(`✅ ChatGPT-4o Bild erfolgreich erstellt für "${word}" (Versuch ${attempts + 1})`);
+          return imageUrl;
+        } else {
+          console.log(`❌ Keine Bild-URL von ChatGPT-4o erhalten für "${word}"`);
+          return null;
+        }
+      } catch (retryError: any) {
+        attempts++;
+        
+        if (retryError.status === 400 && retryError.error?.type === 'image_generation_user_error') {
+          console.log(`⚠️ Content Policy Fehler für "${word}" - verwende vereinfachten Prompt`);
+          
+          // Vereinfachter, sicherer Fallback-Prompt
+          const safePrompt = `A simple cartoon ${word} for children, friendly and colorful, white background`;
+          
+          try {
+            const fallbackResponse = await openai.images.generate({
+              model: "dall-e-3",
+              prompt: safePrompt,
+              n: 1,
+              size: "1024x1024",
+              quality: "standard",
+              style: "natural"
+            });
+            
+            const fallbackUrl = fallbackResponse.data[0]?.url;
+            if (fallbackUrl) {
+              console.log(`✅ Fallback-Bild erfolgreich erstellt für "${word}"`);
+              return fallbackUrl;
+            }
+          } catch (fallbackError) {
+            console.error(`❌ Auch Fallback-Prompt fehlgeschlagen für "${word}"`);
+          }
+          break; // Stoppe bei Content Policy Fehlern
+        }
+        
+        if (retryError.status === 429) {
+          const waitTime = Math.pow(2, attempts) * 1000; // Exponential backoff
+          console.log(`⏱️ Rate Limit erreicht für "${word}" - warte ${waitTime}ms (Versuch ${attempts}/${maxAttempts})`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        } else {
+          console.error(`❌ Unerwarteter Fehler bei "${word}" (Versuch ${attempts}):`, retryError);
+          break;
+        }
+      }
     }
+    
+    console.error(`❌ ChatGPT-4o Bilderstellung endgültig fehlgeschlagen für "${word}" nach ${attempts} Versuchen`);
+    return null;
 
   } catch (error) {
     console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
