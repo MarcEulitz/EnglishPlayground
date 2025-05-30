@@ -91,7 +91,7 @@ const SuccessPage: React.FC = () => {
 
   const handleContinue = () => {
     playAudio('click');
-    navigate('/select-mode');
+    navigate('/home');
   };
 
   return (

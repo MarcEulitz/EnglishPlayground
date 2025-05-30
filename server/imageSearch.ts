@@ -49,6 +49,16 @@ async function generateImageCandidates(
 }
 
 async function searchUnsplash(query: string): Promise<string[]> {
+  // Return fallback images if no API key is configured
+  if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY.trim() === "") {
+    console.log("Keine Unsplash API-Schlüssel konfiguriert, verwende Fallback-Bilder");
+    return [
+      "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?fit=crop&w=600&h=400",
+      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400"
+    ];
+  }
+
   try {
     const response = await axios.get("https://api.unsplash.com/search/photos", {
       params: {
@@ -65,7 +75,12 @@ async function searchUnsplash(query: string): Promise<string[]> {
     return results.map((r: any) => r.urls.small);
   } catch (error) {
     console.error("Fehler bei der Unsplash-Suche:", error);
-    return [];
+    // Return fallback images on error
+    return [
+      "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?fit=crop&w=600&h=400",
+      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400"
+    ];
   }
 }
 
@@ -75,6 +90,15 @@ async function evaluateImageCandidates(
   word: string,
   translation: string
 ): Promise<ImageSearchResult> {
+
+  // Handle empty candidates array
+  if (!candidates || candidates.length === 0) {
+    return {
+      bestImageUrl: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+      confidence: 0.5,
+      reasoning: "No candidates available, using fallback image"
+    };
+  }
 
   const prompt = `
   You are evaluating images for a children's English learning app. 
@@ -116,6 +140,14 @@ async function evaluateImageCandidates(
     const bestIndex = (evaluation.bestImageIndex || 1) - 1;
     const bestCandidate = candidates[bestIndex] || candidates[0];
 
+    if (!bestCandidate || !bestCandidate.url) {
+      return {
+        bestImageUrl: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+        confidence: 0.5,
+        reasoning: "Invalid candidate selected, using fallback image"
+      };
+    }
+
     return {
       bestImageUrl: bestCandidate.url,
       confidence: evaluation.confidence || 0.8,
@@ -125,8 +157,13 @@ async function evaluateImageCandidates(
   } catch (error) {
     console.error("Fehler bei der Bewertung:", error);
 
+    // Safely access the first candidate
+    const fallbackUrl = (candidates[0] && candidates[0].url) 
+      ? candidates[0].url 
+      : "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400";
+
     return {
-      bestImageUrl: candidates[0].url,
+      bestImageUrl: fallbackUrl,
       confidence: 0.5,
       reasoning: `Fallback due to error: ${error instanceof Error ? error.message : "unknown"}`
     };
