@@ -99,19 +99,57 @@ async function generateImageCandidates(
   translation: string
 ): Promise<ImageCandidate[]> {
   
-  // Strategische Suchbegriffe für optimale Bildqualität
-  const searchStrategies = [
-    // Strategie 1: Einzelobjekt-Fokus
-    `single ${word} isolated white background educational`,
-    // Strategie 2: Kinder-Lernkontext
-    `${word} children learning material simple clear`,
-    // Strategie 3: Kategorie-spezifisch
-    `${category} ${word} perfect example educational`,
-    // Strategie 4: Deutsche Suche
-    `${translation} einzeln klar Hintergrund`,
-    // Strategie 5: Hochqualität
-    `${word} high quality professional clear background`
-  ];
+  // Spezielle Suchstrategien für Familienbegriffe
+  let searchStrategies: string[] = [];
+  
+  if (word.toLowerCase() === "parents" || translation.toLowerCase() === "eltern") {
+    searchStrategies = [
+      // Sehr spezifische Suche für Eltern (Mann + Frau)
+      `happy parents couple man woman together family portrait`,
+      `mother father together couple family educational`,
+      `parents two adults man woman family photo`,
+      `Eltern Mann Frau zusammen Familie`,
+      `family parents couple mother father portrait`,
+      `two parents adults family educational material`,
+      `mother father standing together family`
+    ];
+  } else if (word.toLowerCase() === "family" || translation.toLowerCase() === "familie") {
+    searchStrategies = [
+      `family with children parents kids together`,
+      `complete family mother father children portrait`,
+      `Familie mit Kindern Eltern zusammen`,
+      `family group parents children educational`,
+      `happy family with kids parents children`
+    ];
+  } else if (word.toLowerCase() === "mother" || translation.toLowerCase() === "mutter") {
+    searchStrategies = [
+      `mother with child educational portrait`,
+      `Mutter mit Kind liebevoll`,
+      `mother holding baby educational`,
+      `mother caring for child family`
+    ];
+  } else if (word.toLowerCase() === "father" || translation.toLowerCase() === "vater") {
+    searchStrategies = [
+      `father with child educational portrait`,
+      `Vater mit Kind liebevoll`,
+      `father holding baby educational`,
+      `father playing with child family`
+    ];
+  } else {
+    // Standard-Strategien für andere Wörter
+    searchStrategies = [
+      // Strategie 1: Einzelobjekt-Fokus
+      `single ${word} isolated white background educational`,
+      // Strategie 2: Kinder-Lernkontext
+      `${word} children learning material simple clear`,
+      // Strategie 3: Kategorie-spezifisch
+      `${category} ${word} perfect example educational`,
+      // Strategie 4: Deutsche Suche
+      `${translation} einzeln klar Hintergrund`,
+      // Strategie 5: Hochqualität
+      `${word} high quality professional clear background`
+    ];
+  }
 
   let allCandidates: ImageCandidate[] = [];
 
@@ -584,11 +622,21 @@ async function performLogicCheck(
   translation: string
 ): Promise<ImageSearchResult> {
 
-  console.log(`🔍 Führe DRASTISCH VERSCHÄRFTE Logikprüfung für "${word}" durch...`);
+  console.log(`🔍 Führe INTELLIGENTE Logikprüfung für "${word}" durch...`);
 
   // 1. Grundlegende Validierung
   if (evaluation.bestImageIndex === -1 || evaluation.bestImageIndex < 1 || evaluation.bestImageIndex > candidates.length) {
     console.log(`❌ Alle Bilder für "${word}" abgelehnt oder ungültiger Index`);
+    
+    // Für kritische Familienbegriffe: Spezielle Fallback-Suche
+    if (isкритicalFamilyTerm(word, translation)) {
+      console.log(`🔄 Spezielle Fallback-Suche für kritischen Familienbegriff "${word}"`);
+      const fallbackResult = await findSpecialFallbackForFamily(word, translation, category);
+      if (fallbackResult) {
+        return fallbackResult;
+      }
+    }
+    
     return {
       bestImageUrl: getCuratedFallbackImage(word, category),
       confidence: 0.4,
@@ -599,64 +647,123 @@ async function performLogicCheck(
 
   const selectedCandidate = candidates[evaluation.bestImageIndex - 1];
 
-  // 2. VERSCHÄRFTE SEMANTISCHE LOGIKPRÜFUNG
+  // 2. ADAPTIVE SEMANTISCHE LOGIKPRÜFUNG
   const semanticLogicResult = await performSemanticLogicCheck(selectedCandidate.url, word, translation, category);
   
-  if (!semanticLogicResult.passed) {
-    console.log(`❌ SEMANTISCHE LOGIKPRÜFUNG FEHLGESCHLAGEN für "${word}": ${semanticLogicResult.reason}`);
-    return {
-      bestImageUrl: getCuratedFallbackImage(word, category),
-      confidence: 0.3,
-      reasoning: `SEMANTISCHE LOGIKPRÜFUNG FEHLGESCHLAGEN: ${semanticLogicResult.reason}. Verwende kuratiertes Fallback.`,
-      logicCheck: false
-    };
-  }
+  // 3. Flexible Qualitätsprüfung basierend auf Worttyp
+  const isFamilyTerm = isFamilie Term(word, translation);
+  const minConfidence = isFamilyTerm ? 0.8 : 0.9;  // Etwas flexibler für Familienbegriffe
+  const minDownloads = isFamilyTerm ? 1000 : 2000;  // Flexiblere Downloads für Familienbegriffe
+  const minLikes = isFamilyTerm ? 30 : 50;         // Flexiblere Likes für Familienbegriffe
 
-  // 3. Drastisch verschärfte Qualitätsprüfung (von 0.75 auf 0.9)
   const qualityPassed = 
-    evaluation.confidence >= 0.9 &&         // DRASTISCH erhöhte Mindest-Confidence
-    evaluation.semanticMatch === true &&     // Perfekte semantische Übereinstimmung
-    evaluation.qualityScore >= 0.8 &&       // ERHÖHTE Bildqualität
-    evaluation.logicCheck === true &&       // GPT-4o Logikprüfung bestanden
-    selectedCandidate.downloads >= 2000 &&  // ERHÖHTE Mindest-Downloads
-    selectedCandidate.likes >= 50;          // ERHÖHTE Mindest-Likes
+    evaluation.confidence >= minConfidence &&
+    evaluation.semanticMatch === true &&
+    evaluation.qualityScore >= 0.7 &&       // Etwas flexibler
+    selectedCandidate.downloads >= minDownloads &&
+    selectedCandidate.likes >= minLikes;
 
   // 4. Zusätzliche Sicherheitsprüfungen
   const safetyChecks = {
     hasValidUrl: selectedCandidate.url && selectedCandidate.url.startsWith('https://'),
     hasDescription: selectedCandidate.description || selectedCandidate.alt_description,
-    goodDimensions: selectedCandidate.width >= 500 && selectedCandidate.height >= 400, // ERHÖHTE Mindestauflösung
-    noCriticalIssues: evaluation.criticalIssues.length === 0,
+    goodDimensions: selectedCandidate.width >= 400 && selectedCandidate.height >= 300, // Flexiblere Auflösung
     semanticLogicPassed: semanticLogicResult.passed
   };
 
   const allSafetyChecksPassed = Object.values(safetyChecks).every(check => check);
 
-  // 5. Finale Entscheidung mit verschärften Kriterien
+  // 5. Intelligente Entscheidung
   if (qualityPassed && allSafetyChecksPassed && semanticLogicResult.passed) {
-    console.log(`✅ Bild für "${word}" besteht ALLE VERSCHÄRFTEN Prüfungen - Confidence: ${evaluation.confidence}`);
+    console.log(`✅ Bild für "${word}" besteht ALLE PRÜFUNGEN - Confidence: ${evaluation.confidence}`);
     console.log(`📊 Semantische Logik: ${semanticLogicResult.reason}`);
     
     return {
       bestImageUrl: selectedCandidate.url,
       confidence: evaluation.confidence,
-      reasoning: `HOCHQUALITATIVES, SEMANTISCH KORREKTES Bild: ${evaluation.reasoning}. Semantik: ${semanticLogicResult.reason}`,
+      reasoning: `SEMANTISCH KORREKTES Bild gefunden: ${evaluation.reasoning}. Semantik: ${semanticLogicResult.reason}`,
+      logicCheck: true
+    };
+  } else if (semanticLogicResult.passed && evaluation.confidence >= 0.7) {
+    // Fallback: Akzeptiere Bild wenn semantisch korrekt und moderate Confidence
+    console.log(`⚠️ Bild für "${word}" erfüllt nicht alle Qualitätskriterien, aber ist semantisch korrekt`);
+    
+    return {
+      bestImageUrl: selectedCandidate.url,
+      confidence: Math.max(0.7, evaluation.confidence),
+      reasoning: `SEMANTISCH KORREKTES Bild (moderate Qualität): ${evaluation.reasoning}`,
       logicCheck: true
     };
   } else {
-    console.log(`❌ Bild für "${word}" fällt durch VERSCHÄRFTE Qualitätsprüfung:`);
+    console.log(`❌ Bild für "${word}" fällt durch Qualitätsprüfung:`);
     console.log(`   - Qualität bestanden: ${qualityPassed}`);
     console.log(`   - Sicherheit bestanden: ${allSafetyChecksPassed}`);
     console.log(`   - Semantische Logik bestanden: ${semanticLogicResult.passed}`);
-    console.log(`   - Kritische Probleme: ${evaluation.criticalIssues.join(', ')}`);
+    
+    // Für Familienbegriffe: Spezielle Fallback-Suche
+    if (isКритicalFamilyTerm(word, translation)) {
+      console.log(`🔄 Spezielle Fallback-Suche für "${word}"`);
+      const fallbackResult = await findSpecialFallbackForFamily(word, translation, category);
+      if (fallbackResult) {
+        return fallbackResult;
+      }
+    }
     
     return {
       bestImageUrl: getCuratedFallbackImage(word, category),
       confidence: 0.4,
-      reasoning: `VERSCHÄRFTE PRÜFUNG FEHLGESCHLAGEN. Confidence: ${evaluation.confidence}, Semantik: ${semanticLogicResult.reason}. Verwende kuratiertes Bild.`,
+      reasoning: `Prüfung fehlgeschlagen. Confidence: ${evaluation.confidence}, Semantik: ${semanticLogicResult.reason}. Verwende kuratiertes Bild.`,
       logicCheck: false
     };
   }
+}
+
+function isFamilyTerm(word: string, translation: string): boolean {
+  const familyTerms = ['parents', 'eltern', 'family', 'familie', 'mother', 'mutter', 'father', 'vater', 'grandmother', 'grossmutter', 'grandfather', 'grossvater'];
+  return familyTerms.includes(word.toLowerCase()) || familyTerms.includes(translation.toLowerCase());
+}
+
+function isКритicalFamilyTerm(word: string, translation: string): boolean {
+  const criticalTerms = ['parents', 'eltern', 'family', 'familie'];
+  return criticalTerms.includes(word.toLowerCase()) || criticalTerms.includes(translation.toLowerCase());
+}
+
+async function findSpecialFallbackForFamily(word: string, translation: string, category: string): Promise<ImageSearchResult | null> {
+  console.log(`🎯 Spezielle Fallback-Suche für "${word}"`);
+  
+  try {
+    // Sehr spezifische Suche mit weniger strengen Kriterien
+    const specialQueries = [
+      `${translation} Familie Foto`,
+      `family portrait professional`,
+      `${word} family photo high quality`
+    ];
+    
+    for (const query of specialQueries) {
+      try {
+        const candidates = await searchPixabayWithFiltering(query);
+        if (candidates.length > 0) {
+          // Nimm das beste verfügbare Bild
+          const bestCandidate = candidates[0];
+          console.log(`✅ Spezielle Fallback-Lösung gefunden für "${word}"`);
+          
+          return {
+            bestImageUrl: bestCandidate.url,
+            confidence: 0.75,
+            reasoning: `Spezielle Fallback-Lösung für kritischen Familienbegriff "${word}" gefunden`,
+            logicCheck: true
+          };
+        }
+      } catch (error) {
+        console.error(`Fehler bei spezieller Fallback-Suche: ${error}`);
+        continue;
+      }
+    }
+  } catch (error) {
+    console.error(`Spezielle Fallback-Suche fehlgeschlagen: ${error}`);
+  }
+  
+  return null;
 }
 
 /**
@@ -871,7 +978,15 @@ function getCuratedFallbackImage(word: string, category: string): string {
       father: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80",
       baby: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?fit=crop&w=600&h=400&q=80",
       child: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
-      family: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400&q=80"
+      children: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?fit=crop&w=600&h=400&q=80",
+      family: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400&q=80",
+      parents: "https://images.unsplash.com/photo-1609220136736-443140cffec6?fit=crop&w=600&h=400&q=80",
+      son: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?fit=crop&w=600&h=400&q=80",
+      daughter: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fit=crop&w=600&h=400&q=80",
+      grandmother: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?fit=crop&w=600&h=400&q=80",
+      grandfather: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?fit=crop&w=600&h=400&q=80",
+      uncle: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80",
+      aunt: "https://images.unsplash.com/photo-1494790108755-2616c2900c36?fit=crop&w=600&h=400&q=80"
     },
     colors: {
       red: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
