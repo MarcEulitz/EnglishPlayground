@@ -2,8 +2,11 @@ import OpenAI from "openai";
 import axios from "axios";
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
 
 // Lade die .env Datei explizit
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
