@@ -175,6 +175,91 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
       }
     });
 
+    // Familie-Kategorie Bildvalidierung und -austausch
+    app.post("/api/validate-family-category", async (req, res) => {
+      try {
+        console.log("🔍 Starte umfassende Familie-Kategorie Validierung...");
+        
+        // Familie-Vokabular aus data.ts laden
+        const familyVocabulary = [
+          { word: "mother", translation: "Mutter", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80" },
+          { word: "father", translation: "Vater", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80" },
+          { word: "parents", translation: "Eltern", imageUrl: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400&q=80" },
+          { word: "family", translation: "Familie", imageUrl: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400&q=80" },
+          { word: "grandmother", translation: "Großmutter", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80" },
+          { word: "grandfather", translation: "Großvater", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80" },
+          { word: "daughter", translation: "Tochter", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80" },
+          { word: "son", translation: "Sohn", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80" },
+          { word: "sister", translation: "Schwester", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80" },
+          { word: "brother", translation: "Bruder", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80" },
+          { word: "baby", translation: "Baby", imageUrl: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?fit=crop&w=600&h=400&q=80" },
+          { word: "child", translation: "Kind", imageUrl: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80" },
+          { word: "nephew", translation: "Neffe", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80" },
+          { word: "niece", translation: "Nichte", imageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80" }
+        ];
+
+        const validationResults = await validateAllImagesInCategory(familyVocabulary, "family");
+        
+        // Verbesserte Bilder für failed validations suchen
+        const improvedResults = [];
+        
+        for (const result of validationResults) {
+          if (!result.validation.isValid || !result.validation.childFriendly || result.validation.confidence < 0.8) {
+            console.log(`🔄 Suche besseres Bild für "${result.word}"...`);
+            
+            try {
+              const improvedImage = await findBestImage("family", result.word, 
+                familyVocabulary.find(v => v.word === result.word)?.translation || result.word);
+              
+              improvedResults.push({
+                word: result.word,
+                originalValidation: result.validation,
+                newImageUrl: improvedImage.bestImageUrl,
+                newImageConfidence: improvedImage.confidence,
+                logicCheckPassed: improvedImage.logicCheck,
+                reasoning: improvedImage.reasoning
+              });
+            } catch (error) {
+              console.error(`❌ Fehler beim Finden besseren Bildes für "${result.word}":`, error);
+              improvedResults.push({
+                word: result.word,
+                originalValidation: result.validation,
+                newImageUrl: null,
+                error: error instanceof Error ? error.message : "Unbekannter Fehler"
+              });
+            }
+          } else {
+            console.log(`✅ Bild für "${result.word}" ist bereits hochwertig`);
+            improvedResults.push({
+              word: result.word,
+              originalValidation: result.validation,
+              newImageUrl: null,
+              alreadyGood: true
+            });
+          }
+        }
+
+        console.log("🎯 Familie-Kategorie Validierung abgeschlossen");
+        
+        res.json({
+          totalWords: familyVocabulary.length,
+          validationResults: improvedResults,
+          summary: {
+            alreadyGood: improvedResults.filter(r => r.alreadyGood).length,
+            improved: improvedResults.filter(r => r.newImageUrl && !r.alreadyGood).length,
+            failed: improvedResults.filter(r => r.error || (!r.newImageUrl && !r.alreadyGood)).length
+          }
+        });
+
+      } catch (error) {
+        console.error("❌ Familie-Kategorie Validierung fehlgeschlagen:", error);
+        res.status(500).json({ 
+          message: "Fehler bei Familie-Kategorie Validierung",
+          error: error instanceof Error ? error.message : "Unbekannter Fehler"
+        });
+      }
+    });
+
     const httpServer = createServer(app);
     return httpServer;
   }
