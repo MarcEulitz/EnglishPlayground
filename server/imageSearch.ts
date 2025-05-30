@@ -102,66 +102,18 @@ export async function findBestImage(
 
   console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
 
-  // AKTIVIERE TIERE-KATEGORIE: ChatGPT-4o Bildgenerierung für Animals/Tiere
+  // 🚫 TIER-KATEGORIE VOLLSTÄNDIG DEAKTIVIERT
   if (category.toLowerCase() === 'animals' || category.toLowerCase() === 'tiere') {
-    console.log(`🐾 Tier-Kategorie erkannt - aktiviere ChatGPT-4o Bildgenerierung für "${word}"`);
+    console.log(`🚫 Tier-Kategorie "${category}" für "${word}" ist DEAKTIVIERT - verwende neutralen Platzhalter`);
     
-    // Cache-Hit: Verwende bereits generiertes Tierbild
-    const cachedImage = familyImageCache[word.toLowerCase()];
-    if (cachedImage) {
-      console.log(`🚀 CACHE HIT für Tier "${word}" - verwende vorgeneriertes Bild!`);
-      return {
-        bestImageUrl: cachedImage.url,
-        confidence: cachedImage.confidence,
-        reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Tier-Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
-        logicCheck: true
-      };
-    }
-
-    // Cache-Miss: Generiere neues Tierbild mit ChatGPT-4o
-    console.log(`🎨 Cache-Miss für Tier "${word}" - starte ChatGPT-4o Bildgenerierung`);
-
-    try {
-      const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
-
-      if (generatedImageUrl) {
-        // Speichere generiertes Tierbild im Cache
-        familyImageCache[word.toLowerCase()] = {
-          url: generatedImageUrl,
-          confidence: 0.98,
-          generated: new Date().toISOString(),
-          source: "ChatGPT-4o DALL-E-3 Tier"
-        };
-
-        console.log(`✅ Neues Tier-Bild für "${word}" generiert und gespeichert!`);
-
-        return {
-          bestImageUrl: generatedImageUrl,
-          confidence: 0.98,
-          reasoning: `ChatGPT-4o hat ein perfektes Tier-Bild für "${word}" (${translation}) erstellt und gespeichert`,
-          logicCheck: true
-        };
-      }
-    } catch (error) {
-      console.error(`❌ ChatGPT-4o Tier-Bildgenerierung fehlgeschlagen für "${word}":`, error);
-    }
-
-    // Fallback zu kuratierten Tier-Bildern
-    const curatedAnimalImage = getCuratedAnimalImage(word);
+    // Verwende neutralen Platzhalter ohne Tier-Bilder
+    const placeholderImage = createNeutralPlaceholder(word, translation);
     
-    // Cache auch kuratierte Tier-Bilder
-    familyImageCache[word.toLowerCase()] = {
-      url: curatedAnimalImage,
-      confidence: 0.95,
-      generated: new Date().toISOString(),
-      source: "Kuratiertes Tier-Fallback"
-    };
-
     return {
-      bestImageUrl: curatedAnimalImage,
-      confidence: 0.95,
-      reasoning: `Fallback: Kuratiertes Tier-Bild für "${word}" (gespeichert)`,
-      logicCheck: true
+      bestImageUrl: placeholderImage,
+      confidence: 0.5,
+      reasoning: `Tier-Kategorie deaktiviert - Neutraler Platzhalter für "${word}" (${translation})`,
+      logicCheck: false
     };
   }
 
@@ -1219,13 +1171,10 @@ function getCuratedFallbackImage(word: string, category: string): string {
     }
   }
 
-  // 1. PRIORITÄT: Animals-spezifische perfekte Bilder
+  // 🚫 TIER-KATEGORIE DEAKTIVIERT - Verwende neutrale Platzhalter
   if (category.toLowerCase() === "animals" || category.toLowerCase() === "tiere") {
-    const perfectImage = perfectFamilyImages[word.toLowerCase()];
-    if (perfectImage) {
-      console.log(`🐾 Verwende PERFEKTES Tier-Bild für "${word}"`);
-      return perfectImage;
-    }
+    console.log(`🚫 Tier-Kategorie für "${word}" deaktiviert - verwende Platzhalter`);
+    return createNeutralPlaceholder(word, "Deaktiviert");
   }
 
   // 2. Spezifisches Bild für das Wort in anderen Kategorien suchen
@@ -1428,29 +1377,24 @@ function getSemanticRulesForPrompt(word: string, translation: string): string {
       return curatedFamilyImages[word.toLowerCase()] || "https://cdn.pixabay.com/photo/2016/11/29/04/19/family-1867100_640.jpg";
     }
 
-    function getCuratedAnimalImage(word: string): string {
-      const curatedAnimalImages: Record<string, string> = {
-        // Hochwertige, kinderfreundliche Tier-Bilder
-        "cat": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
-        "katze": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
-        "dog": "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
-        "hund": "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
-        "bird": "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
-        "vogel": "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
-        "fish": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
-        "fisch": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
-        "elephant": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
-        "elefant": "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?fit=crop&w=600&h=400&q=80",
-        "tiger": "https://images.unsplash.com/photo-1551232864-3f0890e580d9?fit=crop&w=600&h=400&q=80",
-        "rabbit": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
-        "hase": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?fit=crop&w=600&h=400&q=80",
-        "mouse": "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
-        "maus": "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
-        "bear": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
-        "bär": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?fit=crop&w=600&h=400&q=80",
-        "monkey": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80",
-        "affe": "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?fit=crop&w=600&h=400&q=80"
-      };
+    /**
+ * Erstellt neutrale Platzhalter für deaktivierte Kategorien
+ */
+function createNeutralPlaceholder(word: string, translation: string): string {
+  // SVG-Platzhalter mit Text erstellen
+  const placeholderSvg = `
+    <svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="#f0f0f0"/>
+      <text x="50%" y="40%" font-family="Arial" font-size="24" fill="#999999" text-anchor="middle" dy=".3em">
+        ${word.toUpperCase()}
+      </text>
+      <text x="50%" y="60%" font-family="Arial" font-size="20" fill="#666666" text-anchor="middle" dy=".3em">
+        ${translation}
+      </text>
+    </svg>
+  `.trim();
 
-      return curatedAnimalImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80";
-    }
+  // SVG zu Base64 konvertieren
+  const base64Svg = Buffer.from(placeholderSvg).toString('base64');
+  return `data:image/svg+xml;base64,${base64Svg}`;
+}
