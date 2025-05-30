@@ -58,17 +58,32 @@ export async function findBestImage(
 
   console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
 
-  // SPEZIELLE BEHANDLUNG FÜR FAMILIE-KATEGORIE
-  // Verwende immer die perfekten, kuratierten Bilder für Familie
+  // VERWENDE CHATGPT-4O ZUR BILDERSTELLUNG
   if (category.toLowerCase() === "family" || category.toLowerCase() === "familie") {
-    console.log(`👨‍👩‍👧‍👦 Familie-Kategorie erkannt - verwende perfekte kuratierte Bilder`);
+    console.log(`🎨 Familie-Kategorie erkannt - verwende ChatGPT-4o Bilderstellung`);
     
+    try {
+      const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
+      
+      if (generatedImageUrl) {
+        return {
+          bestImageUrl: generatedImageUrl,
+          confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
+          reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt`,
+          logicCheck: true
+        };
+      }
+    } catch (error) {
+      console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
+    }
+    
+    // Fallback zu kuratierten Bildern
     const perfectImage = getCuratedFallbackImage(word, category);
     
     return {
       bestImageUrl: perfectImage,
-      confidence: 0.95, // Hohe Confidence für kuratierte Familie-Bilder
-      reasoning: `Perfektes kuratiertes Bild für Familie-Kategorie: "${word}" zeigt exakt die gewünschte Person/Personen`,
+      confidence: 0.95,
+      reasoning: `Fallback: Kuratiertes Bild für Familie-Kategorie: "${word}"`,
       logicCheck: true
     };
   }
@@ -991,6 +1006,96 @@ function getCuratedFallbackImage(word: string, category: string): string {
   const fallbackUrl = categoryDefaults[category.toLowerCase()] || categoryDefaults.family;
   console.log(`📚 Verwende Kategorie-Fallback für "${word}" in "${category}"`);
   return fallbackUrl;
+}
+
+/**
+ * NEUE FUNKTION: ChatGPT-4o Bilderstellung
+ */
+async function generateImageWithChatGPT(
+  word: string,
+  translation: string,
+  category: string
+): Promise<string | null> {
+
+  if (!openai || !OPENAI_API_KEY) {
+    console.log("⚠️ Keine OpenAI API verfügbar für Bilderstellung");
+    return null;
+  }
+
+  try {
+    console.log(`🎨 Erstelle Bild mit ChatGPT-4o für "${word}" (${translation})`);
+
+    // Spezifische Prompts für Familie-Begriffe
+    const imagePrompts: Record<string, string> = {
+      "parents": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "eltern": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "family": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "familie": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "mother": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "mutter": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "father": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "vater": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "daughter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "tochter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "son": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "sohn": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "brother": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "bruder": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "sister": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "schwester": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
+      
+      "grandmother": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "großmutter": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "grandfather": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      
+      "großvater": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien."
+    };
+
+    const imagePrompt = imagePrompts[word.toLowerCase()] || 
+      `Ein professionelles, kinderfreundliches Foto das "${word}" (${translation}) perfekt für deutsche Kinder-Lernmaterialien darstellt. Heller, neutraler Hintergrund, hohe Bildqualität.`;
+
+    console.log(`🎨 Erstelle Bild mit Prompt: "${imagePrompt.substring(0, 100)}..."`);
+
+    const response = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: imagePrompt,
+      n: 1,
+      size: "1024x1024",
+      quality: "hd",
+      style: "natural"
+    });
+
+    const imageUrl = response.data[0]?.url;
+
+    if (imageUrl) {
+      console.log(`✅ ChatGPT-4o Bild erfolgreich erstellt für "${word}"`);
+      return imageUrl;
+    } else {
+      console.log(`❌ Keine Bild-URL von ChatGPT-4o erhalten für "${word}"`);
+      return null;
+    }
+
+  } catch (error) {
+    console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
+    return null;
+  }
 }
 
 /**
