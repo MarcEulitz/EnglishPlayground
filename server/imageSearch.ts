@@ -66,131 +66,66 @@ export async function findBestImage(
 
   console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
 
-  // PRIORITÄT 1: Cache-Lookup für bereits generierte Familie-Bilder
-  if (category.toLowerCase() === "family" || category.toLowerCase() === "familie") {
-    console.log(`👨‍👩‍👧‍👦 Familie-Kategorie erkannt - prüfe Cache für "${word}"`);
+  // PRIORITÄT 1: ChatGPT-4o Bilderstellung für ALLE Kategorien
+  console.log(`🎯 Kategorie "${category}" erkannt - prüfe Cache für "${word}"`);
 
-    // Cache-Hit: Verwende bereits generiertes Bild
-    const cachedImage = familyImageCache[word.toLowerCase()];
-    if (cachedImage) {
-      console.log(`🚀 CACHE HIT für "${word}" - verwende vorgeneriertes Bild!`);
-      return {
-        bestImageUrl: cachedImage.url,
-        confidence: cachedImage.confidence,
-        reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
-        logicCheck: true
-      };
-    }
-
-    // Cache-Miss: Generiere neues Bild
-    console.log(`🎨 Cache-Miss für "${word}" - verwende ChatGPT-4o Bilderstellung`);
-
-    try {
-      const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
-
-      if (generatedImageUrl) {
-        // Speichere im Cache für zukünftige Nutzung
-        familyImageCache[word.toLowerCase()] = {
-          url: generatedImageUrl,
-          confidence: 0.98,
-          generated: new Date().toISOString(),
-          source: "ChatGPT-4o DALL-E-3"
-        };
-
-        console.log(`✅ Neues Bild für "${word}" generiert und gecacht!`);
-
-        return {
-          bestImageUrl: generatedImageUrl,
-          confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
-          reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt und gecacht`,
-          logicCheck: true
-        };
-      }
-    } catch (error) {
-      console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
-    }
-
-    // Fallback zu kuratierten Bildern
-    const perfectImage = getCuratedFallbackImage(word, category);
-
-    // Cache auch Fallback-Bilder
-    familyImageCache[word.toLowerCase()] = {
-      url: perfectImage,
-      confidence: 0.95,
-      generated: new Date().toISOString(),
-      source: "Kuratiertes Fallback"
-    };
-
+  // Cache-Hit: Verwende bereits generiertes Bild
+  const cachedImage = familyImageCache[word.toLowerCase()];
+  if (cachedImage) {
+    console.log(`🚀 CACHE HIT für "${word}" - verwende vorgeneriertes Bild!`);
     return {
-      bestImageUrl: perfectImage,
-      confidence: 0.95,
-      reasoning: `Fallback: Kuratiertes Bild für Familie-Kategorie: "${word}" (gecacht)`,
+      bestImageUrl: cachedImage.url,
+      confidence: cachedImage.confidence,
+      reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
       logicCheck: true
     };
   }
 
-    // PRIORITÄT 1: Cache-Lookup für bereits generierte Food-Bilder
-    if (category.toLowerCase() === "food" || category.toLowerCase() === "essen") {
-      console.log(`🍔 Food-Kategorie erkannt - prüfe Cache für "${word}"`);
-  
-      // Cache-Hit: Verwende bereits generiertes Bild
-      const cachedImage = familyImageCache[word.toLowerCase()];
-      if (cachedImage) {
-        console.log(`🚀 CACHE HIT für "${word}" - verwende vorgeneriertes Bild!`);
-        return {
-          bestImageUrl: cachedImage.url,
-          confidence: cachedImage.confidence,
-          reasoning: `CACHE: Bereits generiertes ${cachedImage.source} Bild für "${word}" - Erstellt: ${cachedImage.generated}`,
-          logicCheck: true
-        };
-      }
-  
-      // Cache-Miss: Generiere neues Bild
-      console.log(`🎨 Cache-Miss für "${word}" - verwende ChatGPT-4o Bilderstellung`);
-  
-      try {
-        const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
-  
-        if (generatedImageUrl) {
-          // Speichere im Cache für zukünftige Nutzung
-          familyImageCache[word.toLowerCase()] = {
-            url: generatedImageUrl,
-            confidence: 0.98,
-            generated: new Date().toISOString(),
-            source: "ChatGPT-4o DALL-E-3"
-          };
-  
-          console.log(`✅ Neues Bild für "${word}" generiert und gecacht!`);
-  
-          return {
-            bestImageUrl: generatedImageUrl,
-            confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
-            reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt und gecacht`,
-            logicCheck: true
-          };
-        }
-      } catch (error) {
-        console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
-      }
-  
-      // Fallback zu kuratierten Bildern
-      const perfectImage = getCuratedFallbackImage(word, category);
-  
-      // Cache auch Fallback-Bilder
+  // Cache-Miss: Generiere neues Bild mit ChatGPT-4o
+  console.log(`🎨 Cache-Miss für "${word}" - verwende ChatGPT-4o Bilderstellung`);
+
+  try {
+    const generatedImageUrl = await generateImageWithChatGPT(word, translation, category);
+
+    if (generatedImageUrl) {
+      // Speichere im Cache für zukünftige Nutzung
       familyImageCache[word.toLowerCase()] = {
-        url: perfectImage,
-        confidence: 0.95,
+        url: generatedImageUrl,
+        confidence: 0.98,
         generated: new Date().toISOString(),
-        source: "Kuratiertes Fallback"
+        source: "ChatGPT-4o DALL-E-3"
       };
-  
+
+      console.log(`✅ Neues Bild für "${word}" generiert und gecacht!`);
+
       return {
-        bestImageUrl: perfectImage,
-        confidence: 0.95,
-        reasoning: `Fallback: Kuratiertes Bild für Food-Kategorie: "${word}" (gecacht)`,
+        bestImageUrl: generatedImageUrl,
+        confidence: 0.98, // Sehr hohe Confidence für GPT-4o generierte Bilder
+        reasoning: `ChatGPT-4o hat ein perfektes, semantisch korrektes Bild für "${word}" erstellt und gecacht`,
         logicCheck: true
       };
     }
+  } catch (error) {
+    console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);
+  }
+
+  // Fallback zu kuratierten Bildern
+  const perfectImage = getCuratedFallbackImage(word, category);
+
+  // Cache auch Fallback-Bilder
+  familyImageCache[word.toLowerCase()] = {
+    url: perfectImage,
+    confidence: 0.95,
+    generated: new Date().toISOString(),
+    source: "Kuratiertes Fallback"
+  };
+
+  return {
+    bestImageUrl: perfectImage,
+    confidence: 0.95,
+    reasoning: `Fallback: Kuratiertes Bild für ${category}-Kategorie: "${word}" (gecacht)`,
+    logicCheck: true
+  };
 
   try {
     // Für andere Kategorien: normale intelligente Bildsuche
@@ -1070,13 +1005,17 @@ function getCuratedFallbackImage(word: string, category: string): string {
     "cousin": "https://images.unsplash.com/photo-1554151228-14d9def656e4?fit=crop&w=600&h=400&q=80"
   };
 
-  // Hochwertige, manuell kuratierte Bilder für andere Kategorien
+  // Hochwertige, manuell kuratierte Bilder für alle Kategorien
   const curatedImages: Record<string, Record<string, string>> = {
     animals: {
       cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
+      katze: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
       dog: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
+      hund: "https://images.unsplash.com/photo-1552053831-71594a27632d?fit=crop&w=600&h=400&q=80",
       bird: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
+      vogel: "https://images.unsplash.com/photo-1444464666168-49d633b86797?fit=crop&w=600&h=400&q=80",
       fish: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
+      fisch: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?fit=crop&w=600&h=400&q=80",
       bear: "https://images.unsplash.com/photo-1589656966895-2f33e7653819?fit=crop&w=600&h=400&q=80",
       horse: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
       cow: "https://images.unsplash.com/photo-1516467508483-a9ba5d0fe6a5?fit=crop&w=600&h=400&q=80",
@@ -1096,23 +1035,50 @@ function getCuratedFallbackImage(word: string, category: string): string {
     },
     transport: {
       car: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400&q=80",
+      auto: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400&q=80",
       bus: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?fit=crop&w=600&h=400&q=80",
       train: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?fit=crop&w=600&h=400&q=80",
-      bike: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fit=crop&w=600&h=400&q=80",
+      zug: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?fit=crop&w=600&h=400&q=80",
+      bicycle: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fit=crop&w=600&h=400&q=80",
+      fahrrad: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?fit=crop&w=600&h=400&q=80",
       plane: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400&q=80",
-      boat: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80"
+      flugzeug: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400&q=80",
+      boat: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80",
+      boot: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80"
     },
     colors: {
       red: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
+      rot: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
       blue: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400&q=80",
+      blau: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400&q=80",
       green: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400&q=80",
-      yellow: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400&q=80"
+      grün: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=600&h=400&q=80",
+      yellow: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400&q=80",
+      gelb: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?fit=crop&w=600&h=400&q=80"
     },
     home: {
       house: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80",
+      haus: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80",
       door: "https://images.unsplash.com/photo-1505682634904-d7c8d95cdc50?fit=crop&w=600&h=400&q=80",
+      tür: "https://images.unsplash.com/photo-1505682634904-d7c8d95cdc50?fit=crop&w=600&h=400&q=80",
       window: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
-      bed: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80"
+      fenster: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?fit=crop&w=600&h=400&q=80",
+      bed: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80",
+      bett: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80"
+    },
+    school: {
+      backpack: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400&q=80",
+      rucksack: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400&q=80",
+      book: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?fit=crop&w=600&h=400&q=80",
+      buch: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?fit=crop&w=600&h=400&q=80",
+      pencil: "https://images.unsplash.com/photo-1455390582262-044cdead277a?fit=crop&w=600&h=400&q=80",
+      bleistift: "https://images.unsplash.com/photo-1455390582262-044cdead277a?fit=crop&w=600&h=400&q=80",
+      scissors: "https://images.unsplash.com/photo-1562237213-e2cc7200de24?fit=crop&w=600&h=400&q=80",
+      schere: "https://images.unsplash.com/photo-1562237213-e2cc7200de24?fit=crop&w=600&h=400&q=80",
+      glue: "https://images.unsplash.com/photo-1605826606964-b44e4b06b0f8?fit=crop&w=600&h=400&q=80",
+      kleber: "https://images.unsplash.com/photo-1605826606964-b44e4b06b0f8?fit=crop&w=600&h=400&q=80",
+      ruler: "https://images.unsplash.com/photo-1594736797933-d0f06ba97c5b?fit=crop&w=600&h=400&q=80",
+      lineal: "https://images.unsplash.com/photo-1594736797933-d0f06ba97c5b?fit=crop&w=600&h=400&q=80"
     }
   };
 
@@ -1148,7 +1114,9 @@ function getCuratedFallbackImage(word: string, category: string): string {
     transport: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400&q=80",
     family: "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
     colors: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
-    home: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80"
+    home: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80",
+    school: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?fit=crop&w=600&h=400&q=80",
+    animals: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80"
   };
 
   const fallbackUrl = categoryDefaults[category.toLowerCase()] || categoryDefaults.family;
@@ -1173,47 +1141,76 @@ async function generateImageWithChatGPT(
   try {
     console.log(`🎨 Erstelle Bild mit ChatGPT-4o für "${word}" (${translation})`);
 
-    // Spezifische Prompts für Familie-Begriffe
+    // Spezifische Prompts für alle Kategorien
     const imagePrompts: Record<string, string> = {
+      // Familie-Begriffe
       "parents": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "eltern": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "family": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "familie": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "mother": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "mutter": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "father": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "vater": "Ein professionelles Portrait eines freundlichen Mannes mittleren Alters (30-45 Jahre) mit einem warmen, väterlichen Lächeln. Er trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "daughter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "tochter": "Ein professionelles Portrait eines freundlichen Mädchens (8-12 Jahre) mit einem strahlenden Lächeln. Sie trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "son": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "sohn": "Ein professionelles Portrait eines freundlichen Jungen (8-12 Jahre) mit einem strahlenden Lächeln. Er trägt kinderfreundliche, bunte Kleidung. Heller, fröhlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "brother": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendiche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "bruder": "Ein professionelles Portrait eines freundlichen Jungen (10-14 Jahre) mit einem fröhlichen Lächeln. Er trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "sister": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "schwester": "Ein professionelles Portrait eines freundlichen Mädchens (10-14 Jahre) mit einem fröhlichen Lächeln. Sie trägt lässige, jugendliche Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
-
       "grandmother": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "großmutter": "Ein professionelles Portrait einer freundlichen älteren Frau (60-70 Jahre) mit einem warmen, großmütterlichen Lächeln. Sie trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
-
       "grandfather": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
+      "großvater": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
 
-      "großvater": "Ein professionelles Portrait eines freundlichen älteren Mannes (60-70 Jahre) mit einem warmen, großväterlichen Lächeln. Er trägt elegante, altersgerechte Kleidung. Heller, neutraler Hintergrund. Ideal für deutsche Kinder-Lernmaterialien."
+      // Schule-Begriffe
+      "backpack": "Ein hochwertiger, neuer Schulrucksack vor einem weißen, neutralen Hintergrund. Der Rucksack ist klar erkennbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien geeignet.",
+      "rucksack": "Ein hochwertiger, neuer Schulrucksack vor einem weißen, neutralen Hintergrund. Der Rucksack ist klar erkennbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien geeignet.",
+      "book": "Ein einzelnes, offenes Buch mit sichtbaren Seiten vor einem hellen, neutralen Hintergrund. Das Buch nimmt den größten Teil des Bildes ein und ist perfekt für deutsche Kinder-Lernmaterialien.",
+      "buch": "Ein einzelnes, offenes Buch mit sichtbaren Seiten vor einem hellen, neutralen Hintergrund. Das Buch nimmt den größten Teil des Bildes ein und ist perfekt für deutsche Kinder-Lernmaterialien.",
+      "pencil": "Ein einzelner, neuer Bleistift mit scharfer Spitze vor einem weißen, neutralen Hintergrund. Der Bleistift ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "bleistift": "Ein einzelner, neuer Bleistift mit scharfer Spitze vor einem weißen, neutralen Hintergrund. Der Bleistift ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "scissors": "Eine neue, saubere Schere vor einem weißen, neutralen Hintergrund. Die Schere ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "schere": "Eine neue, saubere Schere vor einem weißen, neutralen Hintergrund. Die Schere ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "glue": "Ein Klebestift oder eine Klebeflasche vor einem weißen, neutralen Hintergrund. Der Kleber ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "kleber": "Ein Klebestift oder eine Klebeflasche vor einem weißen, neutralen Hintergrund. Der Kleber ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "ruler": "Ein Lineal aus Holz oder Plastik vor einem weißen, neutralen Hintergrund. Das Lineal ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "lineal": "Ein Lineal aus Holz oder Plastik vor einem weißen, neutralen Hintergrund. Das Lineal ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+
+      // Transport-Begriffe  
+      "car": "Ein modernes Auto vor einem hellen, neutralen Hintergrund. Das Auto ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
+      "auto": "Ein modernes Auto vor einem hellen, neutralen Hintergrund. Das Auto ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
+      "bus": "Ein gelber Schulbus oder öffentlicher Bus vor einem hellen, neutralen Hintergrund. Der Bus ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "bicycle": "Ein Fahrrad vor einem hellen, neutralen Hintergrund. Das Fahrrad ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
+      "fahrrad": "Ein Fahrrad vor einem hellen, neutralen Hintergrund. Das Fahrrad ist komplett sichtbar, gut beleuchtet und perfekt für deutsche Kinder-Lernmaterialien.",
+      "plane": "Ein Passagierflugzeug vor einem hellen, neutralen Hintergrund. Das Flugzeug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "flugzeug": "Ein Passagierflugzeug vor einem hellen, neutralen Hintergrund. Das Flugzeug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "train": "Ein Zug vor einem hellen, neutralen Hintergrund. Der Zug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "zug": "Ein Zug vor einem hellen, neutralen Hintergrund. Der Zug ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "boat": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "boot": "Ein Boot vor einem hellen, neutralen Hintergrund. Das Boot ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+
+      // Tiere-Begriffe
+      "cat": "Eine süße Katze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "katze": "Eine süße Katze vor einem hellen, neutralen Hintergrund. Die Katze sitzt ruhig und ist komplett sichtbar. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "dog": "Ein freundlicher Hund vor einem hellen, neutralen Hintergrund. Der Hund ist komplett sichtbar und hat ein freundliches Gesicht. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "hund": "Ein freundlicher Hund vor einem hellen, neutralen Hintergrund. Der Hund ist komplett sichtbar und hat ein freundliches Gesicht. Perfekt für deutsche Kinder-Lernmaterialien.",
+      "bird": "Ein bunter Vogel vor einem hellen, neutralen Hintergrund. Der Vogel ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "vogel": "Ein bunter Vogel vor einem hellen, neutralen Hintergrund. Der Vogel ist komplett sichtbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "fish": "Ein bunter Fisch vor einem hellen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+      "fisch": "Ein bunter Fisch vor einem hellen, neutralen Hintergrund. Der Fisch ist klar erkennbar und perfekt für deutsche Kinder-Lernmaterialien.",
+
+      // Farben-Begriffe
+      "red": "Ein leuchtend roter Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die rote Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "rot": "Ein leuchtend roter Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die rote Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "blue": "Ein leuchtend blauer Gegenstand (Ball oder Block) vor einem weißen, neutralen Hintergrund. Die blaue Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "blau": "Ein leuchtend blauer Gegenstand (Ball oder Block) vor einem weißen, neutralen Hintergrund. Die blaue Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "green": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "grün": "Ein leuchtend grüner Gegenstand (Apfel, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die grüne Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "yellow": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien.",
+      "gelb": "Ein leuchtend gelber Gegenstand (Banane, Ball oder Block) vor einem weißen, neutralen Hintergrund. Die gelbe Farbe ist dominant und perfekt für deutsche Kinder-Lernmaterialien."
     };
 
     const imagePrompt = imagePrompts[word.toLowerCase()] || 
