@@ -500,19 +500,18 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
       }
     });
 
-    // KOMPLETTE TIER-BILDGENERIERUNG MIT SOFORTIGEM START (DEAKTIVIERT)
+    // KOMPLETTE TIER-BILDGENERIERUNG MIT SOFORTIGEM START (AKTIVIERT)
     app.post("/api/complete-animals-image-generation", async (req, res) => {
       try {
-        console.log("🚫 Tier-Bildgenerierung ist deaktiviert");
+        console.log("🦁 Starte VOLLSTÄNDIGE Tier-Bildgenerierung mit ChatGPT-4o...");
         
+        // Sende sofortige Antwort, dass Generation gestartet wurde
         res.json({
-          success: false,
-          message: "Tier-Bildgenerierung ist deaktiviert",
-          generatedImages: 0,
-          errors: ["Tiere-Kategorie wurde deaktiviert"],
+          success: true,
+          message: "Tier-Bildgenerierung mit ChatGPT-4o wurde gestartet",
+          status: "in_progress",
           timestamp: new Date().toISOString()
         });
-        return;
         
         // VOLLSTÄNDIGE Tier-Vokabeln - alle auf einmal generieren (DEAKTIVIERT)
         const animalVocabulary = [
@@ -814,6 +813,213 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
         let failureCount = 0;
 
         console.log(`🎯 Generiere ${familyVocabulary.length} Familie-Bilder mit ChatGPT-4o...`);
+        
+        // NEUE API-Route für TIER-BATCH-GENERIERUNG
+        app.post("/api/batch-generate-animal-images", async (req, res) => {
+          try {
+            console.log("🦁 Starte BATCH-GENERIERUNG aller Tier-Bilder mit ChatGPT-4o...");
+            
+            // Vollständige Tier-Vokabeln für komplette Abdeckung
+            const animalVocabulary = [
+              { word: "cat", translation: "Katze" },
+              { word: "dog", translation: "Hund" },
+              { word: "bird", translation: "Vogel" },
+              { word: "fish", translation: "Fisch" },
+              { word: "elephant", translation: "Elefant" },
+              { word: "tiger", translation: "Tiger" },
+              { word: "rabbit", translation: "Hase" },
+              { word: "mouse", translation: "Maus" },
+              { word: "bear", translation: "Bär" },
+              { word: "monkey", translation: "Affe" },
+              { word: "giraffe", translation: "Giraffe" },
+              { word: "zebra", translation: "Zebra" },
+              { word: "sheep", translation: "Schaf" },
+              { word: "cow", translation: "Kuh" },
+              { word: "pig", translation: "Schwein" },
+              { word: "duck", translation: "Ente" },
+              { word: "horse", translation: "Pferd" },
+              { word: "lion", translation: "Löwe" },
+              { word: "frog", translation: "Frosch" },
+              { word: "chicken", translation: "Huhn" },
+              { word: "deer", translation: "Reh" },
+              { word: "owl", translation: "Eule" },
+              { word: "butterfly", translation: "Schmetterling" },
+              { word: "bee", translation: "Biene" },
+              { word: "snake", translation: "Schlange" },
+              { word: "turtle", translation: "Schildkröte" },
+              { word: "fox", translation: "Fuchs" },
+              { word: "wolf", translation: "Wolf" },
+              { word: "dolphin", translation: "Delfin" },
+              { word: "shark", translation: "Hai" },
+              { word: "penguin", translation: "Pinguin" },
+              { word: "goat", translation: "Ziege" },
+              { word: "kangaroo", translation: "Känguru" },
+              { word: "octopus", translation: "Krake" },
+              { word: "whale", translation: "Wal" }
+            ];
+
+            const generatedImages = [];
+            let successCount = 0;
+            let fallbackCount = 0;
+            let errorCount = 0;
+
+            console.log(`🚀 STARTE GENERATION von ${animalVocabulary.length} Tier-Bildern...`);
+
+            // PARALLELE VERARBEITUNG IN KLEINEREN BATCHES
+            const batchSize = 3; // Kleinere Batches für bessere Performance
+            const batches = [];
+            
+            for (let i = 0; i < animalVocabulary.length; i += batchSize) {
+              batches.push(animalVocabulary.slice(i, i + batchSize));
+            }
+
+            for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+              const batch = batches[batchIndex];
+              const batchProgress = `Batch ${batchIndex + 1}/${batches.length}`;
+              
+              console.log(`📦 ${batchProgress}: Verarbeite ${batch.length} Tiere...`);
+
+              // Parallele Verarbeitung innerhalb des Batches
+              const batchPromises = batch.map(async (vocab) => {
+                const progress = `${animalVocabulary.indexOf(vocab) + 1}/${animalVocabulary.length}`;
+                
+                try {
+                  console.log(`🎨 [${progress}] Generiere Tier "${vocab.word}" (${vocab.translation})`);
+                  
+                  // Cache prüfen
+                  const existingCache = familyImageCache[vocab.word.toLowerCase()];
+                  if (existingCache && existingCache.source === "ChatGPT-4o DALL-E-3") {
+                    console.log(`💾 [${progress}] Cache-Hit für Tier "${vocab.word}"`);
+                    return {
+                      word: vocab.word,
+                      translation: vocab.translation,
+                      imageUrl: existingCache.url,
+                      status: "cached",
+                      confidence: existingCache.confidence,
+                      source: existingCache.source
+                    };
+                  }
+                  
+                  // SOFORTIGE GENERIERUNG mit mehreren Strategien
+                  let generatedImageUrl = null;
+                  const strategies = ["simple", "educational", "detailed"];
+                  
+                  for (const strategy of strategies) {
+                    try {
+                      console.log(`   🔄 [${progress}] ${strategy}-Strategie für Tier "${vocab.word}"`);
+                      generatedImageUrl = await generateImageWithChatGPT(vocab.word, vocab.translation, "animals", strategy);
+                      
+                      if (generatedImageUrl) {
+                        console.log(`   ✅ [${progress}] ${strategy} für Tier erfolgreich!`);
+                        break;
+                      }
+                    } catch (strategyError) {
+                      console.log(`   ❌ [${progress}] ${strategy} für Tier fehlgeschlagen`);
+                      continue;
+                    }
+                  }
+                  
+                  if (generatedImageUrl) {
+                    // ERFOLG - Speichere Tier-Bild im Cache
+                    familyImageCache[vocab.word.toLowerCase()] = {
+                      url: generatedImageUrl,
+                      confidence: 0.98,
+                      generated: new Date().toISOString(),
+                      source: "ChatGPT-4o DALL-E-3"
+                    };
+                    
+                    console.log(`✅ [${progress}] Tier "${vocab.word}" ERFOLGREICH generiert!`);
+                    
+                    return {
+                      word: vocab.word,
+                      translation: vocab.translation,
+                      imageUrl: generatedImageUrl,
+                      status: "generated",
+                      confidence: 0.98,
+                      source: "ChatGPT-4o DALL-E-3"
+                    };
+                  } else {
+                    // FALLBACK für Tiere
+                    console.log(`📚 [${progress}] Fallback für Tier "${vocab.word}"`);
+                    const fallbackUrl = getCuratedFallbackImage(vocab.word, "animals");
+                    
+                    familyImageCache[vocab.word.toLowerCase()] = {
+                      url: fallbackUrl,
+                      confidence: 0.85,
+                      generated: new Date().toISOString(),
+                      source: "Kuratiertes Tier-Fallback"
+                    };
+                    
+                    return {
+                      word: vocab.word,
+                      translation: vocab.translation,
+                      imageUrl: fallbackUrl,
+                      status: "fallback",
+                      confidence: 0.85,
+                      source: "Kuratiertes Tier-Fallback"
+                    };
+                  }
+                  
+                } catch (error) {
+                  console.error(`❌ [${progress}] Fehler bei Tier "${vocab.word}":`, error);
+                  
+                  return {
+                    word: vocab.word,
+                    translation: vocab.translation,
+                    imageUrl: getCuratedFallbackImage(vocab.word, "animals"),
+                    status: "error",
+                    confidence: 0.5,
+                    source: "Error-Fallback",
+                    error: error instanceof Error ? error.message : "Unbekannter Fehler"
+                  };
+                }
+              });
+
+              // Warte auf Batch-Completion
+              const batchResults = await Promise.all(batchPromises);
+              generatedImages.push(...batchResults);
+
+              // Zähle Ergebnisse
+              batchResults.forEach(result => {
+                if (result.status === "generated") successCount++;
+                else if (result.status === "fallback" || result.status === "cached") fallbackCount++;
+                else errorCount++;
+              });
+
+              console.log(`✅ ${batchProgress} abgeschlossen: ${batchResults.length} Tiere verarbeitet`);
+              
+              // Kurze Pause zwischen Batches
+              if (batchIndex < batches.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+              }
+            }
+
+            const totalProcessed = successCount + fallbackCount + errorCount;
+            console.log(`🎯 TIER-BATCH-GENERIERUNG ABGESCHLOSSEN!`);
+            console.log(`📊 Gesamt: ${totalProcessed} | Generiert: ${successCount} | Cache/Fallback: ${fallbackCount} | Fehler: ${errorCount}`);
+
+            res.json({
+              success: true,
+              message: "Tier-Batch-Generierung mit ChatGPT-4o erfolgreich abgeschlossen",
+              totalAnimals: animalVocabulary.length,
+              totalProcessed,
+              generatedImages: successCount,
+              fallbackImages: fallbackCount,
+              errors: errorCount,
+              results: generatedImages,
+              cacheSize: Object.keys(familyImageCache).length,
+              timestamp: new Date().toISOString()
+            });
+
+          } catch (error) {
+            console.error("❌ Tier-Batch-Generierung fehlgeschlagen:", error);
+            res.status(500).json({
+              success: false,
+              error: error instanceof Error ? error.message : "Tier-Batch-Generation fehlgeschlagen",
+              timestamp: new Date().toISOString()
+            });
+          }
+        });
 
         // Parallel-Generierung in Batches von 5 für optimale Performance
         const batchSize = 5;
