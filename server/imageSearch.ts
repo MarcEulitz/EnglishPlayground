@@ -1,13 +1,19 @@
 import OpenAI from "openai";
 import axios from "axios";
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+// Lade die .env Datei explizit
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY }) : null;
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY || "";
+
+console.log("Environment Variables geladen:");
+console.log("UNSPLASH_ACCESS_KEY vorhanden:", !!UNSPLASH_ACCESS_KEY);
+console.log("OPENAI_API_KEY vorhanden:", !!OPENAI_API_KEY);
 
 interface ImageCandidate {
   url: string;
@@ -53,7 +59,7 @@ async function generateImageCandidates(
 async function searchUnsplash(query: string): Promise<string[]> {
 
   // Return fallback images if no API key is configured
-  if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY.trim() === "") {
+  if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY.trim() === "" || UNSPLASH_ACCESS_KEY === "your_unsplash_access_key_here") {
     console.log("Keine Unsplash API-Schlüssel konfiguriert, verwende Fallback-Bilder");
     return [
       "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
@@ -62,7 +68,10 @@ async function searchUnsplash(query: string): Promise<string[]> {
     ];
   }
 
+  console.log("Verwende Unsplash API-Schlüssel für Bildsuche:", `${UNSPLASH_ACCESS_KEY.substring(0, 10)}...`);
+
   try {
+    console.log(`Suche Bilder auf Unsplash für: "${query}"`);
     const response = await axios.get("https://api.unsplash.com/search/photos", {
       params: {
         query,
@@ -74,11 +83,27 @@ async function searchUnsplash(query: string): Promise<string[]> {
       }
     });
 
-
     const results = response.data.results;
-    return results.map((r: any) => r.urls.small);
+    console.log(`Unsplash API Response: ${results.length} Bilder gefunden`);
+    
+    if (results.length === 0) {
+      console.log("Keine Bilder von Unsplash erhalten, verwende Fallback-Bilder");
+      return [
+        "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?fit=crop&w=600&h=400",
+        "https://images.unsplash.com/photo-1543466835-00a7907e9de1?fit=crop&w=600&h=400",
+        "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400"
+      ];
+    }
+    
+    const imageUrls = results.map((r: any) => r.urls.small);
+    console.log("Unsplash Bild-URLs:", imageUrls);
+    return imageUrls;
   } catch (error) {
     console.error("Fehler bei der Unsplash-Suche:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Unsplash API Fehler Status:", error.response?.status);
+      console.error("Unsplash API Fehler Message:", error.response?.data);
+    }
 
     // Return fallback images on error
     return [
