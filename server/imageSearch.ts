@@ -56,9 +56,25 @@ export async function findBestImage(
   translation: string
 ): Promise<ImageSearchResult> {
 
-  console.log(`🔍 Starte intelligente Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
+  console.log(`🔍 Starte Bildsuche für "${word}" (${translation}) in Kategorie "${category}"`);
+
+  // SPEZIELLE BEHANDLUNG FÜR FAMILIE-KATEGORIE
+  // Verwende immer die perfekten, kuratierten Bilder für Familie
+  if (category.toLowerCase() === "family" || category.toLowerCase() === "familie") {
+    console.log(`👨‍👩‍👧‍👦 Familie-Kategorie erkannt - verwende perfekte kuratierte Bilder`);
+    
+    const perfectImage = getCuratedFallbackImage(word, category);
+    
+    return {
+      bestImageUrl: perfectImage,
+      confidence: 0.95, // Hohe Confidence für kuratierte Familie-Bilder
+      reasoning: `Perfektes kuratiertes Bild für Familie-Kategorie: "${word}" zeigt exakt die gewünschte Person/Personen`,
+      logicCheck: true
+    };
+  }
 
   try {
+    // Für andere Kategorien: normale intelligente Bildsuche
     // 1. Mehrere Bildkandidaten sammeln
     const candidates = await generateImageCandidates(category, word, translation);
 
@@ -833,7 +849,74 @@ ALLGEMEINE REGEL für "${word}" (${translation}):
 }
 
 function getCuratedFallbackImage(word: string, category: string): string {
-  // Hochwertige, manuell kuratierte Bilder für perfekte Lernqualität
+  // SPEZIFISCHE PERFEKTE BILDER FÜR FAMILIE-KATEGORIE (nach Ihren Anforderungen)
+  const perfectFamilyImages: Record<string, string> = {
+    // Eltern: Mann, Frau und Kind zusammen
+    "parents": "https://images.unsplash.com/photo-1609220136736-443140cffec6?fit=crop&w=600&h=400&q=80",
+    "eltern": "https://images.unsplash.com/photo-1609220136736-443140cffec6?fit=crop&w=600&h=400&q=80",
+    
+    // Familie: Mehrere Familienmitglieder
+    "family": "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
+    "familie": "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
+    
+    // Mutter: Frau mittleren Alters
+    "mother": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400&q=80",
+    "mutter": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400&q=80",
+    
+    // Vater: Mann mittleren Alters  
+    "father": "https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=600&h=400&q=80",
+    "vater": "https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=600&h=400&q=80",
+    
+    // Tochter: Jüngeres Mädchen
+    "daughter": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
+    "tochter": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
+    
+    // Sohn: Jüngerer Junge
+    "son": "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?fit=crop&w=600&h=400&q=80",
+    "sohn": "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?fit=crop&w=600&h=400&q=80",
+    
+    // Bruder: Jüngerer Junge
+    "brother": "https://images.unsplash.com/photo-1632179560465-39f9c18de454?fit=crop&w=600&h=400&q=80",
+    "bruder": "https://images.unsplash.com/photo-1632179560465-39f9c18de454?fit=crop&w=600&h=400&q=80",
+    
+    // Schwester: Jüngeres Mädchen
+    "sister": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?fit=crop&w=600&h=400&q=80",
+    "schwester": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?fit=crop&w=600&h=400&q=80",
+    
+    // Großmutter: Ältere Frau
+    "grandmother": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
+    "großmutter": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
+    "grossmutter": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
+    
+    // Großvater: Älterer Mann
+    "grandfather": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
+    "großvater": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
+    "grossvater": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
+    
+    // Baby: Kleinkind
+    "baby": "https://images.unsplash.com/photo-1566004100631-35d015d6a491?fit=crop&w=600&h=400&q=80",
+    
+    // Kind: Allgemeines Kind
+    "child": "https://images.unsplash.com/photo-1509062522246-3755977927d7?fit=crop&w=600&h=400&q=80",
+    "kind": "https://images.unsplash.com/photo-1509062522246-3755977927d7?fit=crop&w=600&h=400&q=80",
+    
+    // Weitere Familienmitglieder
+    "uncle": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400&q=80",
+    "onkel": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400&q=80",
+    
+    "aunt": "https://images.unsplash.com/photo-1494790108755-2616c96d5e82?fit=crop&w=600&h=400&q=80",
+    "tante": "https://images.unsplash.com/photo-1494790108755-2616c96d5e82?fit=crop&w=600&h=400&q=80",
+    
+    "nephew": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fit=crop&w=600&h=400&q=80",
+    "neffe": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fit=crop&w=600&h=400&q=80",
+    
+    "niece": "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?fit=crop&w=600&h=400&q=80",
+    "nichte": "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?fit=crop&w=600&h=400&q=80",
+    
+    "cousin": "https://images.unsplash.com/photo-1554151228-14d9def656e4?fit=crop&w=600&h=400&q=80"
+  };
+
+  // Hochwertige, manuell kuratierte Bilder für andere Kategorien
   const curatedImages: Record<string, Record<string, string>> = {
     animals: {
       cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
@@ -865,13 +948,6 @@ function getCuratedFallbackImage(word: string, category: string): string {
       plane: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?fit=crop&w=600&h=400&q=80",
       boat: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?fit=crop&w=600&h=400&q=80"
     },
-    family: {
-      mother: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80",
-      father: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=400&q=80",
-      baby: "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?fit=crop&w=600&h=400&q=80",
-      child: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
-      family: "https://images.unsplash.com/photo-1511895426328-dc8714191300?fit=crop&w=600&h=400&q=80"
-    },
     colors: {
       red: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
       blue: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?fit=crop&w=600&h=400&q=80",
@@ -886,24 +962,33 @@ function getCuratedFallbackImage(word: string, category: string): string {
     }
   };
 
-  // Spezifisches Bild für das Wort suchen
+  // 1. PRIORITÄT: Familie-spezifische perfekte Bilder
+  if (category.toLowerCase() === "family" || category.toLowerCase() === "familie") {
+    const perfectImage = perfectFamilyImages[word.toLowerCase()];
+    if (perfectImage) {
+      console.log(`👨‍👩‍👧‍👦 Verwende PERFEKTES Familie-Bild für "${word}"`);
+      return perfectImage;
+    }
+  }
+
+  // 2. Spezifisches Bild für das Wort in anderen Kategorien suchen
   const categoryImages = curatedImages[category.toLowerCase()];
   if (categoryImages && categoryImages[word.toLowerCase()]) {
     console.log(`📚 Verwende kuratiertes Bild für "${word}"`);
     return categoryImages[word.toLowerCase()];
   }
 
-  // Fallback zu besten Standard-Bildern pro Kategorie
+  // 3. Fallback zu besten Standard-Bildern pro Kategorie
   const categoryDefaults: Record<string, string> = {
     animals: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?fit=crop&w=600&h=400&q=80",
     food: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?fit=crop&w=600&h=400&q=80",
     transport: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?fit=crop&w=600&h=400&q=80",
-    family: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80",
+    family: "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
     colors: "https://images.unsplash.com/photo-1549298916-b41d501d3772?fit=crop&w=600&h=400&q=80",
     home: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?fit=crop&w=600&h=400&q=80"
   };
 
-  const fallbackUrl = categoryDefaults[category.toLowerCase()] || categoryDefaults.animals;
+  const fallbackUrl = categoryDefaults[category.toLowerCase()] || categoryDefaults.family;
   console.log(`📚 Verwende Kategorie-Fallback für "${word}" in "${category}"`);
   return fallbackUrl;
 }
