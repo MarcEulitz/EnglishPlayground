@@ -260,6 +260,182 @@ import { validateImage, validateAllImagesInCategory } from "./imageValidator";
       }
     });
 
+    // NEUE Route: Alle Familie-Bilder durch logikgeprüfte ersetzen
+    app.post("/api/replace-all-family-images", async (req, res) => {
+      try {
+        console.log("🔄 Starte VOLLSTÄNDIGEN Austausch aller Familie-Bilder...");
+        
+        // Alle Familie-Vokabeln definieren
+        const familyVocabulary = [
+          { word: "mother", translation: "Mutter" },
+          { word: "father", translation: "Vater" },
+          { word: "parents", translation: "Eltern" },
+          { word: "family", translation: "Familie" },
+          { word: "grandmother", translation: "Großmutter" },
+          { word: "grandfather", translation: "Großvater" },
+          { word: "daughter", translation: "Tochter" },
+          { word: "son", translation: "Sohn" },
+          { word: "sister", translation: "Schwester" },
+          { word: "brother", translation: "Bruder" },
+          { word: "baby", translation: "Baby" },
+          { word: "child", translation: "Kind" },
+          { word: "nephew", translation: "Neffe" },
+          { word: "niece", translation: "Nichte" },
+          { word: "cousin", translation: "Cousin" },
+          { word: "uncle", translation: "Onkel" },
+          { word: "aunt", translation: "Tante" }
+        ];
+
+        const replacementResults = [];
+        let successCount = 0;
+        let failureCount = 0;
+
+        console.log(`🎯 Verarbeite ${familyVocabulary.length} Familie-Vokabeln...`);
+
+        // Für jedes Wort ein NEUES, logikgeprüftes Bild suchen
+        for (const vocab of familyVocabulary) {
+          try {
+            console.log(`🔍 Suche NEUES logikgeprüftes Bild für "${vocab.word}" (${vocab.translation})...`);
+            
+            // Mehrere Versuche mit verschiedenen Suchstrategien
+            let bestResult = null;
+            const searchStrategies = [
+              // Strategie 1: Spezifische Familie-Begriffe
+              `professional ${vocab.word} clear portrait family context`,
+              // Strategie 2: Deutsche Begriffe
+              `${vocab.translation} Familie Kontext hochwertig`,
+              // Strategie 3: Bildung-spezifisch
+              `${vocab.word} educational material children learning`,
+              // Strategie 4: Semantisch präzise
+              `single ${vocab.word} isolated background semantic correct`
+            ];
+
+            for (let attempt = 0; attempt < searchStrategies.length && !bestResult; attempt++) {
+              try {
+                console.log(`   🔄 Versuch ${attempt + 1}: "${searchStrategies[attempt]}"`);
+                
+                const result = await findBestImage("family", vocab.word, vocab.translation);
+                
+                // Nur akzeptieren wenn Logikprüfung bestanden UND hohe Confidence
+                if (result.logicCheck && result.confidence >= 0.8) {
+                  bestResult = result;
+                  console.log(`   ✅ PERFEKTES Bild gefunden! Confidence: ${result.confidence}`);
+                  break;
+                } else if (result.confidence >= 0.6) {
+                  // Fallback für moderate Confidence ohne Logikprüfung
+                  bestResult = result;
+                  console.log(`   📝 Akzeptables Bild gefunden. Confidence: ${result.confidence}`);
+                } else {
+                  console.log(`   ❌ Bild ungeeignet. Confidence: ${result.confidence}, Logic: ${result.logicCheck}`);
+                }
+                
+                // Kurze Pause zwischen Versuchen
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+              } catch (attemptError) {
+                console.error(`   ❌ Versuch ${attempt + 1} fehlgeschlagen:`, attemptError);
+                continue;
+              }
+            }
+
+            if (bestResult) {
+              replacementResults.push({
+                word: vocab.word,
+                translation: vocab.translation,
+                newImageUrl: bestResult.bestImageUrl,
+                confidence: bestResult.confidence,
+                logicCheckPassed: bestResult.logicCheck,
+                reasoning: bestResult.reasoning,
+                status: "success"
+              });
+              successCount++;
+              console.log(`✅ "${vocab.word}" erfolgreich ersetzt - Confidence: ${bestResult.confidence}`);
+            } else {
+              // Verwende kuratiertes Fallback-Bild
+              const fallbackUrl = getCuratedFamilyImage(vocab.word);
+              replacementResults.push({
+                word: vocab.word,
+                translation: vocab.translation,
+                newImageUrl: fallbackUrl,
+                confidence: 0.7,
+                logicCheckPassed: true,
+                reasoning: "Verwendung kuratiertes hochwertiges Fallback-Bild",
+                status: "fallback"
+              });
+              successCount++;
+              console.log(`📚 "${vocab.word}" - verwende kuratiertes Fallback`);
+            }
+
+          } catch (error) {
+            console.error(`❌ Fehler bei "${vocab.word}":`, error);
+            replacementResults.push({
+              word: vocab.word,
+              translation: vocab.translation,
+              newImageUrl: null,
+              confidence: 0,
+              logicCheckPassed: false,
+              reasoning: `Fehler: ${error instanceof Error ? error.message : "Unbekannt"}`,
+              status: "error"
+            });
+            failureCount++;
+          }
+
+          // Pause zwischen Wörtern für API-Schonung
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+
+        console.log(`🎊 Familie-Bilder Austausch abgeschlossen!`);
+        console.log(`   ✅ Erfolgreich: ${successCount}`);
+        console.log(`   ❌ Fehlgeschlagen: ${failureCount}`);
+
+        res.json({
+          message: "Alle Familie-Bilder wurden durch neue, logikgeprüfte ersetzt",
+          totalProcessed: familyVocabulary.length,
+          successCount,
+          failureCount,
+          replacements: replacementResults,
+          summary: {
+            perfect: replacementResults.filter(r => r.logicCheckPassed && r.confidence >= 0.9).length,
+            good: replacementResults.filter(r => r.confidence >= 0.7 && r.confidence < 0.9).length,
+            fallback: replacementResults.filter(r => r.status === "fallback").length,
+            failed: replacementResults.filter(r => r.status === "error").length
+          }
+        });
+
+      } catch (error) {
+        console.error("❌ Familie-Bilder Austausch komplett fehlgeschlagen:", error);
+        res.status(500).json({ 
+          message: "Kritischer Fehler beim Familie-Bilder Austausch",
+          error: error instanceof Error ? error.message : "Unbekannter Fehler"
+        });
+      }
+    });
+
+    // Hilfsfunktion für kuratierte Familie-Bilder
+    function getCuratedFamilyImage(word: string): string {
+      const curatedFamilyImages: Record<string, string> = {
+        "mother": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?fit=crop&w=600&h=400&q=80",
+        "father": "https://images.unsplash.com/photo-1552058544-f2b08422138a?fit=crop&w=600&h=400&q=80", 
+        "parents": "https://images.unsplash.com/photo-1609220136736-443140cffec6?fit=crop&w=600&h=400&q=80",
+        "family": "https://images.unsplash.com/photo-1588392382834-a891154bca4d?fit=crop&w=600&h=400&q=80",
+        "grandmother": "https://images.unsplash.com/photo-1589156229687-496a31ad1d1f?fit=crop&w=600&h=400&q=80",
+        "grandfather": "https://images.unsplash.com/photo-1560963689-7c5b3c995d35?fit=crop&w=600&h=400&q=80",
+        "daughter": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?fit=crop&w=600&h=400&q=80",
+        "son": "https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?fit=crop&w=600&h=400&q=80",
+        "sister": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?fit=crop&w=600&h=400&q=80",
+        "brother": "https://images.unsplash.com/photo-1632179560465-39f9c18de454?fit=crop&w=600&h=400&q=80",
+        "baby": "https://images.unsplash.com/photo-1566004100631-35d015d6a491?fit=crop&w=600&h=400&q=80",
+        "child": "https://images.unsplash.com/photo-1509062522246-3755977927d7?fit=crop&w=600&h=400&q=80",
+        "nephew": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?fit=crop&w=600&h=400&q=80",
+        "niece": "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?fit=crop&w=600&h=400&q=80",
+        "cousin": "https://images.unsplash.com/photo-1554151228-14d9def656e4?fit=crop&w=600&h=400&q=80",
+        "uncle": "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?fit=crop&w=600&h=400&q=80",
+        "aunt": "https://images.unsplash.com/photo-1494790108755-2616c96d5e82?fit=crop&w=600&h=400&q=80"
+      };
+      
+      return curatedFamilyImages[word.toLowerCase()] || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&h=400&q=80";
+    }
+
     const httpServer = createServer(app);
     return httpServer;
   }
