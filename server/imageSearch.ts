@@ -23,7 +23,7 @@ console.log("PIXABAY_API_KEY vorhanden:", !!PIXABAY_API_KEY);
 console.log("OPENAI_API_KEY vorhanden:", !!OPENAI_API_KEY);
 
 // In-Memory Cache für generierte Familie-Bilder
-const familyImageCache: Record<string, {
+export const familyImageCache: Record<string, {
   url: string;
   confidence: number;
   generated: string;
@@ -1193,11 +1193,11 @@ function getCuratedFallbackImage(word: string, category: string): string {
 /**
  * NEUE FUNKTION: ChatGPT-4o Bilderstellung
  */
-async function generateImageWithChatGPT(
+export async function generateImageWithChatGPT(
   word: string,
   translation: string,
   category: string,
-  strategy: string = "detailed"
+  strategy: string = "simple"
 ): Promise<string | null> {
 
   if (!openai || !OPENAI_API_KEY) {
@@ -1208,63 +1208,51 @@ async function generateImageWithChatGPT(
   try {
     console.log(`🎨 Erstelle Bild mit ChatGPT-4o für "${word}" (${translation})`);
 
-    // Mehrere Prompt-Strategien für höhere Erfolgsrate
+    // VEREINFACHTE, SICHERE Prompt-Strategien
     const getImagePrompt = (strategy: string): Record<string, string> => {
-      if (strategy === "simple") {
-        return {
-          // Einfache, sichere Prompts
-          "cat": "A cartoon cat, colorful and friendly, white background",
-          "dog": "A cartoon dog, happy and cute, white background", 
-          "bird": "A colorful cartoon bird, simple style, white background",
-          "fish": "A cartoon fish, bright colors, white background",
-          "elephant": "A cartoon elephant, gray and friendly, white background",
-          "tiger": "A cartoon tiger, orange with stripes, white background",
-          "rabbit": "A cartoon bunny, white and cute, white background",
-          "mouse": "A cartoon mouse, small and gray, white background",
-          "bear": "A cartoon teddy bear, brown and friendly, white background",
-          "monkey": "A cartoon monkey, brown and playful, white background",
-          "giraffe": "A cartoon giraffe, tall with spots, white background",
-          "zebra": "A cartoon zebra, black and white stripes, white background",
-          "sheep": "A cartoon sheep, fluffy and white, white background",
-          "cow": "A cartoon cow, black and white spots, white background",
-          "pig": "A cartoon pig, pink and round, white background",
-          "duck": "A cartoon duck, yellow and cute, white background",
-          "horse": "A cartoon horse, brown and elegant, white background",
-          "lion": "A cartoon lion, golden with mane, white background",
-          "frog": "A cartoon frog, green and friendly, white background",
-          "chicken": "A cartoon chicken, red and white, white background"
-        };
-      } else if (strategy === "educational") {
-        return {
-          // Bildungskontext-Prompts
-          "cat": "Educational illustration of a house cat for children's learning book",
-          "dog": "Educational illustration of a friendly dog for children's learning book",
-          "bird": "Educational illustration of a songbird for children's learning book",
-          "fish": "Educational illustration of a goldfish for children's learning book",
-          "elephant": "Educational illustration of an elephant for children's learning book",
-          "tiger": "Educational illustration of a tiger for children's learning book",
-          "rabbit": "Educational illustration of a rabbit for children's learning book",
-          "mouse": "Educational illustration of a mouse for children's learning book",
-          "bear": "Educational illustration of a bear for children's learning book",
-          "monkey": "Educational illustration of a monkey for children's learning book",
-          "giraffe": "Educational illustration of a giraffe for children's learning book",
-          "zebra": "Educational illustration of a zebra for children's learning book",
-          "sheep": "Educational illustration of a sheep for children's learning book",
-          "cow": "Educational illustration of a cow for children's learning book",
-          "pig": "Educational illustration of a pig for children's learning book",
-          "duck": "Educational illustration of a duck for children's learning book",
-          "horse": "Educational illustration of a horse for children's learning book",
-          "lion": "Educational illustration of a lion for children's learning book",
-          "frog": "Educational illustration of a frog for children's learning book",
-          "chicken": "Educational illustration of a chicken for children's learning book"
-        };
-      }
-      
-      // Standard "detailed" strategy
-      return {
-      // Familie-Begriffe
-      "parents": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
-      "eltern": "Ein professionelles Foto von EXAKT ZWEI Erwachsenen: einem Mann mittleren Alters und einer Frau mittleren Alters, die zusammen stehen und freundlich lächeln. Beide sind gut gekleidet, der Hintergrund ist neutral und hell. Perfekt für deutsche Kinder-Lernmaterialien.",
+      const basePrompts: Record<string, string> = {
+        // SEHR EINFACHE, SICHERE TIER-PROMPTS
+        "cat": "cute orange cat sitting, cartoon style, white background",
+        "dog": "friendly golden dog sitting, cartoon style, white background", 
+        "bird": "small blue bird, cartoon style, white background",
+        "fish": "orange fish swimming, cartoon style, white background",
+        "elephant": "gray elephant, cartoon style, white background",
+        "tiger": "orange tiger with stripes, cartoon style, white background",
+        "rabbit": "white bunny with long ears, cartoon style, white background",
+        "mouse": "small gray mouse, cartoon style, white background",
+        "bear": "brown teddy bear, cartoon style, white background",
+        "monkey": "brown monkey, cartoon style, white background",
+        "giraffe": "tall giraffe with spots, cartoon style, white background",
+        "zebra": "zebra with stripes, cartoon style, white background",
+        "sheep": "fluffy white sheep, cartoon style, white background",
+        "cow": "cow with spots, cartoon style, white background",
+        "pig": "pink pig, cartoon style, white background",
+        "duck": "yellow duck, cartoon style, white background",
+        "horse": "brown horse, cartoon style, white background",
+        "lion": "golden lion, cartoon style, white background",
+        "frog": "green frog, cartoon style, white background",
+        "chicken": "white chicken, cartoon style, white background",
+        "deer": "brown deer, cartoon style, white background",
+        "owl": "brown owl, cartoon style, white background",
+        "butterfly": "colorful butterfly, cartoon style, white background",
+        "bee": "yellow and black bee, cartoon style, white background",
+        "snake": "green snake, cartoon style, white background",
+        "turtle": "green turtle, cartoon style, white background",
+        "fox": "red fox, cartoon style, white background",
+        "wolf": "gray wolf, cartoon style, white background",
+        "dolphin": "gray dolphin, cartoon style, white background",
+        "shark": "gray shark, cartoon style, white background",
+        "penguin": "black and white penguin, cartoon style, white background",
+        "goat": "white goat, cartoon style, white background",
+        "kangaroo": "brown kangaroo, cartoon style, white background",
+        "octopus": "purple octopus, cartoon style, white background",
+        "whale": "blue whale, cartoon style, white background"
+      };
+
+      return basePrompts;
+      // Familie-Begriffe - VEREINFACHT
+      "parents": "two adults standing together, cartoon style, white background",
+      "eltern": "two adults standing together, cartoon style, white background",
       "family": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
       "familie": "Ein warmes Familienfoto mit MINDESTENS DREI Personen: zwei Erwachsene (Mutter und Vater) und mindestens ein Kind. Alle lächeln glücklich, sitzen oder stehen zusammen. Heller, freundlicher Hintergrund. Ideal für deutsche Kinder-Lernmaterialien.",
       "mother": "Ein professionelles Portrait einer freundlichen Frau mittleren Alters (30-45 Jahre) mit einem warmen, mütterlichen Lächeln. Sie trägt alltägliche, gepflegte Kleidung. Heller, neutraler Hintergrund. Perfekt für deutsche Kinder-Lernmaterialien.",
@@ -1393,80 +1381,41 @@ async function generateImageWithChatGPT(
       };
     };
 
-    const imagePrompts = getImagePrompt(strategy);
+    };
 
+    const imagePrompts = getImagePrompt(strategy);
+    
+    // Fallback zu sehr einfachem Prompt
     const imagePrompt = imagePrompts[word.toLowerCase()] || 
-      `Ein professionelles, kinderfreundliches Foto das "${word}" (${translation}) perfekt für deutsche Kinder-Lernmaterialien darstellt. Heller, neutraler Hintergrund, hohe Bildqualität.`;
+      `simple ${word} drawing, cartoon style, white background`;
 
     console.log(`🎨 Erstelle Bild mit Prompt: "${imagePrompt.substring(0, 100)}..."`);
 
-    // Retry-Mechanismus für Rate Limits
-    let attempts = 0;
-    const maxAttempts = 3;
-    
-    while (attempts < maxAttempts) {
-      try {
-        const response = await openai.images.generate({
-          model: "dall-e-3",
-          prompt: imagePrompt,
-          n: 1,
-          size: "1024x1024",
-          quality: "standard", // Verwende standard statt hd für bessere Rate Limits
-          style: "natural"
-        });
+    try {
+      // EINFACHER, DIREKTER ANSATZ ohne komplexe Retry-Logik
+      const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: imagePrompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+        style: "natural"
+      });
 
-        const imageUrl = response.data[0]?.url;
+      const imageUrl = response.data[0]?.url;
 
-        if (imageUrl) {
-          console.log(`✅ ChatGPT-4o Bild erfolgreich erstellt für "${word}" (Versuch ${attempts + 1})`);
-          return imageUrl;
-        } else {
-          console.log(`❌ Keine Bild-URL von ChatGPT-4o erhalten für "${word}"`);
-          return null;
-        }
-      } catch (retryError: any) {
-        attempts++;
-        
-        if (retryError.status === 400 && retryError.error?.type === 'image_generation_user_error') {
-          console.log(`⚠️ Content Policy Fehler für "${word}" - verwende vereinfachten Prompt`);
-          
-          // Vereinfachter, sicherer Fallback-Prompt
-          const safePrompt = `A simple cartoon ${word} for children, friendly and colorful, white background`;
-          
-          try {
-            const fallbackResponse = await openai.images.generate({
-              model: "dall-e-3",
-              prompt: safePrompt,
-              n: 1,
-              size: "1024x1024",
-              quality: "standard",
-              style: "natural"
-            });
-            
-            const fallbackUrl = fallbackResponse.data[0]?.url;
-            if (fallbackUrl) {
-              console.log(`✅ Fallback-Bild erfolgreich erstellt für "${word}"`);
-              return fallbackUrl;
-            }
-          } catch (fallbackError) {
-            console.error(`❌ Auch Fallback-Prompt fehlgeschlagen für "${word}"`);
-          }
-          break; // Stoppe bei Content Policy Fehlern
-        }
-        
-        if (retryError.status === 429) {
-          const waitTime = Math.pow(2, attempts) * 1000; // Exponential backoff
-          console.log(`⏱️ Rate Limit erreicht für "${word}" - warte ${waitTime}ms (Versuch ${attempts}/${maxAttempts})`);
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-        } else {
-          console.error(`❌ Unerwarteter Fehler bei "${word}" (Versuch ${attempts}):`, retryError);
-          break;
-        }
+      if (imageUrl) {
+        console.log(`✅ ChatGPT-4o Bild erfolgreich erstellt für "${word}"`);
+        return imageUrl;
+      } else {
+        console.log(`❌ Keine Bild-URL von ChatGPT-4o erhalten für "${word}"`);
+        return null;
       }
+      
+    } catch (error: any) {
+      console.log(`⚠️ DALL-E Generation fehlgeschlagen für "${word}": ${error.message}`);
+      return null;
     }
-    
-    console.error(`❌ ChatGPT-4o Bilderstellung endgültig fehlgeschlagen für "${word}" nach ${attempts} Versuchen`);
-    return null;
 
   } catch (error) {
     console.error(`❌ ChatGPT-4o Bilderstellung fehlgeschlagen für "${word}":`, error);

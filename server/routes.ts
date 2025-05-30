@@ -9,7 +9,7 @@ import type { Express } from "express";
     insertParentSettingsSchema
   } from "@shared/schema";
   import { z } from "zod";
-  import { findBestImage } from "./imageSearch";
+  import { findBestImage, familyImageCache } from "./imageSearch";
 import { validateImage, validateAllImagesInCategory } from "./imageValidator";
 
   export async function registerRoutes(app: Express): Promise<Server> {
